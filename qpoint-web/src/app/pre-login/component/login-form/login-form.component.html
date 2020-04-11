@@ -1,0 +1,30 @@
+<div class="py-5" nz-row nzJustify="center" nzType="flex">
+  <div nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
+    <nz-card>
+      <form (ngSubmit)="submitForm()" [formGroup]="validateForm" [nzLayout]="'horizontal'" nz-form>
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your username!">
+            <nz-input-group nzPrefixIcon="user">
+              <input formControlName="username" nz-input placeholder="Username"/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input your Password!">
+            <nz-input-group nzPrefixIcon="lock">
+              <input formControlName="password" nz-input placeholder="Password" type="password"/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button [disabled]="!validateForm.valid" nz-button nzType="primary">Log in</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+  </div>
+</div>
+
+
+

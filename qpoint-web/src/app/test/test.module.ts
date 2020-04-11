@@ -3,6 +3,7 @@ import {NgModule} from "@angular/core";
 import {TestService} from "./service/test.service";
 import {TestComponent} from "./component/test/test.component";
 import {TestRoutingModule} from "./test.routing.module";
+import {CoreModule} from "../core/core.module";
 
 @NgModule({
   declarations: [
@@ -10,6 +11,7 @@ import {TestRoutingModule} from "./test.routing.module";
   ],
   imports: [
     CommonModule,
+    CoreModule,
     TestRoutingModule,
   ],
   providers: [

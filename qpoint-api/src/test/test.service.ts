@@ -1,35 +1,74 @@
-import {Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable,} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Test} from "./test.entity";
+import {TestEntity} from "./test.entity";
+import {ResponseModel} from "../shared/model/response.model";
+import {AppConstant} from "../shared/constant/app.constant";
+import {CreateTestDto, TestDto} from "./test.dto";
 
 @Injectable()
 export class TestService {
 
-    constructor(@InjectRepository(Test) private usersRepository: Repository<Test>) {
+    constructor(@InjectRepository(TestEntity) private testRepository: Repository<TestEntity>) {
     }
 
-    async getUsers(user: Test): Promise<Test[]> {
-        return await this.usersRepository.find();
+    async getUsers(): Promise<TestEntity[]> {
+        return await this.testRepository.find();
     }
 
-    async getUser(_id: number): Promise<Test[]> {
-        return await this.usersRepository.find({
-            select: ["full_name", "birthday", "is_active"],
-            where: [{"id": _id}]
+    async getUser(id: number): Promise<TestEntity> {
+        const test = await this.testRepository.findOne({
+            select: ["fullName", "birthday", "isActive"],
+            where: [{"id": id}]
         });
+        if (!test) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+        }
+        return test;
     }
 
-    async createUser(user: Test) {
-        this.usersRepository.save(user)
+    async createUser(test: CreateTestDto) {
+        const testEntity: TestEntity = {
+            "fullName": test.fullName,
+            "birthday": test.birthday,
+            "isActive": test.isActive,
+        };
+        await this.testRepository.save(testEntity)
     }
 
-    async updateUser(user: Test) {
-        this.usersRepository.save(user)
+    async updateUser(user: TestDto) {
+        const test = await this.testRepository.findOne({
+            where: [{"id": user.id}]
+        });
+        if (!test) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+        }
+        await this.testRepository.save(user);
     }
 
-    async deleteUser(user: Test) {
-        this.usersRepository.delete(user);
+    async deleteUser(id: number) {
+        const test = await this.testRepository.findOne({
+            where: [{"id": id}]
+        });
+        if (!test) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+        }
+        await this.testRepository.delete(id);
+    }
+
+    async deleteUserWithId(id: number) {
+        const test = await this.testRepository.findOne({
+            where: [{"id": id}]
+        });
+        if (!test) {
+            throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
+        }
+        await this.testRepository.delete(id);
+        const responseBody: ResponseModel = {
+            status: AppConstant.STATUS_SUCCESS,
+            data: "User has been deleted"
+        };
+        return responseBody;
     }
 
 }

@@ -1,19 +1,19 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 
-@Entity()
-export class Test {
+@Entity('test')
+export class TestEntity {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn({name: 'test_id'})
+    testId?: number;
 
-    @Column()
-    full_name: string;
+    @CreateDateColumn({name: 'full_name'})
+    fullName: string;
 
     @Column('date')
     birthday: Date;
 
-    @Column()
-    is_active: string;
+    @Column({name: 'is_active'})
+    isActive: string;
 
 }

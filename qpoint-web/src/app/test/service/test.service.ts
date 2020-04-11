@@ -1,6 +1,7 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,6 @@ import {Injectable} from "@angular/core";
 
 export class TestService {
 
-  baseurl = 'http://localhost:3000';
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ export class TestService {
   }
 
   testApi(): Observable<any> {
-    return this.http.get<any>(this.baseurl, this.httpOptions)
+    return this.http.get<any>(environment.apiUrl, this.httpOptions)
   }
 
 }

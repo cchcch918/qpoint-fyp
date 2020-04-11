@@ -1,13 +1,11 @@
 import {RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
-import {TestComponent} from "./component/test/test.component";
-import {AuthGuard} from "../core/service/auth-guard.service";
+import {LoginFormComponent} from "./component/login-form/login-form.component";
 
 const routes: Routes = [
   {
     path: '',
-    component: TestComponent,
-    canActivate: [AuthGuard]
+    component: LoginFormComponent,
   },
   {
     path: '**',
@@ -19,4 +17,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class TestRoutingModule { }
+export class PreLoginRoutingModule {
+}
