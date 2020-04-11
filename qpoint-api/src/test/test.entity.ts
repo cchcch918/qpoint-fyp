@@ -7,13 +7,12 @@ export class TestEntity {
     @PrimaryGeneratedColumn({name: 'test_id'})
     testId?: number;
 
-    @CreateDateColumn({name: 'full_name'})
+    @Column({name: 'full_name'})
     fullName: string;
 
-    @Column('date')
+    @CreateDateColumn()
     birthday: Date;
 
     @Column({name: 'is_active'})
     isActive: string;
-
 }
