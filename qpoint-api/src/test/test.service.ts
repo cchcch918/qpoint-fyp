@@ -17,9 +17,10 @@ export class TestService {
     }
 
     async getUser(id: number): Promise<TestEntity> {
+        console.log('iddddddddddddddddd', id);
         const test = await this.testRepository.findOne({
             select: ["fullName", "birthday", "isActive"],
-            where: [{"id": id}]
+            where: [{"testId": id}]
         });
         if (!test) {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
@@ -38,7 +39,7 @@ export class TestService {
 
     async updateUser(user: TestDto) {
         const test = await this.testRepository.findOne({
-            where: [{"id": user.id}]
+            where: [{"testId": user.id}]
         });
         if (!test) {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
@@ -48,7 +49,7 @@ export class TestService {
 
     async deleteUser(id: number) {
         const test = await this.testRepository.findOne({
-            where: [{"id": id}]
+            where: [{"testId": id}]
         });
         if (!test) {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
@@ -58,7 +59,7 @@ export class TestService {
 
     async deleteUserWithId(id: number) {
         const test = await this.testRepository.findOne({
-            where: [{"id": id}]
+            where: [{"testId": id}]
         });
         if (!test) {
             throw new HttpException('Not Found', HttpStatus.NOT_FOUND)
