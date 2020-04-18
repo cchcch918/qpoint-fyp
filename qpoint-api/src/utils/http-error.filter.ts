@@ -3,7 +3,7 @@ import {Request, Response} from 'express';
 import {ResponseModel} from "./model/response.model";
 import {AppConstant} from "./constant/app.constant";
 
-@Catch()
+@Catch(HttpException)
 export class HttpErrorFilter implements ExceptionFilter {
     catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();

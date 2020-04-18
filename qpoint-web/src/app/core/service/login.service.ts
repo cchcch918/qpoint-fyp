@@ -3,6 +3,7 @@ import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
 import {LoginStaffVoModel} from "../../pre-login/model/login-staff-vo.model";
 import {environment} from "../../../environments/environment";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class LoginService {
     })
   };
 
-  constructor(private http: HttpClient) {
+  constructor(public http: HttpClient, public router: Router) {
   }
 
   get token(): string {
@@ -37,13 +38,36 @@ export class LoginService {
 
   }
 
-  staffRegister(): Observable<any> {
-    return this.http.post<any>(this.baseUrl + '/auth/register', this.httpOptions)
+  staffRegister(staffDetails: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/auth/register', staffDetails, this.httpOptions)
   }
 
-  staffLogin(staffLoginVo: any): Observable<LoginStaffVoModel> {
-    console.log(staffLoginVo);
-    return this.http.post<any>(this.baseUrl + '/auth/login', staffLoginVo, this.httpOptions);
+  staffLogin(staffDetails: any): Observable<LoginStaffVoModel> {
+    return this.http.post<any>(this.baseUrl + '/auth/login', staffDetails, this.httpOptions);
+  }
+
+  changePassword(payload: any): Observable<any> {
+    console.log("payload1", payload)
+    return this.http.post<any>(this.baseUrl + '/auth/change-password', payload, this.httpOptions);
+  }
+
+  staffLogout() {
+    localStorage.removeItem('login_token');
+    this.token = null;
+    this.router.navigate(['/pre-login']);
+  }
+
+  checkStaffExists(staffUsername: string) {
+    console.log('servioce')
+    return this.http.get<any>(this.baseUrl + '/api/check-staff-exists/' + staffUsername, this.httpOptions);
+  }
+
+  sendForgetPasswordEmail(payload: any) {
+    return this.http.post<any>(this.baseUrl + '/auth/send-forget-password-email', payload, this.httpOptions);
+  }
+
+  verifyPasswordResetToken(payload: any) {
+    return this.http.post<any>(this.baseUrl + '/auth/verify-password-reset-token', payload, this.httpOptions);
   }
 
 }

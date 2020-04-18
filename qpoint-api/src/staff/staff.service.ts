@@ -2,7 +2,8 @@ import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {StaffEntity} from "./staff.entity";
-import {StaffLoginDto} from "./staff.dto";
+import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
+import {sendEmail} from "../utils/send-forget-password-email";
 
 @Injectable()
 export class StaffService {
@@ -15,13 +16,21 @@ export class StaffService {
         return users.map(user => user.toResponseObject());
     }
 
-    async read(username: string) {
-        const user = await this.staffRepository.findOne({
-            where: {username},
-            relations: ['ideas', 'bookmarks'],
-        });
-        return user.toResponseObject();
+    async checkStaffExists(username: string) {
+        const exists = await this.staffRepository.findOne({
+                where: [{"username": username}]
+            }
+        );
+        return exists != null ? {"result": true} : {"result": false};
     }
+
+    // async read(username: string) {
+    //     const user = await this.staffRepository.findOne({
+    //         where: {username},
+    //         relations: ['ideas', 'bookmarks'],
+    //     });
+    //     return user.toResponseObject();
+    // }
 
     async login(data: StaffLoginDto) {
         const {username, password} = data;
@@ -35,7 +44,7 @@ export class StaffService {
         return user.toResponseObject();
     }
 
-    async register(data: StaffLoginDto) {
+    async register(data: StaffRegisterDto) {
         const {username} = data;
         let user = await this.staffRepository.findOne({where: {username}});
         if (user) {
@@ -45,4 +54,59 @@ export class StaffService {
         await this.staffRepository.save(user);
         return user.toResponseObject();
     }
+
+
+    async changePassword(payload) {
+        const {username, password} = payload;
+        const user = await this.staffRepository.findOne({where: {username}});
+        if (!user) {
+            throw new HttpException('User does not exists', HttpStatus.BAD_REQUEST);
+        }
+        user.password = password;
+        await user.hashPassword();
+        await this.staffRepository.update(user.staffId, {password: user.password});
+        return {result: "SUCCESS"};
+    }
+
+    async sendForgetPasswordEmail(payload) {
+        const {username} = payload;
+        const user = await this.staffRepository.findOne({where: {username}});
+        if (!user) {
+            throw new HttpException('User does not exists', HttpStatus.BAD_REQUEST);
+        }
+        await user.generateResetPasswordToken();
+        await this.staffRepository.save(user);
+        return await sendEmail(user);
+    }
+
+    async getAccountDetailsByUsername(username: string) {
+        const user = await this.staffRepository.findOne({where: {username}});
+        if (!user) {
+            throw new HttpException('User does not exists', HttpStatus.BAD_REQUEST);
+        }
+        return user.toResponseObject();
+    }
+
+    async verifyPasswordResetToken(payload: any) {
+        const {username, token} = payload;
+        const user = await this.staffRepository.findOne({where: {username}});
+        if (!user) {
+            throw new HttpException('User does not exists', HttpStatus.BAD_REQUEST);
+        }
+
+        if (token === user.resetPasswordToken) {
+            if (new Date > user.resetPasswordExpires) {
+                throw new HttpException('Password reset token has expired.', HttpStatus.BAD_REQUEST);
+            } else {
+                user.resetPasswordToken = null;
+                user.resetPasswordExpires = null;
+                await this.staffRepository.save(user);
+                return {result: "SUCCESS"}
+            }
+        } else {
+            throw new HttpException('Password reset token is invalid.', HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
 }

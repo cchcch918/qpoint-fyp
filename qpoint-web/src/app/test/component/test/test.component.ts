@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TestService} from "../../service/test.service";
+import {LoginService} from "../../../core/service/login.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-test',
@@ -9,7 +11,7 @@ import {TestService} from "../../service/test.service";
 export class TestComponent implements OnInit {
   apiText: any;
 
-  constructor(public testService: TestService) {
+  constructor(public testService: TestService, public loginService: LoginService, public router: Router) {
   }
 
   ngOnInit() {
@@ -20,4 +22,8 @@ export class TestComponent implements OnInit {
     })
   }
 
+  logout() {
+    this.loginService.staffLogout();
+
+  }
 }

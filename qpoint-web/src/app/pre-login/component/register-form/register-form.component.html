@@ -1,0 +1,75 @@
+<div class="py-5" nz-row nzJustify="center" nzType="flex">
+  <div nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
+    <h4 class="text-center p-3">Admin Register</h4>
+    <form (ngSubmit)="submitForm()" [formGroup]="registerForm" nz-form>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Username</nz-form-label>
+        <nz-form-control [nzErrorTip]="errorUsername" [nzSpan]="12" nzHasFeedback>
+          <input [placeholder]="'Required Input'" formControlName="username" minlength="{{MIN_USERNAME_LENGTH}}"
+                 nz-input required/>
+          <ng-template #errorUsername let-control>
+            <ng-container *ngIf="registerForm.controls['username'].hasError('required')">
+              Username is required
+            </ng-container>
+            <ng-container *ngIf="registerForm.controls['username'].hasError('minlength')">
+              Min Length is {{MIN_USERNAME_LENGTH}}
+            </ng-container>
+            <ng-container *ngIf="registerForm.controls['username'].hasError('confirm')">
+              Username does exists
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Password</nz-form-label>
+        <nz-form-control [nzErrorTip]="errorPassword" [nzSpan]="12" nzHasFeedback>
+          <input (ngModelChange)="updateConfirmValidator()" [placeholder]="'Min Length is '+ MIN_PASSWORD_LENGTH"
+                 formControlName="password" minlength="{{MIN_PASSWORD_LENGTH}}" nz-input
+                 required type="password"/>
+          <ng-template #errorPassword let-control>
+            <ng-container *ngIf="registerForm.controls['password'].hasError('required')">
+              Password cannot be empty
+            </ng-container>
+            <ng-container *ngIf="registerForm.controls['password'].hasError('minlength')">
+              Min Length is {{MIN_PASSWORD_LENGTH}}
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Confirm Password</nz-form-label>
+        <nz-form-control [nzErrorTip]="errorConfirmPassword" [nzSpan]="12" nzHasFeedback>
+          <input [placeholder]="'Min Length is '+ MIN_PASSWORD_LENGTH" formControlName="confirmPassword"
+                 minlength="{{MIN_PASSWORD_LENGTH}}" nz-input
+                 required type="password"/>
+          <ng-template #errorConfirmPassword let-control>
+            <ng-container *ngIf="registerForm.controls['confirmPassword'].hasError('required')">
+              Please confirm your password
+            </ng-container>
+            <ng-container *ngIf="registerForm.controls['confirmPassword'].hasError('confirm')">
+              Two passwords that you enter is inconsistent
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="8">Email</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzErrorTip="Email is not valid" nzHasFeedback>
+          <input [placeholder]="'example@.yahoo.com'" email formControlName="email" nz-input required/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="register-area" nz-row>
+        <nz-form-control [nzOffset]="8" [nzSpan]="12">
+          <label formControlName="agree" nz-checkbox>
+            <span>I have read the <a>agreement</a></span>
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="register-area" nz-row>
+        <nz-form-control [nzOffset]="8" [nzSpan]="12">
+          <button [disabled]="!registerForm.valid" nz-button nzType="primary">Register</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</div>

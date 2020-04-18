@@ -1,7 +1,7 @@
 <div class="py-5" nz-row nzJustify="center" nzType="flex">
   <div nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
     <nz-card>
-      <form (ngSubmit)="submitForm()" [formGroup]="validateForm" [nzLayout]="'horizontal'" nz-form>
+      <form (ngSubmit)="submitForm()" [formGroup]="loginForm" [nzLayout]="'horizontal'" nz-form>
         <nz-form-item>
           <nz-form-control nzErrorTip="Please input your username!">
             <nz-input-group nzPrefixIcon="user">
@@ -18,7 +18,10 @@
         </nz-form-item>
         <nz-form-item>
           <nz-form-control>
-            <button [disabled]="!validateForm.valid" nz-button nzType="primary">Log in</button>
+            <a (click)=forgetPassword() class="login-form-forgot" class="login-form-forgot">Forgot password</a>
+            <button [disabled]="!loginForm.valid" nz-button nzType="primary">Log in</button>
+            Or
+            <a (click)="registerStaff()">register now!</a>
           </nz-form-control>
         </nz-form-item>
       </form>

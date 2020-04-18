@@ -9,34 +9,34 @@ import {Router} from "@angular/router";
   styleUrls: ['./login-form.component.css']
 })
 export class LoginFormComponent implements OnInit {
-  validateForm: FormGroup;
+  loginForm: FormGroup;
 
 
-  constructor(private fb: FormBuilder, private preLoginService: LoginService, private router: Router) {
+  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router) {
   }
 
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
+    this.loginForm = this.fb.group({
       username: [null, [Validators.required]],
       password: [null, [Validators.required]],
     });
   }
 
   submitForm(): void {
-    for (const i in this.validateForm.controls) {
-      this.validateForm.controls[i].markAsDirty();
-      this.validateForm.controls[i].updateValueAndValidity();
+    for (const i in this.loginForm.controls) {
+      this.loginForm.controls[i].markAsDirty();
+      this.loginForm.controls[i].updateValueAndValidity();
     }
 
     let staffLoginVo = {
-      username: this.validateForm.controls['username'].value,
-      password: this.validateForm.controls['password'].value
+      username: this.loginForm.controls['username'].value,
+      password: this.loginForm.controls['password'].value
     };
-    this.preLoginService.staffLogin(staffLoginVo).subscribe(
+    this.loginService.staffLogin(staffLoginVo).subscribe(
       (res) => {
-        this.preLoginService.token = res.token;
+        this.loginService.token = res.token;
         this.router.navigate(['/test']);
-        console.log('Bearer ' + this.preLoginService.token)
+        console.log('Bearer ' + this.loginService.token)
       },
       (error) => {
         throw error
@@ -44,4 +44,12 @@ export class LoginFormComponent implements OnInit {
     )
   }
 
+  registerStaff() {
+    this.router.navigate(['/pre-login/register-admin']);
+  }
+
+
+  forgetPassword() {
+    this.router.navigate(['/pre-login/forget-password']);
+  }
 }

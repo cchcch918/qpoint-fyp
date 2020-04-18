@@ -8,3 +8,14 @@ export class StaffLoginDto {
     @IsNotEmpty()
     password: string;
 }
+
+export class StaffRegisterDto {
+    @IsNotEmpty()
+    username: string;
+
+    @IsNotEmpty()
+    password: string;
+
+    @IsNotEmpty()
+    email: string;
+}

@@ -4,7 +4,7 @@ import {AppService} from './app.service';
 import {TestModule} from './test/test.module';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {APP_FILTER} from "@nestjs/core";
-import {HttpErrorFilter} from "./shared/http-error.filter";
+import {HttpErrorFilter} from "./utils/http-error.filter";
 import {StaffModule} from "./staff/staff.module";
 
 

@@ -1,7 +1,7 @@
 import {Body, Controller, Delete, Get, Param, Post, Put, UsePipes} from '@nestjs/common';
 import {TestService} from "./test.service";
-import {ResponseModel} from "../shared/model/response.model";
-import {ValidationPipe} from "../shared/validation.pipe";
+import {ResponseModel} from "../utils/model/response.model";
+import {ValidationPipe} from "../utils/validation.pipe";
 import {CreateTestDto, DeleteTestDto, TestDto} from "./test.dto";
 
 @Controller('test')

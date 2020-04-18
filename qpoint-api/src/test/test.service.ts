@@ -2,8 +2,8 @@ import {HttpException, HttpStatus, Injectable,} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {TestEntity} from "./test.entity";
-import {ResponseModel} from "../shared/model/response.model";
-import {AppConstant} from "../shared/constant/app.constant";
+import {ResponseModel} from "../utils/model/response.model";
+import {AppConstant} from "../utils/constant/app.constant";
 import {CreateTestDto, TestDto} from "./test.dto";
 
 @Injectable()
