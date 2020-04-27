@@ -32,7 +32,7 @@ export class ForgetPasswordVerificationComponent implements OnInit {
             nzFooter: [
               {
                 label: 'Try again',
-                shape: 'default',
+                shape: null,
                 onClick: () => {
                   modal.destroy();
                 }
@@ -50,7 +50,7 @@ export class ForgetPasswordVerificationComponent implements OnInit {
           nzFooter: [
             {
               label: 'Try again',
-              shape: 'default',
+              shape: null,
               onClick: () => {
                 modal.destroy();
               }
@@ -76,7 +76,7 @@ export class ForgetPasswordVerificationComponent implements OnInit {
             nzFooter: [
               {
                 label: 'Back to login page',
-                shape: 'default',
+                shape: null,
                 onClick: () => {
                   this.router.navigate(['/pre-login']);
                   modal.destroy();
@@ -93,7 +93,7 @@ export class ForgetPasswordVerificationComponent implements OnInit {
           nzFooter: [
             {
               label: 'Try again',
-              shape: 'default',
+              shape: null,
               onClick: () => {
                 modal.destroy();
               }

@@ -6,13 +6,15 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {APP_FILTER} from "@nestjs/core";
 import {HttpErrorFilter} from "./utils/http-error.filter";
 import {StaffModule} from "./staff/staff.module";
+import {UserModule} from "./user/user.module";
 
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(),
         TestModule,
-        StaffModule
+        StaffModule,
+        UserModule
     ],
     controllers: [AppController],
     providers: [AppService, {

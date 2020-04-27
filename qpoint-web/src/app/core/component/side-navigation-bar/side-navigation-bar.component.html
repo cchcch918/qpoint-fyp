@@ -1,0 +1,35 @@
+<nz-layout>
+  <nz-sider [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzCollapsible>
+    <div class="p-2"><img alt="Qpoint logo" class="logo" src="../../../../assets/qpoint-logo.png"></div>
+    <ul nz-menu nzMode="inline" nzTheme="light">
+      <li nz-submenu nzIcon="user" nzTitle="Student">
+        <ul>
+          <li nz-menu-item>Student QR code</li>
+          <li nz-menu-item>Create Student</li>
+        </ul>
+      </li>
+      <li nz-submenu nzIcon="team" nzTitle="Staff">
+        <ul>
+          <li nz-menu-item>Create Teacher</li>
+        </ul>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <i (click)="isCollapsed = !isCollapsed" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" class="trigger"
+         nz-icon></i>
+    </nz-header>
+    <nz-content>
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>User</nz-breadcrumb-item>
+        <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+      </nz-breadcrumb>
+
+      <div class="inner-content">
+        <ng-content></ng-content>
+      </div>
+    </nz-content>
+    <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+  </nz-layout>
+</nz-layout>

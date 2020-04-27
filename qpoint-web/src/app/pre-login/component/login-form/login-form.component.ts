@@ -35,8 +35,7 @@ export class LoginFormComponent implements OnInit {
     this.loginService.staffLogin(staffLoginVo).subscribe(
       (res) => {
         this.loginService.token = res.token;
-        this.router.navigate(['/test']);
-        console.log('Bearer ' + this.loginService.token)
+        this.router.navigate(['/student']);
       },
       (error) => {
         throw error

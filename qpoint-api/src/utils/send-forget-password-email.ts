@@ -54,7 +54,6 @@ export const sendEmail = async (user: StaffEntity) => {
         return censorWord(arr[0]) + "@" + arr[1];
     }
 
-    console.log('Message sent: %s', info.messageId);
     return {censoredEmail: censorEmail(info.accepted[0])};
 };
 

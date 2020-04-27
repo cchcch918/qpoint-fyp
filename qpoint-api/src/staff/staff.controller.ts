@@ -4,7 +4,7 @@ import {StaffService} from "./staff.service";
 import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
 import {AuthGuard} from "../utils/auth.guard";
 
-@Controller()
+@Controller('staff')
 export class StaffController {
     constructor(private staffService: StaffService) {
     }
@@ -53,13 +53,13 @@ export class StaffController {
         return this.staffService.checkStaffExists(params.username);
     }
 
-    @Post('auth/send-forget-password-email')
+    @Post('auth/admin/send-forget-password-email')
     @UsePipes(new ValidationPipe())
     sendForgetPasswordEmail(@Body() payload: any) {
         return this.staffService.sendForgetPasswordEmail(payload);
     }
 
-    @Post('auth/verify-password-reset-token')
+    @Post('auth/admin/verify-password-reset-token')
     @UsePipes(new ValidationPipe())
     verifyPasswordResetToken(@Body() payload: any) {
         return this.staffService.verifyPasswordResetToken(payload);

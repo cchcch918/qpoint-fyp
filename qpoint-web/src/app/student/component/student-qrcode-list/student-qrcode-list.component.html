@@ -1,0 +1,19 @@
+<app-side-navigation-bar>
+
+  <div class="py-5" class="container" nz-row nzJustify="center" nzType="flex">
+    <input [(ngModel)]="searchStudentName" nz-input placeholder="Basic usage"/>
+
+    <div *ngFor="let studentQr of studentQrList | filter:searchStudentName" nz-col nzJustify="center" nzLg="8" nzMd="10"
+         nzSm="14" nzType="flex" nzXl="6" nzXs="18">
+      <nz-card (click)="createCopySuccessMessage(studentQr.studentName)" [cdkCopyToClipboard]="studentQr.qrCode"
+               [nzCover]="coverTemplate" [nzHoverable]="true" class="m-2">
+        <nz-card-meta nzTitle="{{studentQr.studentName}}"></nz-card-meta>
+        <ng-template #coverTemplate>
+          <img [src]="studentQr.qrCode" alt="{{studentQr.studentName}}+'s qrCode'"/>
+        </ng-template>
+      </nz-card>
+
+    </div>
+  </div>
+</app-side-navigation-bar>
+

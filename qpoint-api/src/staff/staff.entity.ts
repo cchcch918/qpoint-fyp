@@ -12,7 +12,7 @@ export class StaffEntity {
     @CreateDateColumn({name: 'date_created'})
     dateCreated: Date;
 
-    @Column({unique: true, collation: 'Latin1_General_CS_AI'})
+    @Column({unique: true})
     username: string;
 
     @Column()

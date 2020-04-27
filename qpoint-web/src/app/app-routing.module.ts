@@ -17,6 +17,10 @@ const routes: Routes = [
     loadChildren: () => import('./pre-login/pre-login.module').then(mod => mod.PreLoginModule)
   },
   {
+    path: 'student',
+    loadChildren: () => import('./student/student.module').then(mod => mod.StudentModule)
+  },
+  {
     path: '**',
     redirectTo: 'pre-login'
   }

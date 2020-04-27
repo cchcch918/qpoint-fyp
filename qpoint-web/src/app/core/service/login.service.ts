@@ -34,21 +34,21 @@ export class LoginService {
   }
 
   showAllStaffs(): Observable<any> {
-    return this.http.get<any>(this.baseUrl + '/api/staffs', this.httpOptions)
+    return this.http.get<any>(this.baseUrl + '/staff/api/staffs', this.httpOptions)
 
   }
 
   staffRegister(staffDetails: any): Observable<any> {
-    return this.http.post<any>(this.baseUrl + '/auth/register', staffDetails, this.httpOptions)
+    return this.http.post<any>(this.baseUrl + '/staff/auth/register', staffDetails, this.httpOptions)
   }
 
   staffLogin(staffDetails: any): Observable<LoginStaffVoModel> {
-    return this.http.post<any>(this.baseUrl + '/auth/login', staffDetails, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + '/staff/auth/login', staffDetails, this.httpOptions);
   }
 
   changePassword(payload: any): Observable<any> {
     console.log("payload1", payload)
-    return this.http.post<any>(this.baseUrl + '/auth/change-password', payload, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + '/staff/auth/change-password', payload, this.httpOptions);
   }
 
   staffLogout() {
@@ -59,15 +59,15 @@ export class LoginService {
 
   checkStaffExists(staffUsername: string) {
     console.log('servioce')
-    return this.http.get<any>(this.baseUrl + '/api/check-staff-exists/' + staffUsername, this.httpOptions);
+    return this.http.get<any>(this.baseUrl + '/staff/api/check-staff-exists/' + staffUsername, this.httpOptions);
   }
 
   sendForgetPasswordEmail(payload: any) {
-    return this.http.post<any>(this.baseUrl + '/auth/send-forget-password-email', payload, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + '/staff/auth/admin/send-forget-password-email', payload, this.httpOptions);
   }
 
   verifyPasswordResetToken(payload: any) {
-    return this.http.post<any>(this.baseUrl + '/auth/verify-password-reset-token', payload, this.httpOptions);
+    return this.http.post<any>(this.baseUrl + '/staff/auth/admin/verify-password-reset-token', payload, this.httpOptions);
   }
 
 }
