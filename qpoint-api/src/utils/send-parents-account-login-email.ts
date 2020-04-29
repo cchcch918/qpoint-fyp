@@ -1,9 +1,8 @@
 import * as nodemailer from 'nodemailer';
-import {UserEntity} from "../user/user.entity";
+import {ParentEntity} from "../parent/parent.entity";
 
 
-export const sendParentsLoginEmail = async (user: UserEntity) => {
-
+export const sendParentsLoginEmail = async (parent: ParentEntity, studentName: string, parentExists: boolean) => {
 
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -16,29 +15,45 @@ export const sendParentsLoginEmail = async (user: UserEntity) => {
         }
     });
 
-    const info = await transporter.sendMail({
-        from: '"qpoint 👻 " <' + `${process.env.EMAIL_USERNAME}` + ">", // sender address
-        to: user.parentEmail, // list of receivers
-        subject: 'Qpoint Parents Login ', // Subject line
-        html: `
-<p>Hi <b>${user.fullName}'s</b> parents,</p>
+    let content = '';
 
-<p>Your children has been registered to our <i>Qrpoint</i>, a automated behavioral point system.</p>
+    if (!parentExists) {
+        content = `<p>Hi <b>${studentName}'s</b> parents,</p>
+
+<p>Your children (${studentName}) has been registered to our <i>Qpoint</i>, an automated behavioral point system.</p>
 
 <p>Kindly access to our app to keep track your children activities in school.</p>
 
-username: <b>${user.parentEmail}</b><br>
+username: <b>${parent.email}</b><br>
 
-password: <b>${user.password}</b>
+password: <b>${parent.password}</b>
 
 <p>Please change the auto-generated password after the first time login to the app and do not forward this email to anyone.</p>
 
 <p><i>Sincerely yours,</i></p>
 
 <p><i>The Qpoint Accounts Team</i></p>`
+    } else {
+        content = `<p>Hi <b>${studentName}'s</b> parents,</p>
+
+<p>Your children (${studentName}) has been registered to our <i>Qpoint</i>, an automated behavioral point system.</p>
+
+<p>Kindly access to our app to keep track your children activities in school by using your same existing account.</p>
+
+<p>Please change the auto-generated password after the first time login to the app and do not forward this email to anyone.</p>
+
+<p><i>Sincerely yours,</i></p>
+
+<p><i>The Qpoint Accounts Team</i></p>`
+    }
+
+    const info = await transporter.sendMail({
+        from: '"qpoint 👻 " <' + `${process.env.EMAIL_USERNAME}` + ">", // sender address
+        to: parent.email, // list of receivers
+        subject: 'Qpoint Parents Login ', // Subject line
+        html: content
+
         ,
     });
-
-
     console.log('Message sent: %s', info.messageId);
 };

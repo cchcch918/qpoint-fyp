@@ -6,7 +6,8 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {APP_FILTER} from "@nestjs/core";
 import {HttpErrorFilter} from "./utils/http-error.filter";
 import {StaffModule} from "./staff/staff.module";
-import {UserModule} from "./user/user.module";
+import {StudentModule} from "./student/student.module";
+import {ParentModule} from "./parent/parent.module";
 
 
 @Module({
@@ -14,7 +15,8 @@ import {UserModule} from "./user/user.module";
         TypeOrmModule.forRoot(),
         TestModule,
         StaffModule,
-        UserModule
+        StudentModule,
+        ParentModule,
     ],
     controllers: [AppController],
     providers: [AppService, {
