@@ -1,0 +1,8 @@
+.search-background {
+  background-color: #6B7A8F;
+  opacity: 0.60;
+}
+
+.search-background:hover {
+  opacity: 0.95;
+}

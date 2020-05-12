@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {StudentService} from "../../service/student.service";
-import {StudentQrModel} from "../../model/studentQr.model";
+import {StudentQrVoModel} from "../../model/student-qr-vo.model";
 import {NzMessageService} from "ng-zorro-antd";
+import * as JsPdf from 'jspdf';
 
 @Component({
   selector: 'app-student-qrcode-list',
@@ -9,8 +10,10 @@ import {NzMessageService} from "ng-zorro-antd";
   styleUrls: ['./student-qrcode-list.component.css']
 })
 export class StudentQrcodeListComponent implements OnInit {
-  studentQrList: StudentQrModel[];
+  studentQrList: StudentQrVoModel[];
   searchStudentName: string;
+
+  @ViewChild('downloadContent', {static: false}) downloadContent: ElementRef;
 
   constructor(private studentService: StudentService, private message: NzMessageService) {
   }
@@ -27,5 +30,19 @@ export class StudentQrcodeListComponent implements OnInit {
   createCopySuccessMessage(studentName: string) {
     this.message.create('success', studentName + `'s Qr Code copied! `);
 
+  }
+
+  downloadPdf() {
+    let doc = new JsPdf();
+    doc.fromHTML(this.downloadContent.nativeElement.innerHTML, 15, 15, {
+      'width': 190,
+      'elementHandlers': {
+        '#editor': function (element, renderer) {
+          return true
+        }
+      }
+    }, function () {
+      doc.save("students.pdf");
+    })
   }
 }

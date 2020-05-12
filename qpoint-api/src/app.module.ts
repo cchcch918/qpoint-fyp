@@ -8,6 +8,12 @@ import {HttpErrorFilter} from "./utils/http-error.filter";
 import {StaffModule} from "./staff/staff.module";
 import {StudentModule} from "./student/student.module";
 import {ParentModule} from "./parent/parent.module";
+import {ClassModule} from "./class/class.module";
+import {GroupModule} from "./group/group.module";
+import {BadgeModule} from "./badge/badge.module";
+import {BehaviourModule} from "./behaviour/behaviour.module";
+import {NotificationModule} from "./notification/notification.module";
+import {SchoolModule} from "./school/school.module";
 
 
 @Module({
@@ -17,6 +23,12 @@ import {ParentModule} from "./parent/parent.module";
         StaffModule,
         StudentModule,
         ParentModule,
+        ClassModule,
+        GroupModule,
+        BadgeModule,
+        BehaviourModule,
+        NotificationModule,
+        SchoolModule,
     ],
     controllers: [AppController],
     providers: [AppService, {

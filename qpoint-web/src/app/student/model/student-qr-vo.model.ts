@@ -1,4 +1,4 @@
-export interface StudentQrModel {
+export interface StudentQrVoModel {
   studentName: string;
   qrCode: string;
 }

@@ -17,7 +17,6 @@ export class TestService {
     }
 
     async getUser(id: number): Promise<TestEntity> {
-        console.log('iddddddddddddddddd', id);
         const test = await this.testRepository.findOne({
             select: ["fullName", "birthday", "isActive"],
             where: [{"testId": id}]

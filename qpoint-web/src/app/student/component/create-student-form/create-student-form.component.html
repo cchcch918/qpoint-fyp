@@ -1,0 +1,26 @@
+<app-side-navigation-bar>
+  <form (ngSubmit)="submitForm()" [formGroup]="createStudentForm" [nzLayout]="'inline'" nz-form>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Please input the student name">
+        <nz-input-group nzPrefixIcon="user">
+          <input formControlName="fullName" nz-input placeholder="Student Full Name" required/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Email is not valid">
+        <nz-input-group nzPrefixIcon="mail">
+          <input email formControlName="parentEmail" nz-input placeholder="Parent Email" required/>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control>
+        <button [disabled]="!createStudentForm.valid" [nzLoading]="createStudentLoading" nz-button nzType="primary">
+          Create
+        </button>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</app-side-navigation-bar>
+

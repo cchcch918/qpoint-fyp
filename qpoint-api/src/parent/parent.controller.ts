@@ -1,7 +1,7 @@
 import {Body, Controller, Post, UsePipes} from "@nestjs/common";
 import {ParentService} from "./parent.service";
 import {ValidationPipe} from "../utils/validation.pipe";
-import {ParentLoginDto} from "./parent.dto";
+import {ParentChangePasswordDto, ParentLoginDto} from "./parent.dto";
 
 @Controller('parent')
 export class ParentController {
@@ -18,6 +18,12 @@ export class ParentController {
     @UsePipes(new ValidationPipe())
     showParentDetails(@Body() payload: any) {
         return this.parentService.showParentDetails(payload);
+    }
+
+    @Post('change-parent-password')
+    @UsePipes(new ValidationPipe())
+    changeParentPassword(@Body() payload: ParentChangePasswordDto) {
+        return this.parentService.changeParentPassword(payload);
     }
 
 }

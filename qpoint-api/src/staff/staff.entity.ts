@@ -1,7 +1,21 @@
-import {BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {
+    BeforeInsert,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn
+} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import * as crypto from "crypto";
+import {GroupEntity} from "../group/group.entity";
+import {ClassEntity} from "../class/class.entity";
+import {SchoolEntity} from "../school/school.entity";
 
 
 @Entity('staff')
@@ -20,6 +34,28 @@ export class StaffEntity {
 
     @Column()
     email: string;
+
+    @ManyToMany(type => ClassEntity)
+    @JoinTable({
+        name: 'staff_class',
+        joinColumn: {
+            name: "staff_id",
+            referencedColumnName: "staffId"
+        },
+        inverseJoinColumn: {
+            name: "class_id",
+            referencedColumnName: "classId"
+        }
+    })
+    classes: ClassEntity[];
+
+
+    @OneToMany(type => GroupEntity, group => group.staff, {cascade: true})
+    groups: GroupEntity[];
+
+    @ManyToOne(type => SchoolEntity, school => school.staffs)
+    @JoinColumn({name: 'school_id'})
+    school: SchoolEntity;
 
     @Column({name: 'reset_password_token', nullable: true})
     resetPasswordToken: string;

@@ -7,3 +7,14 @@ export class ParentLoginDto {
     @IsNotEmpty()
     password: string;
 }
+
+export class ParentChangePasswordDto {
+    @IsNotEmpty()
+    parentEmail: string;
+
+    @IsNotEmpty()
+    oldPassword: string;
+
+    @IsNotEmpty()
+    newPassword: string;
+}

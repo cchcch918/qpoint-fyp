@@ -2,7 +2,7 @@ import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ParentEntity} from "./parent.entity";
-import {ParentLoginDto} from "./parent.dto";
+import {ParentChangePasswordDto, ParentLoginDto} from "./parent.dto";
 
 @Injectable()
 export class ParentService {
@@ -34,4 +34,20 @@ export class ParentService {
         }
         return parent.toResponseObject();
     }
+
+    async changeParentPassword(payload: ParentChangePasswordDto) {
+        const {parentEmail, oldPassword, newPassword} = payload;
+        const parent = await this.parentRepository.findOne({where: {parentEmail}, relations: ['children']});
+        if (!parent || !(await parent.comparePassword(oldPassword))) {
+            throw new HttpException(
+                'Old password is invalid',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        parent.password = newPassword;
+        await parent.hashPassword();
+        await this.parentRepository.update(parent.parentId, {password: parent.password});
+        return {result: "SUCCESS"};
+    }
+
 }

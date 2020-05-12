@@ -2,6 +2,7 @@ import {BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn} from "t
 import {StudentEntity} from "../student/student.entity";
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import {NotificationEntity} from "../notification/notification.entity";
 
 @Entity('parent')
 export class ParentEntity {
@@ -14,8 +15,11 @@ export class ParentEntity {
     @Column()
     password: string;
 
-    @OneToMany(type => StudentEntity, user => user.parent, {cascade: true})
+    @OneToMany(type => StudentEntity, children => children.parent, {cascade: true})
     children: StudentEntity[]
+
+    @OneToMany(type => NotificationEntity, notification => notification.parent, {cascade: true})
+    notifications: NotificationEntity[]
 
     private get token(): string {
         const {parentId, email} = this;

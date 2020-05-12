@@ -1,35 +1,58 @@
 <nz-layout>
-  <nz-sider [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzCollapsible>
+  <nz-sider [(nzCollapsed)]="isCollapsed" [nzCollapsedWidth]="this.menuWidth" [nzTrigger]="null" nzBreakpoint="xl"
+            nzCollapsible>
     <div class="p-2"><img alt="Qpoint logo" class="logo" src="../../../../assets/qpoint-logo.png"></div>
     <ul nz-menu nzMode="inline" nzTheme="light">
-      <li nz-submenu nzIcon="user" nzTitle="Student">
+      <li [nzOpen]="checkSubMenuOpen('student')" nz-submenu nzIcon="user" nzTitle="Student">
         <ul>
-          <li nz-menu-item>Student QR code</li>
-          <li nz-menu-item>Create Student</li>
+          <li [routerLink]="['/student/student-qrcode-list']" nz-menu-item nzMatchRouter>Student QR code</li>
+          <li [routerLink]="['/student/create-student']" nz-menu-item nzMatchRouter>Manage Student</li>
         </ul>
       </li>
-      <li nz-submenu nzIcon="team" nzTitle="Staff">
+      <li [nzOpen]="checkSubMenuOpen('staff')" nz-submenu nzIcon="user" nzTitle="Staff">
         <ul>
-          <li nz-menu-item>Create Teacher</li>
+          <li [routerLink]="" nz-menu-item>Teacher Activity</li>
+          <li [routerLink]="" nz-menu-item>Manage Teacher</li>
+        </ul>
+      </li>
+      <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="user" nzTitle="Class">
+        <ul>
+          <li [routerLink]="" nz-menu-item>Class Dashboard</li>
+          <li [routerLink]="" nz-menu-item>Manage Class</li>
+        </ul>
+      </li>
+      <li [nzOpen]="checkSubMenuOpen('group')" nz-submenu nzIcon="user" nzTitle="Group">
+        <ul>
+          <li [routerLink]="" nz-menu-item>Group Dashboard</li>
+          <li [routerLink]="" nz-menu-item>Manage Group</li>
+        </ul>
+      </li>
+      <li [nzOpen]="checkSubMenuOpen('behaviour')" nz-submenu nzIcon="user" nzTitle="Behaviour">
+        <ul>
+          <li [routerLink]="" nz-menu-item>Manage Behaviour</li>
+        </ul>
+      </li>
+      <li [nzOpen]="checkSubMenuOpen('notification')" nz-submenu nzIcon="user" nzTitle="Notification">
+        <ul>
+          <li [routerLink]="" nz-menu-item>Manage Notification</li>
         </ul>
       </li>
     </ul>
   </nz-sider>
   <nz-layout>
     <nz-header>
-      <i (click)="isCollapsed = !isCollapsed" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" class="trigger"
+      <i (click)="menuCollapsed()" [nzType]="foldIcon" class="trigger"
          nz-icon></i>
     </nz-header>
     <nz-content>
       <nz-breadcrumb>
-        <nz-breadcrumb-item>User</nz-breadcrumb-item>
-        <nz-breadcrumb-item>Bill</nz-breadcrumb-item>
+        <nz-breadcrumb-item *ngFor="let route of routes">{{route | titlecase }}</nz-breadcrumb-item>
       </nz-breadcrumb>
 
       <div class="inner-content">
         <ng-content></ng-content>
       </div>
     </nz-content>
-    <nz-footer>Ant Design ©2020 Implement By Angular</nz-footer>
+    <nz-footer>Qpoint ©2020 Implement By Qpoint team</nz-footer>
   </nz-layout>
 </nz-layout>

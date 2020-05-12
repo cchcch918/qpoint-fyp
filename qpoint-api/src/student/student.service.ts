@@ -33,9 +33,9 @@ export class StudentService {
             newParent.children = [student];
             await sendParentsLoginEmail(newParent, fullName, false);
             await this.parentRepository.save(newParent);
-            const newStudent = await this.studentRepository.findOne({where: {parentEmail}, relations: ['parent']});
-            return newStudent.toResponseObject();
         }
+        return student.toResponseObject();
+
     }
 
     async showAllStudentsQrCode() {

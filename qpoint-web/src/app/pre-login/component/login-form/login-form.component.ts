@@ -35,7 +35,7 @@ export class LoginFormComponent implements OnInit {
     this.loginService.staffLogin(staffLoginVo).subscribe(
       (res) => {
         this.loginService.token = res.token;
-        this.router.navigate(['/student']);
+        this.router.navigate(['/student/student-qrcode-list']);
       },
       (error) => {
         throw error
@@ -46,7 +46,6 @@ export class LoginFormComponent implements OnInit {
   registerStaff() {
     this.router.navigate(['/pre-login/register-admin']);
   }
-
 
   forgetPassword() {
     this.router.navigate(['/pre-login/forget-password']);
