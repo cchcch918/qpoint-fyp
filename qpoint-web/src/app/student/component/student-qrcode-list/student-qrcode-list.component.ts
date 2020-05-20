@@ -12,6 +12,9 @@ import * as JsPdf from 'jspdf';
 export class StudentQrcodeListComponent implements OnInit {
   studentQrList: StudentQrVoModel[];
   searchStudentName: string;
+  qrCodeIsLoading: boolean;
+  downloadIsLoading: boolean
+
 
   @ViewChild('downloadContent', {static: false}) downloadContent: ElementRef;
 
@@ -19,29 +22,31 @@ export class StudentQrcodeListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.qrCodeIsLoading = true
     this.studentService.showAllStudentsQrCode().subscribe(res => {
       if (res) {
         this.studentQrList = res;
+        this.qrCodeIsLoading = false
       }
     })
   }
 
-
   createCopySuccessMessage(studentName: string) {
     this.message.create('success', studentName + `'s Qr Code copied! `);
-
   }
 
   downloadPdf() {
+    this.downloadIsLoading = true;
     let doc = new JsPdf();
     doc.fromHTML(this.downloadContent.nativeElement.innerHTML, 15, 15, {
       'width': 190,
       'elementHandlers': {
-        '#editor': function (element, renderer) {
+        '#editor': (element, renderer) => {
           return true
         }
       }
-    }, function () {
+    }, () => {
+      this.downloadIsLoading = false;
       doc.save("students.pdf");
     })
   }

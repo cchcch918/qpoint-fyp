@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {StudentQrVoModel} from "../model/student-qr-vo.model";
 import {CreateStudentVoModel} from "../model/create-student-vo.model";
+import {StudentVoModel} from "../model/student-vo.model";
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +24,23 @@ export class StudentService {
   }
 
   showAllStudentsQrCode(): Observable<StudentQrVoModel[]> {
-    return this.http.post<StudentQrVoModel[]>(this.baseUrl + '/student/show-all-students-qrcode', this.httpOptions)
+    return this.http.post<StudentQrVoModel[]>(this.baseUrl + '/student/show-all-students-qrcode', this.httpOptions);
+  }
+
+  showAllStudents(): Observable<StudentVoModel[]> {
+    return this.http.post<StudentVoModel[]>(this.baseUrl + '/student/show-all-students', this.httpOptions);
   }
 
   createNewStudent(payload: CreateStudentVoModel): Observable<any> {
-    return this.http.post<any>(this.baseUrl + '/student/create-new-student', payload, this.httpOptions)
+    return this.http.post<any>(this.baseUrl + '/student/create-new-student', payload, this.httpOptions);
+  }
+
+  createNewStudentsFromExcel(payload: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/student/create-new-students-from-excel', payload, {
+      headers: new HttpHeaders({
+        'enctype': 'multipart/form-data',
+      })
+    });
   }
 
 

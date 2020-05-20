@@ -18,7 +18,7 @@ import {BadgeEntity} from "../badge/badge.entity";
 @Entity('student')
 export class StudentEntity {
     @PrimaryGeneratedColumn({name: 'student_id'})
-    studentId: string;
+    studentId: number;
 
     @CreateDateColumn({name: 'date_created'})
     dateCreated: Date;
@@ -84,7 +84,6 @@ export class StudentEntity {
             studentId: studentId, dateCreated, fullName, parent
         };
         if (this.parent) {
-            console.log('parent', this.parent)
             responseObject.parent = this.parent;
         }
         return responseObject;

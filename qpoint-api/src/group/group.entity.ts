@@ -4,7 +4,7 @@ import {StaffEntity} from "../staff/staff.entity";
 @Entity('group')
 export class GroupEntity {
     @PrimaryGeneratedColumn({name: 'group_id',},)
-    groupId: string;
+    groupId: number;
 
     @ManyToOne(type => StaffEntity, staff => staff.groups)
     @JoinColumn({name: 'staff_id'})

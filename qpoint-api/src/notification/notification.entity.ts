@@ -4,7 +4,7 @@ import {ParentEntity} from "../parent/parent.entity";
 @Entity('notification')
 export class NotificationEntity {
     @PrimaryGeneratedColumn({name: 'notification_id'})
-    notificationId: string;
+    notificationId: number;
 
     @ManyToOne(type => ParentEntity, parent => parent.notifications)
     @JoinColumn({name: 'parent_id'})

@@ -2,7 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {StudentService} from "../../service/student.service";
 import {CreateStudentVoModel} from "../../model/create-student-vo.model";
-import {NzModalRef, NzModalService} from "ng-zorro-antd";
+import {NzMessageService, NzModalService, UploadFile} from "ng-zorro-antd";
+import {HttpClient} from "@angular/common/http";
+import {Observable, Observer} from "rxjs";
 
 
 @Component({
@@ -14,7 +16,10 @@ export class CreateStudentFormComponent implements OnInit {
   createStudentForm: FormGroup;
   createStudentLoading: boolean = false;
 
-  constructor(private fb: FormBuilder, private studentService: StudentService, private modalService: NzModalService) {
+  uploading = false;
+  fileList: UploadFile[] = [];
+
+  constructor(private fb: FormBuilder, private studentService: StudentService, private modalService: NzModalService, private http: HttpClient, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {
@@ -22,7 +27,6 @@ export class CreateStudentFormComponent implements OnInit {
       fullName: [null, [Validators.required]],
       parentEmail: [null, [Validators.email, Validators.required]],
     });
-
   }
 
   submitForm(): void {
@@ -40,38 +44,52 @@ export class CreateStudentFormComponent implements OnInit {
     this.studentService.createNewStudent(createStudentVo).subscribe(res => {
         if (res) {
           this.createStudentLoading = false;
-          const modal: NzModalRef = this.modalService.create({
-            nzTitle: 'Success',
-            nzContent: 'Student has been created',
-            nzClosable: false,
-            nzFooter: [
-              {
-                label: 'Close',
-                shape: null,
-                onClick: () => {
-                  modal.destroy();
-                }
-              }],
-          });
+          this.msg.success('Student has been created');
+          this.createStudentForm.reset();
         }
 
       },
       (error) => {
         this.createStudentLoading = false;
-        const modal: NzModalRef = this.modalService.create({
-          nzTitle: 'Failed',
-          nzContent: error.error.message,
-          nzClosable: false,
-          nzFooter: [
-            {
-              label: 'Try again later',
-              shape: null,
-              onClick: () => {
-                modal.destroy();
-              }
-            }],
-        });
+        this.msg.success('Please try again later' + error.errorMessage);
       }
     )
   }
+
+  beforeUpload = (file: UploadFile) => {
+    return new Observable((observer: Observer<boolean>) => {
+      console.log('file', file)
+      const isCsv = file.type === 'application/vnd.ms-excel';
+      if (!isCsv) {
+        this.msg.error('You can only upload .CSV file!');
+        observer.complete();
+        return;
+      }
+      this.fileList = this.fileList.concat(file);
+      observer.next(!isCsv);
+      observer.complete();
+    });
+  };
+
+  handleUpload(): void {
+    const formData = new FormData();
+    this.fileList.forEach((file: any) => {
+      formData.append('csvFile', file);
+    });
+    console.log('formdata', formData);
+    this.uploading = true;
+    this.studentService.createNewStudentsFromExcel(formData).subscribe(res => {
+      if (res) {
+        this.uploading = false;
+        this.fileList = [];
+        this.msg.success('Students create successfully.');
+      }
+    }, () => {
+      this.uploading = false;
+      this.msg.error('Students create failed. Please try again later.');
+    })
+
+
+  }
+
 }

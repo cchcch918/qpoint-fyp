@@ -4,7 +4,6 @@ import {
     CreateDateColumn,
     Entity,
     JoinColumn,
-    JoinTable,
     ManyToMany,
     ManyToOne,
     OneToMany,
@@ -21,7 +20,7 @@ import {SchoolEntity} from "../school/school.entity";
 @Entity('staff')
 export class StaffEntity {
     @PrimaryGeneratedColumn({name: 'staff_id'})
-    staffId: string;
+    staffId: number;
 
     @CreateDateColumn({name: 'date_created'})
     dateCreated: Date;
@@ -35,20 +34,8 @@ export class StaffEntity {
     @Column()
     email: string;
 
-    @ManyToMany(type => ClassEntity)
-    @JoinTable({
-        name: 'staff_class',
-        joinColumn: {
-            name: "staff_id",
-            referencedColumnName: "staffId"
-        },
-        inverseJoinColumn: {
-            name: "class_id",
-            referencedColumnName: "classId"
-        }
-    })
+    @ManyToMany(type => ClassEntity, classEntity => classEntity.teachers, {onDelete: "CASCADE"})
     classes: ClassEntity[];
-
 
     @OneToMany(type => GroupEntity, group => group.staff, {cascade: true})
     groups: GroupEntity[];

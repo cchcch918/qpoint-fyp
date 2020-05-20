@@ -4,7 +4,7 @@ import {StaffEntity} from "../staff/staff.entity";
 @Entity('school')
 export class SchoolEntity {
     @PrimaryGeneratedColumn({name: 'school_id'})
-    schoolId: string;
+    schoolId: number;
 
     @OneToMany(type => StaffEntity, staff => staff.school, {cascade: true})
     staffs: StaffEntity[];

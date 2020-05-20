@@ -7,7 +7,7 @@ import {NotificationEntity} from "../notification/notification.entity";
 @Entity('parent')
 export class ParentEntity {
     @PrimaryGeneratedColumn({name: 'parent_id'})
-    parentId: string;
+    parentId: number;
 
     @Column({name: 'email', unique: true})
     email: string;

@@ -3,36 +3,40 @@
             nzCollapsible>
     <div class="p-2"><img alt="Qpoint logo" class="logo" src="../../../../assets/qpoint-logo.png"></div>
     <ul nz-menu nzMode="inline" nzTheme="light">
+      <li [routerLink]="" nz-menu-item>
+        <i nz-icon nzType="bar-chart"></i>
+        <span>Dashboard</span>
+      </li>
       <li [nzOpen]="checkSubMenuOpen('student')" nz-submenu nzIcon="user" nzTitle="Student">
         <ul>
           <li [routerLink]="['/student/student-qrcode-list']" nz-menu-item nzMatchRouter>Student QR code</li>
           <li [routerLink]="['/student/create-student']" nz-menu-item nzMatchRouter>Manage Student</li>
         </ul>
       </li>
-      <li [nzOpen]="checkSubMenuOpen('staff')" nz-submenu nzIcon="user" nzTitle="Staff">
+      <li [nzOpen]="checkSubMenuOpen('staff')" nz-submenu nzIcon="team" nzTitle="Staff">
         <ul>
           <li [routerLink]="" nz-menu-item>Teacher Activity</li>
           <li [routerLink]="" nz-menu-item>Manage Teacher</li>
         </ul>
       </li>
-      <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="user" nzTitle="Class">
+      <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="shop" nzTitle="Class">
         <ul>
           <li [routerLink]="" nz-menu-item>Class Dashboard</li>
           <li [routerLink]="" nz-menu-item>Manage Class</li>
         </ul>
       </li>
-      <li [nzOpen]="checkSubMenuOpen('group')" nz-submenu nzIcon="user" nzTitle="Group">
+      <li [nzOpen]="checkSubMenuOpen('group')" nz-submenu nzIcon="group" nzTitle="Group">
         <ul>
           <li [routerLink]="" nz-menu-item>Group Dashboard</li>
           <li [routerLink]="" nz-menu-item>Manage Group</li>
         </ul>
       </li>
-      <li [nzOpen]="checkSubMenuOpen('behaviour')" nz-submenu nzIcon="user" nzTitle="Behaviour">
+      <li [nzOpen]="checkSubMenuOpen('behaviour')" nz-submenu nzIcon="book" nzTitle="Behaviour">
         <ul>
           <li [routerLink]="" nz-menu-item>Manage Behaviour</li>
         </ul>
       </li>
-      <li [nzOpen]="checkSubMenuOpen('notification')" nz-submenu nzIcon="user" nzTitle="Notification">
+      <li [nzOpen]="checkSubMenuOpen('notification')" nz-submenu nzIcon="notification" nzTitle="Notification">
         <ul>
           <li [routerLink]="" nz-menu-item>Manage Notification</li>
         </ul>
@@ -53,6 +57,6 @@
         <ng-content></ng-content>
       </div>
     </nz-content>
-    <nz-footer>Qpoint ©2020 Implement By Qpoint team</nz-footer>
+    <nz-footer><i nz-icon nzTheme="outline" nzType="copyright"></i> Qpoint ©2020 Implement By Qpoint Team</nz-footer>
   </nz-layout>
 </nz-layout>

@@ -3,6 +3,8 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {StudentEntity} from "./student.entity";
 import * as QRCode from 'qrcode'
+import * as XLSX from 'xlsx';
+
 import {CreateStudentDto} from "./student.dto";
 import {sendParentsLoginEmail} from "../utils/send-parents-account-login-email";
 import {ParentEntity} from "../parent/parent.entity";
@@ -29,13 +31,29 @@ export class StudentService {
         } else {
             const newParent = new ParentEntity();
             newParent.email = parentEmail;
-            newParent.password = this.generateRandomPasswordBasedOnName(10);
+            newParent.password = this.generateRandomPasswordForParent(10);
             newParent.children = [student];
             await sendParentsLoginEmail(newParent, fullName, false);
             await this.parentRepository.save(newParent);
         }
         return student.toResponseObject();
+    }
 
+    async createNewStudentsFromExcel(payloads: any[]) {
+        const promises: any[] = [];
+        for (const payload of payloads) {
+            const workSheet = XLSX.read(payload.buffer);
+            const studentList: CreateStudentDto[] = XLSX.utils.sheet_to_json(workSheet.Sheets[workSheet.SheetNames[0]])
+            studentList.forEach(student => {
+                return promises.push(this.createNewStudent(student));
+            })
+        }
+        return (await Promise.all(promises));
+    }
+
+    async showAllStudents() {
+        const students = await this.studentRepository.find({relations: ['groups', 'class', 'parent']});
+        return students;
     }
 
     async showAllStudentsQrCode() {
@@ -53,15 +71,15 @@ export class StudentService {
     async generateQrCode(student: StudentEntity) {
         try {
             return await QRCode.toDataURL(JSON.stringify({
-                "studentId": student.studentId.toString(),
-                "studentName": student.fullName
+                studentId: student.studentId,
+                studentName: student.fullName
             }));
         } catch (err) {
             console.error(err)
         }
     }
 
-    generateRandomPasswordBasedOnName(length: number) {
+    generateRandomPasswordForParent(length: number) {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;

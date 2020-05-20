@@ -21,6 +21,18 @@ const routes: Routes = [
     loadChildren: () => import('./student/student.module').then(mod => mod.StudentModule)
   },
   {
+    path: 'staff',
+    loadChildren: () => import('./staff/staff.module').then(mod => mod.StaffModule)
+  },
+  {
+    path: 'group',
+    loadChildren: () => import('./group/group.module').then(mod => mod.GroupModule)
+  },
+  {
+    path: 'class',
+    loadChildren: () => import('./class/class.module').then(mod => mod.ClassModule)
+  },
+  {
     path: '**',
     redirectTo: 'pre-login'
   }
