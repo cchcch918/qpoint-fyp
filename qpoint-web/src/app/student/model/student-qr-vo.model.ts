@@ -1,4 +1,6 @@
+import {StudentVoModel} from "./student-vo.model";
+
 export interface StudentQrVoModel {
-  studentName: string;
+  student: StudentVoModel;
   qrCode: string;
 }

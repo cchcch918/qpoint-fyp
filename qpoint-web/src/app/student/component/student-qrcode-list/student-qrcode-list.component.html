@@ -12,15 +12,25 @@
       <div #downloadContent nz-row nzJustify="center" nzType="flex">
         <div *ngFor="let studentQr of studentQrList | filter:searchStudentName"
              nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
-          <nz-card (click)="createCopySuccessMessage(studentQr.studentName)" [cdkCopyToClipboard]="studentQr.qrCode"
+          <nz-card (click)="createCopySuccessMessage(studentQr.student.fullName)"
+                   [cdkCopyToClipboard]="studentQr.qrCode"
                    [nzCover]="coverTemplate" [nzHoverable]="true" class="m-2">
-            <nz-card-meta [nzAvatar]="avatarTemplate" nzDescription="This is the description"
-                          nzTitle="{{studentQr.studentName}}"></nz-card-meta>
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzDescription]="cardDescription"
+                          nzTitle="{{studentQr.student.fullName}}"></nz-card-meta>
             <ng-template #coverTemplate>
-              <img [src]="studentQr.qrCode" alt="{{studentQr.studentName}}+'s qrCode'"/>
+              <img [src]="studentQr.qrCode" alt="{{studentQr.student.fullName}}+'s qrCode'"/>
             </ng-template>
             <ng-template #avatarTemplate>
               <nz-avatar [nzSize]="'large'" nzSrc="../../../../assets/photo.jpg"></nz-avatar>
+            </ng-template>
+            <ng-template #cardDescription>
+              <div nz-row>
+                <div *ngIf="studentQr.student.parent" nz-col nzSpan="24">{{studentQr.student.parent?.email }}</div>
+              </div>
+              <div nz-row>
+                <div *ngIf="studentQr.student.class" nz-col nzSpan="24">
+                  Class: {{studentQr.student.class?.className }}</div>
+              </div>
             </ng-template>
           </nz-card>
         </div>

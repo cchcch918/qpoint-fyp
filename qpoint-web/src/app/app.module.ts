@@ -24,7 +24,18 @@ registerLocaleData(en);
     BrowserAnimationsModule,
     ReactiveFormsModule,
   ],
-  providers: [{provide: NZ_I18N, useValue: en_US}],
+  providers: [
+    {
+      provide: NZ_I18N,
+      useValue: en_US
+    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: HttpInterceptorService,
+    //   multi: true
+    // },
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

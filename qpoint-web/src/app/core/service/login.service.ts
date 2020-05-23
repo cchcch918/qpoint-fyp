@@ -35,7 +35,10 @@ export class LoginService {
 
   showAllStaffs(): Observable<any> {
     return this.http.get<any>(this.baseUrl + '/staff/api/staffs', this.httpOptions)
+  }
 
+  getAdminAccountDetails(payload: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/staff/get-admin-account-details', payload, this.httpOptions)
   }
 
   staffRegister(staffDetails: any): Observable<any> {

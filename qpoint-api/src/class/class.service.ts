@@ -23,6 +23,11 @@ export class ClassService {
     ) {
     }
 
+    async showAllClasses() {
+        const classes = await this.classRepository.find({relations: ['students', 'teachers']});
+        return classes;
+    }
+
     async createNewClass(payload: CreateClassDto) {
         const {className, createdByAdminId} = payload;
         const admin = await this.staffRepository.findOne({where: {staffId: createdByAdminId}});

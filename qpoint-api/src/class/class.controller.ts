@@ -15,6 +15,12 @@ export class ClassController {
     constructor(private classService: ClassService) {
     }
 
+    @Post('show-all-classes')
+    @UsePipes(new ValidationPipe())
+    showAllClasses() {
+        return this.classService.showAllClasses();
+    }
+
     @Post('create-new-class')
     @UsePipes(new ValidationPipe())
     createNewClass(@Body() newClass: CreateClassDto) {

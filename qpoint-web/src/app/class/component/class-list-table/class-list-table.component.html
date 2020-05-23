@@ -1,0 +1,28 @@
+<nz-table #filterTable [nzData]="classes" class="my-5" nzSize="middle" nzTableLayout="fixed">
+  <thead>
+  <tr>
+    <th
+      *ngFor="let column of listOfColumns"
+      [nzFilterFn]="column.filterFn"
+      [nzFilterMultiple]="column.filterMultiple"
+      [nzFilters]="column.listOfFilter"
+      [nzSortDirections]="column.sortDirections"
+      [nzSortFn]="column.sortFn"
+      [nzSortOrder]="column.sortOrder"
+      [nzWidth]="column.width"
+    >
+      {{ column.name }}
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of filterTable.data">
+    <td>{{ data.classId }}</td>
+    <td>{{ data.className }}</td>
+    <td>{{ data.dateCreated | date:'medium'}}</td>
+    <td>{{ showStudentsName(data.students) }}</td>
+    <td>{{ showTeachersName(data.teachers) }}</td>
+  </tr>
+  </tbody>
+</nz-table>
+

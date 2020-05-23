@@ -19,11 +19,16 @@ export class StaffController {
     // showOneUser(@Param('username') username: string) {
     //     return this.staffService.read(username);
     // }
-    //
+
     // @Get('auth/whoami')
     // showMe(@User('username') username: string) {
     //     return this.staffService.read(username);
     // }
+
+    @Post('get-admin-account-details')
+    getAdminAccountDetails(@Body() payload: any) {
+        return this.staffService.getAdminAccountDetails(payload);
+    }
 
     @Get('auth/get-account-details-by-username/:username')
     getAccountDetailsByUsername(@Param() params) {

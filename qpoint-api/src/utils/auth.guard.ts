@@ -7,18 +7,13 @@ export class AuthGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         if (request) {
             if (!request.headers.authorization) {
+                console.log("no header")
                 return false;
             }
             request.user = await this.validateToken(request.headers.authorization);
             return true;
-        } else {
-            // const ctx: any = GqlExecutionContext.create(context).getContext();
-            // if (!ctx.headers.authorization) {
-            //     return false;
-            // }
-            // ctx.user = await this.validateToken(ctx.headers.authorization);
-            return true;
         }
+        return false;
     }
 
     async validateToken(auth: string) {
@@ -29,7 +24,6 @@ export class AuthGuard implements CanActivate {
 
         try {
             const decoded: any = await jwt.verify(token, process.env.SECRET);
-
             return decoded;
         } catch (err) {
             const message = 'Token error: ' + (err.message || err.name);

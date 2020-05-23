@@ -12,7 +12,6 @@ import {StudentVoModel} from "../model/student-vo.model";
 })
 
 export class StudentService {
-
   baseUrl = environment.apiUrl;
   httpOptions = {
     headers: new HttpHeaders({
@@ -24,11 +23,12 @@ export class StudentService {
   }
 
   showAllStudentsQrCode(): Observable<StudentQrVoModel[]> {
-    return this.http.post<StudentQrVoModel[]>(this.baseUrl + '/student/show-all-students-qrcode', this.httpOptions);
+    console.log("httpOptions", this.httpOptions)
+    return this.http.post<StudentQrVoModel[]>(this.baseUrl + '/student/show-all-students-qrcode', [], this.httpOptions);
   }
 
   showAllStudents(): Observable<StudentVoModel[]> {
-    return this.http.post<StudentVoModel[]>(this.baseUrl + '/student/show-all-students', this.httpOptions);
+    return this.http.post<StudentVoModel[]>(this.baseUrl + '/student/show-all-students', [], this.httpOptions);
   }
 
   createNewStudent(payload: CreateStudentVoModel): Observable<any> {

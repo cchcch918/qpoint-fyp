@@ -57,12 +57,12 @@ export class StudentService {
     }
 
     async showAllStudentsQrCode() {
-        const students = await this.studentRepository.find();
+        const students = await this.studentRepository.find({relations: ['groups', 'class', 'parent']});
         const promises: any[] = [];
 
         students.forEach(student => {
             promises.push(this.generateQrCode(student).then(res => {
-                return {studentName: student.fullName, qrCode: res};
+                return {student: student, qrCode: res};
             }));
         });
         return (await Promise.all(promises));

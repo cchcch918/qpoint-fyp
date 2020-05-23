@@ -14,16 +14,16 @@ export class AuthGuard implements CanActivate {
     const token = this.preLoginService.token;
     if (token) {
       // logged in so return true;
-      console.log(token);
       console.log('token true');
       return true;
     }
-
     // not logged in so redirect to login page with the return url
     this.router.navigate(['/pre-login'], {queryParams: {returnUrl: state.url}});
-    console.log(token);
     console.log('token false');
 
     return false;
   }
+
 }
+
+

@@ -10,7 +10,7 @@
       <li [nzOpen]="checkSubMenuOpen('student')" nz-submenu nzIcon="user" nzTitle="Student">
         <ul>
           <li [routerLink]="['/student/student-qrcode-list']" nz-menu-item nzMatchRouter>Student QR code</li>
-          <li [routerLink]="['/student/create-student']" nz-menu-item nzMatchRouter>Manage Student</li>
+          <li [routerLink]="['/student/manage-student']" nz-menu-item nzMatchRouter>Manage Student</li>
         </ul>
       </li>
       <li [nzOpen]="checkSubMenuOpen('staff')" nz-submenu nzIcon="team" nzTitle="Staff">
@@ -22,7 +22,7 @@
       <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="shop" nzTitle="Class">
         <ul>
           <li [routerLink]="" nz-menu-item>Class Dashboard</li>
-          <li [routerLink]="" nz-menu-item>Manage Class</li>
+          <li [routerLink]="['/class/manage-class']" nz-menu-item nzMatchRouter>Manage Class</li>
         </ul>
       </li>
       <li [nzOpen]="checkSubMenuOpen('group')" nz-submenu nzIcon="group" nzTitle="Group">

@@ -5,6 +5,7 @@ import {CreateStudentVoModel} from "../../model/create-student-vo.model";
 import {NzMessageService, NzModalService, UploadFile} from "ng-zorro-antd";
 import {HttpClient} from "@angular/common/http";
 import {Observable, Observer} from "rxjs";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -19,7 +20,8 @@ export class CreateStudentFormComponent implements OnInit {
   uploading = false;
   fileList: UploadFile[] = [];
 
-  constructor(private fb: FormBuilder, private studentService: StudentService, private modalService: NzModalService, private http: HttpClient, private msg: NzMessageService) {
+  constructor(private fb: FormBuilder, private studentService: StudentService, private modalService: NzModalService, private http: HttpClient, private msg: NzMessageService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -51,7 +53,7 @@ export class CreateStudentFormComponent implements OnInit {
       },
       (error) => {
         this.createStudentLoading = false;
-        this.msg.success('Please try again later' + error.errorMessage);
+        this.msg.error('Please try again later' + error.errorMessage);
       }
     )
   }

@@ -4,11 +4,13 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {StaffEntity} from "./staff.entity";
 import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
 import {sendEmail} from "../utils/send-forget-password-email";
+import {AuthGuard} from "../utils/auth.guard";
 
 @Injectable()
 export class StaffService {
     constructor(
-        @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>) {
+        @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,
+        private authGuard: AuthGuard) {
     }
 
     async showAll() {
@@ -31,6 +33,11 @@ export class StaffService {
     //     });
     //     return user.toResponseObject();
     // }
+
+    async getAdminAccountDetails(payload: any) {
+        const {token} = payload;
+        return await this.authGuard.validateToken(token);
+    }
 
     async login(data: StaffLoginDto) {
         const {username, password} = data;
