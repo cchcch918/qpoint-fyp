@@ -1,22 +1,22 @@
 import React, {useContext} from 'react'
-import {View,Text,StyleSheet} from 'react-native'
-
+import {View,StyleSheet} from 'react-native'
 import AuthForm from '../component/AuthForm'
 import {Context} from '../Context/AuthContext'
 
 
 const SigninScreen = () => {
     const {state, signin} = useContext(Context);
-
+    
     return(
         <View style = {styles.container}>
-           
-            <AuthForm
-                headerText = 'Sign in to Qpoint'
-                errorMessage = {state.errorMessage}
-                onSubmit = {signin}
-                submitButtonText = 'Sign In'
-            />
+            
+                <AuthForm
+                    headerText = 'Sign in to Qpoint'
+                    errorMessage = {state.errorMessage}
+                    onSubmit = {signin}
+                    submitButtonText = 'Sign In'
+                />
+            
         </View>
     )
 }
@@ -34,13 +34,5 @@ const styles = StyleSheet.create({
         marginBottom: 200
     },
 })
-
-// const SigninScreen = () => {
-//     return(
-//         <View>
-//             <Text>Hello</Text>
-//         </View>
-//     )
-// }
 
 export default SigninScreen;
