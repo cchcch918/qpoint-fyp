@@ -1,4 +1,5 @@
 import React from 'react'
+import {TouchableOpacity} from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import SigninScreen from './src/Screens/SigninScreen'
@@ -15,6 +16,9 @@ import changePasswordScreen from './src/Screens/changePasswordScreen'
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 import BehaviorScreen from './src/Screens/StaffApp/BehaviorScreen'
 import FlashMessage from "react-native-flash-message";
+import SelectStudent from './src/Screens/StaffApp/SelectStudent'
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import {Provider as ProcessFlowProvider} from './src/Context/ProcessFlowContext'
 
 console.disableYellowBox = true;
 
@@ -42,10 +46,12 @@ const StaffBottomTab = createBottomTabNavigator({
   }
 },{
     navigationOptions: ({navigation}) => ({
-      headerTitle: getHeaderTitle(navigation)
+      headerTitle: getHeaderTitle(navigation),
+      headerStyle: {
+        backgroundColor: '#ffe6cc',
+      },
+      
     }),
-
-
     tabBarOptions:{
       activeTintColor: '#e91e63',
     }
@@ -80,7 +86,8 @@ const Switch = createSwitchNavigator({
   Signin: SigninScreen,
   staffScreen: createStackNavigator({
     StaffBottomTab,
-    Behavior: BehaviorScreen
+    Behavior: BehaviorScreen,
+    ManualSelect: SelectStudent
   }),
   parentScreen: createBottomTabNavigator({
     Home: ParentHome,
@@ -93,13 +100,14 @@ const App = createAppContainer(Switch)
 
 export default () => {
   return(
-    
-        <AuthProvider>
-            <PaperProvider>
-              <App ref={(navigator)=> { setNavigator(navigator) }} />
-              <FlashMessage position="top" />
-            </PaperProvider>
-        </AuthProvider>
+        <ProcessFlowProvider>
+          <AuthProvider>
+              <PaperProvider>
+                <App ref={(navigator)=> { setNavigator(navigator) }} />
+                <FlashMessage position="top" />
+              </PaperProvider>
+          </AuthProvider>
+        </ProcessFlowProvider>
       
   )
 }
