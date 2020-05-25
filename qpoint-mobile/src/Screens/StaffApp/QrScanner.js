@@ -1,40 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View,StyleSheet,Button } from 'react-native';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, View,StyleSheet, Vibration,TouchableOpacity } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { Camera } from 'expo-camera';
 import { showMessage, hideMessage } from "react-native-flash-message";
+import { Button } from 'react-native-elements';
+import { color } from 'react-native-reanimated';
+import { FontAwesome5 } from '@expo/vector-icons'; 
+import {Context as AuthContext} from '../../Context/AuthContext'
 
 const QrScanner = ({navigation}) => {
+  const {state} = useContext(AuthContext)
+  const staffId = state.staffId
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [isFocused,setIsFocused] = useState(true)
   const [student,setStudent] = useState([])
 
-  // const onBarCodeScanned = async ({ type, data }) => {
-  //   if(student.indexOf(data) == -1){
-  //     setStudent([...student,data])
-  //     showMessage({
-  //       message: `${data} has been recorded`,
-  //       type: "info",
-  //     });
-  //   } else {
-  //     console.log('exist')
-  //   }
-    
-  // }
-
   const onBarCodeScanned = async ({ type, data }) => {
-    if(student.indexOf(data) == -1){
-      setStudent([...student,data])
+    if(JSON.stringify(student).includes(data)){
+      console.log('exist')
+    } else {
+      Vibration.vibrate()
+      setStudent([...student,JSON.parse(data)])
       showMessage({
-        message: `${data[0]} has been recorded`,
+        message: `${JSON.parse(data).studentName} has been recorded`,
         type: "info",
       });
-    } else {
-      console.log('exist')
     }
-    
   }
   useEffect(() => {
     (async () => {
@@ -65,29 +57,63 @@ const QrScanner = ({navigation}) => {
   } else {
     return (
       <View style={{ flex: 1 }}>
-        <NavigationEvents
-          onWillFocus={() => {
-              setIsFocused(true)
-          }}
-          onDidBlur={() => {
-              setIsFocused(false)
-              setStudent([])
-          }}
+          <NavigationEvents
+            onWillFocus={() => {
+                setIsFocused(true)
+            }}
+            onDidBlur={() => {
+                setIsFocused(false)
+                setStudent([])
+            }}
           />
-      <Camera 
-        style={{ flex: 1 }} type={type}
-        onBarCodeScanned = {onBarCodeScanned}
-      />
-      <Button
-        title = "Select Task"
+          <Camera 
+            style={{ flex: 1 }} type={type}
+            onBarCodeScanned = {onBarCodeScanned}
+          >
+            <View style = {styles.iconPosition}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ManualSelect',{staffId: staffId})}
+                style = {styles.iconWrapper} 
+              >
+                <FontAwesome5
+                  style = {{alignSelf: 'center', paddingLeft: 12}}
+                  name="list-ul" 
+                  size={24} 
+                  color="black"
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.button}>
+              <Button
+                title = "Select Task"
+                titleStyle = {{
+                  color: 'black'
+                }}
+                buttonStyle={{
+                  backgroundColor: "#ffe6cc",
+                }}
+                onPress = {() => navigation.navigate('Behavior',student)}
+              />
+            </View>
+          </Camera>
         
-        onPress = {() => navigation.navigate('Behavior',student)}
-      />
+        
       
-    </View>
+      </View>
     )
   }
 }
+
+// QrScanner.navigationOptions = {
+//   headerRight: () => {
+//     <TouchableOpacity
+//       onPress={() => navigation.navigate('ManualSelect')}
+//     >
+//       <FontAwesome5 style = {{ paddingRight:20 }}name="list-ul" size={24} color="black"/>
+//     </TouchableOpacity>
+//   }
+
+// }
 
 // const QrScanner = ({navigation}) => {
 //   const [hasPermission, setHasPermission] = useState('');
@@ -141,7 +167,28 @@ const QrScanner = ({navigation}) => {
 
 
 const styles = StyleSheet.create({
-  
+  button:{
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 20
+  },
+  iconPosition: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingRight: 20,
+    paddingTop: 20
+   },
+   iconWrapper:{
+    flexDirection: 'row',
+    borderRadius: 100,
+    // borderColor: 'black',
+    // borderWidth: 2,
+    width: 50,
+    height: 50,
+    backgroundColor: '#ffe6cc'
+   }
 })
 
 export default QrScanner
