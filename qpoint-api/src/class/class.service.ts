@@ -33,7 +33,7 @@ export class ClassService {
         const admin = await this.staffRepository.findOne({where: {staffId: createdByAdminId}});
         if (!admin) {
             throw new HttpException(
-                'Admin is not exists',
+                'Admin does not exists',
                 HttpStatus.BAD_REQUEST,
             );
         }

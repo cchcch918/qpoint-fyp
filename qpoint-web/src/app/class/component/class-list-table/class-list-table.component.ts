@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ClassService} from "../../service/class.service";
 import {StudentVoModel} from "../../../student/model/student-vo.model";
 import {NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
@@ -21,11 +21,15 @@ interface ColumnItem {
   styleUrls: ['./class-list-table.component.css']
 })
 
-export class ClassListTableComponent implements OnInit {
+export class ClassListTableComponent implements OnInit, OnChanges {
+
+  @Input() update: boolean;
+
+
   listOfColumns: ColumnItem[] = [
     {
       name: 'Class Id',
-      sortOrder: 'ascend',
+      sortOrder: 'descend',
       sortFn: (a: ClassVoModel, b: ClassVoModel) => a.classId - b.classId,
       width: "10vh",
     },
@@ -62,9 +66,12 @@ export class ClassListTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.classService.showAllClasses().subscribe(res => {
-      this.classes = res;
-    })
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.update) {
+      this.updateClassData();
+    }
   }
 
   showStudentsName(students: StudentVoModel[]) {
@@ -83,5 +90,11 @@ export class ClassListTableComponent implements OnInit {
       teachersList = teachersList + `${teacher.username}, `;
     })
     return teachersList.slice(0, -2);
+  }
+
+  updateClassData() {
+    this.classService.showAllClasses().subscribe(res => {
+      this.classes = res;
+    })
   }
 }

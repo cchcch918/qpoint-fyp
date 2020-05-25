@@ -1,4 +1,4 @@
-import {IsNotEmpty} from "class-validator";
+import {ArrayNotEmpty, IsArray, IsNotEmpty} from "class-validator";
 
 export class ClassDto {
 
@@ -22,7 +22,8 @@ export class AddStudentsDto {
     @IsNotEmpty()
     classId: number;
 
-    @IsNotEmpty()
+    @ArrayNotEmpty()
+    @IsArray()
     studentIdList: number[];
 }
 
@@ -30,7 +31,8 @@ export class RemoveStudentsDto {
     @IsNotEmpty()
     classId: number;
 
-    @IsNotEmpty()
+    @ArrayNotEmpty()
+    @IsArray()
     studentIdList: number[];
 }
 
@@ -38,7 +40,8 @@ export class AddTeachersDto {
     @IsNotEmpty()
     classId: number;
 
-    @IsNotEmpty()
+    @ArrayNotEmpty()
+    @IsArray()
     teacherIdList: number[];
 }
 
@@ -46,6 +49,7 @@ export class RemoveTeachersDto {
     @IsNotEmpty()
     classId: number;
 
-    @IsNotEmpty()
+    @ArrayNotEmpty()
+    @IsArray()
     teacherIdList: number[];
 }

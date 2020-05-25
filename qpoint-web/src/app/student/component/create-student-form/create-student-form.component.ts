@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {StudentService} from "../../service/student.service";
 import {CreateStudentVoModel} from "../../model/create-student-vo.model";
@@ -14,6 +14,8 @@ import {Router} from "@angular/router";
   styleUrls: ['./create-student-form.component.css']
 })
 export class CreateStudentFormComponent implements OnInit {
+  @Output() updateTableEvent: EventEmitter<any> = new EventEmitter();
+
   createStudentForm: FormGroup;
   createStudentLoading: boolean = false;
 
@@ -48,6 +50,8 @@ export class CreateStudentFormComponent implements OnInit {
           this.createStudentLoading = false;
           this.msg.success('Student has been created');
           this.createStudentForm.reset();
+          this.updateTableEvent.emit(true);
+
         }
 
       },
@@ -85,6 +89,7 @@ export class CreateStudentFormComponent implements OnInit {
         this.uploading = false;
         this.fileList = [];
         this.msg.success('Students create successfully.');
+        this.updateTableEvent.emit(true);
       }
     }, () => {
       this.uploading = false;

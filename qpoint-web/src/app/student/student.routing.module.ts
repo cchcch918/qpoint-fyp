@@ -2,7 +2,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {NgModule} from "@angular/core";
 import {AuthGuard} from "../core/service/auth-guard.service";
 import {StudentQrcodeListComponent} from "./component/student-qrcode-list/student-qrcode-list.component";
-import {CreateStudentFormComponent} from "./component/create-student-form/create-student-form.component";
+import {ManageStudentPageComponent} from "./component/manage-student-page/manage-student-page.component";
 
 const routes: Routes = [
   {
@@ -18,7 +18,7 @@ const routes: Routes = [
   },
   {
     path: 'manage-student',
-    component: CreateStudentFormComponent,
+    component: ManageStudentPageComponent,
     canActivate: [AuthGuard]
   },
   {

@@ -30,4 +30,5 @@ export class StudentController {
     createNewStudentsFromExcel(@UploadedFiles() csvFiles) {
         return this.studentService.createNewStudentsFromExcel(csvFiles);
     }
+
 }

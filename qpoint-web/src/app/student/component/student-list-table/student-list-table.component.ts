@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
 import {StudentService} from "../../service/student.service";
 import {StudentVoModel} from "../../model/student-vo.model";
@@ -20,12 +20,13 @@ interface ColumnItem {
   templateUrl: './student-list-table.component.html',
   styleUrls: ['./student-list-table.component.css']
 })
-export class StudentListTableComponent implements OnInit {
+export class StudentListTableComponent implements OnInit, OnChanges {
+  @Input() update: boolean;
 
   listOfColumns: ColumnItem[] = [
     {
       name: 'Student Id',
-      sortOrder: 'ascend',
+      sortOrder: 'descend',
       sortFn: (a: StudentVoModel, b: StudentVoModel) => a.studentId - b.studentId,
       width: "10vh",
     },
@@ -67,9 +68,15 @@ export class StudentListTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.studentService.showAllStudents().subscribe(res => {
-      this.students = res;
-    })
+
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.update) {
+      this.studentService.showAllStudents().subscribe(res => {
+        this.students = res;
+      })
+    }
   }
 
 

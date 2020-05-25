@@ -21,8 +21,9 @@
     <td>{{ data.fullName }}</td>
     <td>{{ data.dateCreated | date:'medium'}}</td>
     <td>{{ data.parent.email}}</td>
-    <td>{{ data.groups.toString() }}</td>
-    <td>{{ data.class }}</td>
+    <td>{{ data.class ? data.class.className : "-" }}</td>
+    <td>{{ data.groups.length > 0 ? data.groups.toString() : "-" }}</td>
+
   </tr>
   </tbody>
 </nz-table>

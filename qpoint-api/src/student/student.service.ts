@@ -13,7 +13,8 @@ import {ParentEntity} from "../parent/parent.entity";
 @Injectable()
 export class StudentService {
     constructor(@InjectRepository(StudentEntity) private studentRepository: Repository<StudentEntity>,
-                @InjectRepository(ParentEntity) private parentRepository: Repository<ParentEntity>) {
+                @InjectRepository(ParentEntity) private parentRepository: Repository<ParentEntity>,
+    ) {
     }
 
 
@@ -67,6 +68,7 @@ export class StudentService {
         });
         return (await Promise.all(promises));
     }
+
 
     async generateQrCode(student: StudentEntity) {
         try {

@@ -1,0 +1,8 @@
+<app-side-navigation-bar>
+  <div class="py-5" class="container">
+    <app-create-student-form (updateTableEvent)="update = true"></app-create-student-form>
+
+    <app-student-list-table [update]="update"></app-student-list-table>
+  </div>
+
+</app-side-navigation-bar>

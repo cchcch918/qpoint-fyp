@@ -5,12 +5,14 @@ import {CreateStudentFormComponent} from './component/create-student-form/create
 import {StudentService} from "./service/student.service";
 import {StudentQrcodeListComponent} from './component/student-qrcode-list/student-qrcode-list.component';
 import {StudentListTableComponent} from './component/student-list-table/student-list-table.component';
+import {ManageStudentPageComponent} from './component/manage-student-page/manage-student-page.component';
 
 @NgModule({
   declarations: [
     CreateStudentFormComponent,
     StudentQrcodeListComponent,
-    StudentListTableComponent
+    StudentListTableComponent,
+    ManageStudentPageComponent
   ],
   imports: [
     CoreModule,

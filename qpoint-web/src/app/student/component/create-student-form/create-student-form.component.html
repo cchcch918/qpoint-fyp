@@ -1,63 +1,57 @@
-<app-side-navigation-bar>
-  <div class="py-5" class="container">
-
-    <nz-divider nzOrientation="left" nzText="Create Student"></nz-divider>
-
-    <form (ngSubmit)="submitForm()" [formGroup]="createStudentForm" nz-form>
-      <div nz-row nzAlign="middle" nzJustify="space-between">
-        <div nz-col nzSpan="6">
-          <nz-form-item>
-            <nz-form-control nzErrorTip="Please input the student name">
-              <nz-input-group nzPrefixIcon="user">
-                <input formControlName="fullName" nz-input placeholder="Student Full Name" required/>
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-control nzErrorTip="Email is not valid">
-              <nz-input-group nzPrefixIcon="mail">
-                <input email formControlName="parentEmail" nz-input placeholder="Parent Email" required/>
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-
-        <div nz-col nzSpan="16">
-          <nz-form-item>
-            <nz-form-control>
-              <button [disabled]="!createStudentForm.valid" [nzLoading]="createStudentLoading" nz-button
-                      nzType="primary">
-                Create
-              </button>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-      </div>
-    </form>
-
-    <nz-divider nzOrientation="left" nzText="Upload Excel File"></nz-divider>
-
-    <div nz-row nzAlign="middle" nzJustify="space-between">
-      <div nz-col nzSpan="6">
-        <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
-          <button nz-button><i nz-icon nzType="upload"></i>Select File</button>
-        </nz-upload>
-      </div>
-
-      <div nz-col nzSpan="16">
-        <button
-          (click)="handleUpload()"
-          [disabled]="fileList.length == 0"
-          [nzLoading]="uploading"
-          [nzType]="'primary'"
-          nz-button
-        >
-          {{ uploading ? 'Uploading' : 'Start Upload' }}
-        </button>
-      </div>
+<nz-divider nzOrientation="left" nzText="Create Student"></nz-divider>
+<form (ngSubmit)="submitForm()" [formGroup]="createStudentForm" nz-form>
+  <div nz-row nzAlign="middle" nzJustify="space-between">
+    <div nz-col nzSpan="6">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input the student name">
+          <nz-input-group nzPrefixIcon="user">
+            <input formControlName="fullName" nz-input placeholder="Student Full Name" required/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Email is not valid">
+          <nz-input-group nzPrefixIcon="mail">
+            <input email formControlName="parentEmail" nz-input placeholder="Parent Email" required/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
     </div>
 
-    <app-student-list-table></app-student-list-table>
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-control>
+          <button [disabled]="!createStudentForm.valid" [nzLoading]="createStudentLoading" nz-button
+                  nzType="primary">
+            Create
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
   </div>
-</app-side-navigation-bar>
+</form>
+
+<nz-divider nzOrientation="left" nzText="Upload Excel File"></nz-divider>
+<div nz-row nzAlign="middle" nzJustify="space-between">
+  <div nz-col nzSpan="6">
+    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
+      <button nz-button><i nz-icon nzType="upload"></i>Select File</button>
+    </nz-upload>
+  </div>
+
+  <div nz-col nzSpan="16">
+    <button
+      (click)="handleUpload()"
+      [disabled]="fileList.length == 0"
+      [nzLoading]="uploading"
+      [nzType]="'primary'"
+      nz-button
+    >
+      {{ uploading ? 'Uploading' : 'Start Upload' }}
+    </button>
+  </div>
+</div>
+
+
+
 

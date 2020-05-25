@@ -12,7 +12,6 @@ import {
 import {ParentEntity} from "../parent/parent.entity";
 import {ClassEntity} from "../class/class.entity";
 import {GroupEntity} from "../group/group.entity";
-import {BehaviourEntity} from "../behaviour/behaviour.entity";
 import {BadgeEntity} from "../badge/badge.entity";
 
 @Entity('student')
@@ -48,19 +47,6 @@ export class StudentEntity {
     })
     groups: GroupEntity[];
 
-    @ManyToMany(type => BehaviourEntity)
-    @JoinTable({
-        name: 'student_behaviour',
-        joinColumn: {
-            name: "student_id",
-            referencedColumnName: "studentId"
-        },
-        inverseJoinColumn: {
-            name: "behaviour_id",
-            referencedColumnName: "behaviourId"
-        }
-    })
-    behaviours: BehaviourEntity[];
 
     @ManyToMany(type => BadgeEntity)
     @JoinTable({

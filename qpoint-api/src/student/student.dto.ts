@@ -7,3 +7,4 @@ export class CreateStudentDto {
     @IsNotEmpty()
     parentEmail: string;
 }
+

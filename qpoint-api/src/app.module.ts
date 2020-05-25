@@ -14,6 +14,7 @@ import {BadgeModule} from "./badge/badge.module";
 import {BehaviourModule} from "./behaviour/behaviour.module";
 import {NotificationModule} from "./notification/notification.module";
 import {SchoolModule} from "./school/school.module";
+import {StudentBehaviourRecordModule} from "./student-behaviour-record/student-behaviour-record.module";
 
 
 @Module({
@@ -29,6 +30,7 @@ import {SchoolModule} from "./school/school.module";
         BehaviourModule,
         NotificationModule,
         SchoolModule,
+        StudentBehaviourRecordModule,
     ],
     controllers: [AppController],
     providers: [AppService, {
