@@ -1,18 +1,17 @@
-import {Body, Controller, Get, Param, Post, UseGuards, UsePipes} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, UsePipes} from "@nestjs/common";
 import {ValidationPipe} from "../utils/validation.pipe";
 import {StaffService} from "./staff.service";
 import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
-import {AuthGuard} from "../utils/auth.guard";
 
 @Controller('staff')
 export class StaffController {
     constructor(private staffService: StaffService) {
     }
 
-    @Get('api/staffs')
-    @UseGuards(new AuthGuard())
-    showAllUsers() {
-        return this.staffService.showAll();
+    @Post('show-all-staffs')
+    @UsePipes(new ValidationPipe())
+    showAllStaffs() {
+        return this.staffService.showAllStaffs();
     }
 
     // @Get('api/users/:username')

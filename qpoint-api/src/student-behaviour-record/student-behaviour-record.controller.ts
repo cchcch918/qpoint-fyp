@@ -16,7 +16,7 @@ export class StudentBehaviourRecordController {
 
     @Post('get-students-point')
     @UsePipes(new ValidationPipe())
-    getStudentPoint(@Body() payload: GetStudentPointDto) {
-        return this.studentBehaviourRecordService.getStudentPoint(payload);
+    getStudentsPoint(@Body() payload: GetStudentPointDto) {
+        return this.studentBehaviourRecordService.getStudentsPoint(payload);
     }
 }

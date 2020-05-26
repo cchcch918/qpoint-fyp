@@ -2,12 +2,12 @@ import {Body, Controller, Post, UsePipes} from "@nestjs/common";
 import {ClassService} from "./class.service";
 import {ValidationPipe} from "../utils/validation.pipe";
 import {
-    AddStudentsDto,
-    AddTeachersDto,
     CreateClassDto,
     DeleteClassDto,
     RemoveStudentsDto,
-    RemoveTeachersDto
+    RemoveTeachersDto,
+    UpdateStudentsDto,
+    UpdateTeachersDto
 } from "./class.dto";
 
 @Controller('class')
@@ -33,10 +33,10 @@ export class ClassController {
         return this.classService.deleteClass(deleteClass);
     }
 
-    @Post('add-students')
+    @Post('update-students')
     @UsePipes(new ValidationPipe())
-    addStudents(@Body() payload: AddStudentsDto) {
-        return this.classService.classAddStudents(payload);
+    updateStudents(@Body() payload: UpdateStudentsDto) {
+        return this.classService.classUpdateStudents(payload);
     }
 
     @Post('remove-students')
@@ -45,10 +45,10 @@ export class ClassController {
         return this.classService.classRemoveStudents(payload);
     }
 
-    @Post('add-teachers')
+    @Post('update-teachers')
     @UsePipes(new ValidationPipe())
-    addTeachers(@Body() payload: AddTeachersDto) {
-        return this.classService.classAddTeachers(payload);
+    updateTeachers(@Body() payload: UpdateTeachersDto) {
+        return this.classService.classUpdateTeachers(payload);
     }
 
     @Post('remove-teachers')

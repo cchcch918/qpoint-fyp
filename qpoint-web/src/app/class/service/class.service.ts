@@ -28,5 +28,13 @@ export class ClassService {
     return this.http.post<any>(this.baseUrl + '/class/create-new-class', payload, this.httpOptions);
   }
 
+  updateStudents(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/class/update-students', payload, this.httpOptions);
+  }
+
+  updateTeachers(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/class/update-teachers', payload, this.httpOptions);
+  }
+
 
 }

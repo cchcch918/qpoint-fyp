@@ -13,9 +13,9 @@ export class StaffService {
         private authGuard: AuthGuard) {
     }
 
-    async showAll() {
+    async showAllStaffs() {
         const users = await this.staffRepository.find();
-        return users.map(user => user.toResponseObject());
+        return users;
     }
 
     async checkStaffExists(username: string) {

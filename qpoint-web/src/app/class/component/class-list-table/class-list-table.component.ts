@@ -1,8 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ClassService} from "../../service/class.service";
 import {StudentVoModel} from "../../../student/model/student-vo.model";
-import {NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
+import {NzMessageService, NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
 import {ClassVoModel} from "../../model/class-vo.model";
+import {StudentService} from "../../../student/service/student.service";
+import {StaffService} from "../../../staff/service/staff.service";
 
 interface ColumnItem {
   name: string;
@@ -25,7 +27,6 @@ export class ClassListTableComponent implements OnInit, OnChanges {
 
   @Input() update: boolean;
 
-
   listOfColumns: ColumnItem[] = [
     {
       name: 'Class Id',
@@ -39,7 +40,7 @@ export class ClassListTableComponent implements OnInit, OnChanges {
       sortFn: (a: ClassVoModel, b: ClassVoModel) => a.className.localeCompare(b.className),
       filterMultiple: true,
       filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),
-      width: "15vh",
+      width: "10vh",
 
     },
     {
@@ -52,17 +53,17 @@ export class ClassListTableComponent implements OnInit, OnChanges {
     },
     {
       name: 'Students',
-      sortOrder: null,
     },
     {
       name: 'Teachers',
-      sortOrder: null,
     },
   ];
 
-  classes: any[];
+  allClasses: ClassVoModel[];
+  allStudents: StudentVoModel[];
+  allStaffs: any[];
 
-  constructor(private classService: ClassService) {
+  constructor(private classService: ClassService, private studentService: StudentService, private staffService: StaffService, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {
@@ -74,27 +75,97 @@ export class ClassListTableComponent implements OnInit, OnChanges {
     }
   }
 
-  showStudentsName(students: StudentVoModel[]) {
-    if (students.length == 0) return "-"
-    let studentsList = ""
-    students.forEach(student => {
-      studentsList = studentsList + `${student.fullName}, `;
-    })
-    return studentsList.slice(0, -2);
-  }
-
-  showTeachersName(teachers: any[]) {
-    if (teachers.length == 0) return "-"
-    let teachersList = ""
-    teachers.forEach(teacher => {
-      teachersList = teachersList + `${teacher.username}, `;
-    })
-    return teachersList.slice(0, -2);
-  }
-
   updateClassData() {
+    this.studentService.showAllStudents().subscribe(res => {
+      this.allStudents = res
+    })
+
+    this.staffService.showAllStaffs().subscribe(res => {
+      this.allStaffs = res
+    })
+
     this.classService.showAllClasses().subscribe(res => {
-      this.classes = res;
+      this.allClasses = res;
+      this.allClasses.forEach(eachClass => {
+        let studentInClass = eachClass.students.map(student => {
+          return student.studentId;
+        });
+        let teacherInClass = eachClass.teachers.map(teacher => {
+          return teacher.staffId;
+        });
+        let studentFilterOption;
+        let studentsOption: Array<{ value: number; label: string }> = [];
+        if (this.allStudents) {
+          studentFilterOption = this.allStudents.filter(student => {
+            return student.class?.classId == eachClass.classId || student.class == null || student.class.length == 0
+          })
+          studentsOption = studentFilterOption.map(student => {
+            return {
+              value: student.studentId,
+              label: `${student.studentId} - ${student.fullName}`
+            };
+          })
+        }
+
+        let teachersOption: Array<{ value: number; label: string }> = [];
+        if (this.allStaffs) {
+          teachersOption = this.allStaffs.map(teacher => {
+            return {
+              value: teacher.staffId,
+              label: `${teacher.staffId} - ${teacher.username}`
+            };
+          })
+        }
+        eachClass['showEditStudentsColumn'] = false;
+        eachClass['studentsInClass'] = studentInClass;
+        eachClass['studentsOption'] = studentsOption;
+
+        eachClass['showEditTeachersColumn'] = false;
+        eachClass['teachersInClass'] = teacherInClass;
+        eachClass['teachersOption'] = teachersOption;
+      })
+
     })
   }
+
+  updateStudents(thisClass: ClassVoModel) {
+    const payload = {
+      classId: thisClass.classId,
+      studentIdList: thisClass['studentsInClass']
+    }
+    this.classService.updateStudents(payload).subscribe(res => {
+        if (res) {
+          this.msg.success(`Students updated in class ${thisClass.className}`)
+          this.updateClassData()
+        }
+      }, error => {
+        this.msg.error(`Failed please try again`)
+      }
+    )
+  }
+
+  updateTeachers(teacher: any) {
+    const payload = {
+      classId: teacher.classId,
+      teacherIdList: teacher['teachersInClass']
+    }
+    this.classService.updateTeachers(payload).subscribe(res => {
+        if (res) {
+          this.msg.success(`Teachers updated in class ${teacher.className}`)
+          this.updateClassData()
+        }
+      }, error => {
+        this.msg.error(`Failed please try again`)
+      }
+    )
+  }
+
+  idMapName(id: number, mapArray: any[]) {
+    const selected = mapArray.find(object => {
+      return object['value'] == id
+    })
+    return selected['label'];
+  }
+
 }
+

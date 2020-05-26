@@ -59,7 +59,7 @@ export class StudentBehaviourRecordService {
 
     }
 
-    async getStudentPoint(payload: GetStudentPointDto) {
+    async getStudentsPoint(payload: GetStudentPointDto) {
         const {studentList} = payload;
         const students: StudentEntity[] = []
         for (const studentId of studentList) {

@@ -18,11 +18,10 @@ export class DeleteClassDto {
 
 }
 
-export class AddStudentsDto {
+export class UpdateStudentsDto {
     @IsNotEmpty()
     classId: number;
 
-    @ArrayNotEmpty()
     @IsArray()
     studentIdList: number[];
 }
@@ -36,11 +35,10 @@ export class RemoveStudentsDto {
     studentIdList: number[];
 }
 
-export class AddTeachersDto {
+export class UpdateTeachersDto {
     @IsNotEmpty()
     classId: number;
 
-    @ArrayNotEmpty()
     @IsArray()
     teacherIdList: number[];
 }

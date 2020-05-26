@@ -3,12 +3,12 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ClassEntity} from "./class.entity";
 import {
-    AddStudentsDto,
-    AddTeachersDto,
     CreateClassDto,
     DeleteClassDto,
     RemoveStudentsDto,
-    RemoveTeachersDto
+    RemoveTeachersDto,
+    UpdateStudentsDto,
+    UpdateTeachersDto
 } from "./class.dto";
 import {StudentEntity} from "../student/student.entity";
 import {StaffEntity} from "../staff/staff.entity";
@@ -60,7 +60,7 @@ export class ClassService {
         return {deletedClass: classId};
     }
 
-    async classAddStudents(payload: AddStudentsDto) {
+    async classUpdateStudents(payload: UpdateStudentsDto) {
         const {classId, studentIdList} = payload;
         const students: StudentEntity[] = [];
         for (const studentId of studentIdList) {
@@ -78,12 +78,7 @@ export class ClassService {
             `Class ${classId} does not exists`,
             HttpStatus.BAD_REQUEST,
         );
-        thisClass.students.push(...students);
-        //remove duplicates students
-        thisClass.students = Array.from(new Set(thisClass.students.map(student => student.studentId)))
-            .map(id => {
-                return thisClass.students.find(student => student.studentId === id)
-            });
+        thisClass.students = students;
         await this.classRepository.save(thisClass)
         return thisClass.toResponseObject();
     }
@@ -112,7 +107,7 @@ export class ClassService {
         return {removedStudents: studentIdList};
     }
 
-    async classAddTeachers(payload: AddTeachersDto) {
+    async classUpdateTeachers(payload: UpdateTeachersDto) {
         const {classId, teacherIdList} = payload;
         const teachers: StaffEntity[] = [];
         for (const teacherId of teacherIdList) {
@@ -129,11 +124,7 @@ export class ClassService {
             `Class ${classId} does not exists`,
             HttpStatus.BAD_REQUEST,
         );
-        thisClass.teachers.push(...teachers);
-        thisClass.teachers = Array.from(new Set(thisClass.teachers.map(teacher => teacher.staffId)))
-            .map(id => {
-                return thisClass.teachers.find(teacher => teacher.staffId === id)
-            });
+        thisClass.teachers = teachers;
         await this.classRepository.save(thisClass)
         return thisClass.toResponseObject();
     }
