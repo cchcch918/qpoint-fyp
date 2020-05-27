@@ -12,7 +12,7 @@ export class ParentService {
 
     async parentLogin(payload: ParentLoginDto) {
         const {parentEmail, password} = payload;
-        const parent = await this.parentRepository.findOne({where: {parentEmail}, relations: ['children']});
+        const parent = await this.parentRepository.findOne({where: {email: parentEmail}, relations: ['children']});
         if (!parent || !(await parent.comparePassword(password))) {
             throw new HttpException(
                 'Invalid username/password',
@@ -24,7 +24,7 @@ export class ParentService {
 
     async showParentDetails(payload: ParentLoginDto) {
         const {parentEmail} = payload;
-        const parent = await this.parentRepository.findOne({where: {parentEmail}, relations: ['children']},
+        const parent = await this.parentRepository.findOne({where: {email: parentEmail}, relations: ['children']},
         );
         if (!parent) {
             throw new HttpException(
@@ -37,7 +37,7 @@ export class ParentService {
 
     async changeParentPassword(payload: ParentChangePasswordDto) {
         const {parentEmail, oldPassword, newPassword} = payload;
-        const parent = await this.parentRepository.findOne({where: {parentEmail}, relations: ['children']});
+        const parent = await this.parentRepository.findOne({where: {email: parentEmail}, relations: ['children']});
         if (!parent || !(await parent.comparePassword(oldPassword))) {
             throw new HttpException(
                 'Old password is invalid',

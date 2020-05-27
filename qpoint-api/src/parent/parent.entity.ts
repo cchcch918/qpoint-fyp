@@ -46,10 +46,8 @@ export class ParentEntity {
         const responseObject: any = {
             parentId, email, token
         };
-        console.log('gotchildren', this.children)
         if (this.children) {
-            console.log('gotchildren', this.children)
-            responseObject.chidren = this.children;
+            responseObject.children = this.children;
         }
         return responseObject;
     }
