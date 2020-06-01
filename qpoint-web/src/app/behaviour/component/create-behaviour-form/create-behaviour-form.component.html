@@ -1,0 +1,33 @@
+<nz-divider nzOrientation="left" nzText="Create Behaviour"></nz-divider>
+
+<form (ngSubmit)="submitForm()" [formGroup]="createBehaviourForm" nz-form>
+  <div nz-row nzAlign="middle" nzJustify="space-between">
+    <div nz-col nzSpan="6">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input the class name">
+          <nz-input-group>
+            <input formControlName="behaviourName" nz-input placeholder="Behaviour Name" required/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Points</nz-form-label>
+        <nz-form-control nzErrorTip="Please input the behavioral point">
+          <nz-input-number [nzStep]="1" formControlName="behaviourPoint" placeholder="Behaviour Points"
+                           required></nz-input-number>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-control>
+          <button [disabled]="!createBehaviourForm.valid" [nzLoading]="createBehaviourLoading" nz-button
+                  nzType="primary">
+            Create
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

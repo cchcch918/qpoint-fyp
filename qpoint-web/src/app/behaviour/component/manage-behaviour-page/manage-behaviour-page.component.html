@@ -1,0 +1,6 @@
+<app-side-navigation-bar>
+  <div class="container">
+    <app-create-behaviour-form (updateTableEvent)="update = true" [adminId]="adminId"></app-create-behaviour-form>
+    <app-behaviour-list-table [update]="update"></app-behaviour-list-table>
+  </div>
+</app-side-navigation-bar>

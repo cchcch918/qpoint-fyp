@@ -1,0 +1,63 @@
+<nz-table #filterTable [nzData]="allBehaviours" [nzLoading]="tableLoading" class="my-5" nzBordered nzSize="middle"
+          nzTableLayout="fixed">
+  <thead>
+  <tr>
+    <th
+      *ngFor="let column of listOfColumns"
+      [nzFilterFn]="column.filterFn"
+      [nzFilterMultiple]="column.filterMultiple"
+      [nzFilters]="column.listOfFilter"
+      [nzSortDirections]="column.sortDirections"
+      [nzSortFn]="column.sortFn"
+      [nzSortOrder]="column.sortOrder"
+      [nzWidth]="column.width"
+    >
+      {{ column.name }}
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of filterTable.data">
+    <ng-container *ngIf="editingBehaviour?.behaviourId !== data.behaviourId ; else editTemplate">
+      <td>{{ data.behaviourId }}</td>
+      <td>{{ data.behaviourName }}</td>
+      <td>{{ data.dateCreated | date:'medium'}}</td>
+      <td>{{ data.createdByAdmin.username }}</td>
+      <td>{{ data.behaviourPoint }}</td>
+      <td>
+        <nz-row nzAlign="middle" nzJustify="center">
+          <a (click)="startEdit(data)" class="mr-2" nz-icon nzTheme="outline" nzType="edit"></a>
+          <a (nzOnConfirm)="deleteBehaviour(data)" [nzIcon]="deleteIconTpl" nz-icon nz-popconfirm
+             nzPopconfirmTitle="Are you sure delete this {{data.behaviourName}} behaviour?" nzTheme="outline"
+             nzType="delete"></a>
+          <ng-template #deleteIconTpl>
+            <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+          </ng-template>
+        </nz-row>
+      </td>
+    </ng-container>
+
+    <ng-template #editTemplate>
+      <td>{{ data.behaviourId }}</td>
+      <td><input [(ngModel)]="editingBehaviour.behaviourName" nz-input type="text"/></td>
+      <td>{{ data.dateCreated | date:'medium'}}</td>
+      <td>{{ data.createdByAdmin.username }}</td>
+      <td><input [(ngModel)]="editingBehaviour.behaviourPoint" nz-input type="text"/></td>
+      <td>
+        <nz-row nzAlign="middle" nzJustify="center">
+          <a (nzOnConfirm)="editBehaviour()" [nzIcon]="editIconTpl" class="mr-2" nz-icon
+             nz-popconfirm
+             nzPopconfirmTitle="Are you sure edit this {{editingBehaviour.behaviourName}} behaviour?" nzTheme="outline"
+             nzType="check"></a>
+          <ng-template #editIconTpl>
+            <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+          </ng-template>
+          <a (click)="cancelEditAction()" nz-icon nzTheme="outline" nzType="close"></a>
+        </nz-row>
+
+      </td>
+    </ng-template>
+
+  </tr>
+  </tbody>
+</nz-table>

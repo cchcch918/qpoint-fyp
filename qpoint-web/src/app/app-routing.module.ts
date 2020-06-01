@@ -33,6 +33,10 @@ const routes: Routes = [
     loadChildren: () => import('./class/class.module').then(mod => mod.ClassModule)
   },
   {
+    path: 'behaviour',
+    loadChildren: () => import('./behaviour/behaviour.module').then(mod => mod.BehaviourModule)
+  },
+  {
     path: '**',
     redirectTo: 'pre-login'
   }

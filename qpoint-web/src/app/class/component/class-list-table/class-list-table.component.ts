@@ -57,11 +57,16 @@ export class ClassListTableComponent implements OnInit, OnChanges {
     {
       name: 'Teachers',
     },
+    {
+      name: 'Action',
+      width: "7vh",
+    },
   ];
 
   allClasses: ClassVoModel[];
   allStudents: StudentVoModel[];
   allStaffs: any[];
+  tableLoading: boolean;
 
   constructor(private classService: ClassService, private studentService: StudentService, private staffService: StaffService, private msg: NzMessageService) {
   }
@@ -76,6 +81,7 @@ export class ClassListTableComponent implements OnInit, OnChanges {
   }
 
   updateClassData() {
+    this.tableLoading = true;
     this.studentService.showAllStudents().subscribe(res => {
       this.allStudents = res
     })
@@ -124,6 +130,7 @@ export class ClassListTableComponent implements OnInit, OnChanges {
         eachClass['teachersInClass'] = teacherInClass;
         eachClass['teachersOption'] = teachersOption;
       })
+      this.tableLoading = false;
 
     })
   }
@@ -161,11 +168,24 @@ export class ClassListTableComponent implements OnInit, OnChanges {
   }
 
   idMapName(id: number, mapArray: any[]) {
-    const selected = mapArray.find(object => {
-      return object['value'] == id
-    })
-    return selected['label'];
+    if (mapArray.length != 0) {
+      const selected = mapArray.find(object => {
+        return object['value'] == id
+      })
+      return selected['label'];
+    }
   }
 
+  deleteClass({classId, className}) {
+    if (!classId) return;
+    this.classService.deleteClass({classId: classId}).subscribe(res => {
+      if (res) {
+        this.updateClassData();
+        this.msg.success(`Class ${className} deleted`)
+      }
+    }, error => {
+      this.msg.error(`Failed please try again`)
+    })
+  }
 }
 

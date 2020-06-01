@@ -4,7 +4,11 @@ import {Repository} from "typeorm";
 import {StudentBehaviourRecordEntity} from "./student-behaviour-record.entity";
 import {BehaviourEntity} from "../behaviour/behaviour.entity";
 import {StudentEntity} from "../student/student.entity";
-import {AddBehavioursToStudentsDto, GetStudentPointDto, GetStudentBehaviourRecordsDto} from "./student-behaviour-record.dto";
+import {
+    AddBehavioursToStudentsDto,
+    GetStudentBehaviourRecordsDto,
+    GetStudentPointDto
+} from "./student-behaviour-record.dto";
 import {StaffEntity} from "../staff/staff.entity";
 
 @Injectable()
@@ -80,20 +84,18 @@ export class StudentBehaviourRecordService {
         return students;
     }
 
-    async getStudentsBehaviouralRecords(payload: GetStudentBehaviourRecordsDto) {
+    async getStudentBehaviouralRecords(payload: GetStudentBehaviourRecordsDto) {
         const {studentId} = payload;
         const student = await this.studentRepository.findOne({where: {studentId: studentId}});
-        if(!student) throw new HttpException(
+        if (!student) throw new HttpException(
             `Student with ID ${studentId} does not exists`,
             HttpStatus.BAD_REQUEST,
         );
-        
+
         const behaviourRecords = await this.studentBehaviourRecordRepository.find({
             where: {student: student},
-            relations: ['behaviour','givenByTeacher']
+            relations: ['behaviour', 'givenByTeacher']
         })
         return behaviourRecords;
-        
-
     }
 }

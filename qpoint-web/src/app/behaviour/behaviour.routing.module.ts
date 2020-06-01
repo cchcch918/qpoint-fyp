@@ -1,24 +1,23 @@
 import {RouterModule, Routes} from "@angular/router";
 import {AuthGuard} from "../core/service/auth-guard.service";
 import {NgModule} from "@angular/core";
-import {ManageClassPageComponent} from "./component/manage-class-page/manage-class-page.component";
+import {ManageBehaviourPageComponent} from "./component/manage-behaviour-page/manage-behaviour-page.component";
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'manage-class',
+    redirectTo: 'manage-behaviour',
     pathMatch: 'full',
     canActivate: [AuthGuard]
   },
   {
-    path: 'manage-class',
-    component: ManageClassPageComponent,
+    path: 'manage-behaviour',
+    component: ManageBehaviourPageComponent,
     canActivate: [AuthGuard]
   },
-
   {
     path: '**',
-    redirectTo: 'manage-class'
+    redirectTo: 'manage-behaviour'
   }
 ];
 
@@ -26,5 +25,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ClassRoutingModule {
+export class BehaviourRoutingModule {
 }

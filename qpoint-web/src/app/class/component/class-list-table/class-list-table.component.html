@@ -1,4 +1,5 @@
-<nz-table #filterTable [nzData]="allClasses" class="my-5" nzSize="middle" nzTableLayout="fixed">
+<nz-table #filterTable [nzData]="allClasses" [nzLoading]="tableLoading" class="my-5" nzBordered nzSize="middle"
+          nzTableLayout="fixed">
   <thead>
   <tr>
     <th
@@ -26,7 +27,7 @@
           <div nz-col nzSpan="20">
             <div *ngIf="!data['studentsInClass'] || data['studentsInClass'].length == 0">-</div>
             <nz-tag *ngFor="let o of data['studentsInClass']"
-                    class="my-1">{{idMapName(o, data['studentsOption'])}}</nz-tag>
+                    class="my-1">{{ idMapName(o, data['studentsOption'])}}</nz-tag>
           </div>
           <div nz-col nzSpan="2">
             <a (click)="data['showEditStudentsColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
@@ -42,7 +43,8 @@
             </nz-select>
           </div>
           <div nz-col nzSpan="2">
-            <a (click)="data['showEditStudentsColumn'] = false; updateStudents(data);" nz-icon nzTheme="outline"
+            <a (click)="data['showEditidMapNameStudentsColumn'] = false; updateStudents(data);" nz-icon
+               nzTheme="outline"
                nzType="check"></a>
           </div>
         </nz-row>
@@ -75,6 +77,16 @@
           </div>
         </nz-row>
       </div>
+    </td>
+    <td>
+      <nz-row nzAlign="middle" nzJustify="center">
+        <a (nzOnConfirm)="deleteClass(data)" [nzIcon]="iconTpl" nz-icon nz-popconfirm
+           nzPopconfirmTitle="Are you sure delete this class {{data.className}}?" nzTheme="outline"
+           nzType="delete"></a>
+        <ng-template #iconTpl>
+          <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+        </ng-template>
+      </nz-row>
     </td>
   </tr>
   </tbody>

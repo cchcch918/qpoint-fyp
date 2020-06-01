@@ -8,11 +8,11 @@ export class StudentBehaviourRecordEntity {
     @PrimaryGeneratedColumn({name: 'record_id'})
     recordId: number;
 
-    @ManyToOne(type => StudentEntity)
+    @ManyToOne(type => StudentEntity, {onDelete: 'CASCADE'})
     @JoinColumn({name: 'student'})
     student: StudentEntity;
 
-    @ManyToOne(type => BehaviourEntity)
+    @ManyToOne(type => BehaviourEntity, {onDelete: 'CASCADE'})
     @JoinColumn({name: 'behaviour'})
     behaviour: BehaviourEntity;
 

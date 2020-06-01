@@ -7,7 +7,7 @@ import {ManageStudentPageComponent} from "./component/manage-student-page/manage
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/student-qrcode-list',
+    redirectTo: 'student-qrcode-list',
     pathMatch: 'full',
     canActivate: [AuthGuard]
   },
@@ -23,7 +23,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: ''
+    redirectTo: 'student-qrcode-list'
   }
 ];
 

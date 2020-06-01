@@ -25,24 +25,4 @@
   </div>
 </form>
 
-<nz-divider nzOrientation="left" nzText="Upload Excel File"></nz-divider>
 
-<div nz-row nzAlign="middle" nzJustify="space-between">
-  <div nz-col nzSpan="6">
-    <nz-upload [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
-      <button nz-button><i nz-icon nzType="upload"></i>Select File</button>
-    </nz-upload>
-  </div>
-
-  <div nz-col nzSpan="16">
-    <button
-      (click)="handleUpload()"
-      [disabled]="fileList.length == 0"
-      [nzLoading]="uploading"
-      [nzType]="'primary'"
-      nz-button
-    >
-      {{ uploading ? 'Uploading' : 'Start Upload' }}
-    </button>
-  </div>
-</div>

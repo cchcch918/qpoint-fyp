@@ -36,5 +36,9 @@ export class ClassService {
     return this.http.post<any>(this.baseUrl + '/class/update-teachers', payload, this.httpOptions);
   }
 
+  deleteClass(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/class/delete-class', payload, this.httpOptions);
+  }
+
 
 }

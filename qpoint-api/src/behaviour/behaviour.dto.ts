@@ -1,4 +1,4 @@
-import {IsNotEmpty} from "class-validator";
+import {IsNotEmpty, IsNumber} from "class-validator";
 
 export class BehaviourDto {
 }
@@ -11,5 +11,22 @@ export class CreateBehaviourDto {
     createdByAdminId: string;
 
     @IsNotEmpty()
+    behaviourPoint: number;
+}
+
+export class DeleteBehaviourDto {
+    @IsNotEmpty()
+    behaviourId: number;
+}
+
+
+export class UpdateBehaviourDto {
+    @IsNotEmpty()
+    behaviourId: number;
+
+    @IsNotEmpty()
+    behaviourName: string;
+
+    @IsNumber()
     behaviourPoint: number;
 }

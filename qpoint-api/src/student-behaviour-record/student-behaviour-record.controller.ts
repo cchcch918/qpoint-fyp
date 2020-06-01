@@ -1,7 +1,11 @@
 import {Body, Controller, Post, UsePipes} from "@nestjs/common";
 import {StudentBehaviourRecordService} from "./student-behaviour-record.service";
 import {ValidationPipe} from "../utils/validation.pipe";
-import {AddBehavioursToStudentsDto, GetStudentPointDto, GetStudentBehaviourRecordsDto} from "./student-behaviour-record.dto";
+import {
+    AddBehavioursToStudentsDto,
+    GetStudentBehaviourRecordsDto,
+    GetStudentPointDto
+} from "./student-behaviour-record.dto";
 
 @Controller('student-behaviour-record')
 export class StudentBehaviourRecordController {
@@ -22,7 +26,7 @@ export class StudentBehaviourRecordController {
 
     @Post('get-student-behaviour-records')
     @UsePipes(new ValidationPipe())
-    getStudentsBehaviouralRecords(@Body() payload: GetStudentBehaviourRecordsDto) {
-        return this.studentBehaviourRecordService.getStudentsBehaviouralRecords(payload);
+    getStudentBehaviouralRecords(@Body() payload: GetStudentBehaviourRecordsDto) {
+        return this.studentBehaviourRecordService.getStudentBehaviouralRecords(payload);
     }
 }

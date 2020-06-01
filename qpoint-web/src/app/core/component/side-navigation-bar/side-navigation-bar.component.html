@@ -33,7 +33,7 @@
       </li>
       <li [nzOpen]="checkSubMenuOpen('behaviour')" nz-submenu nzIcon="book" nzTitle="Behaviour">
         <ul>
-          <li [routerLink]="" nz-menu-item>Manage Behaviour</li>
+          <li [routerLink]="['/behaviour/manage-behaviour']" nz-menu-item nzMatchRouter>Manage Behaviour</li>
         </ul>
       </li>
       <li [nzOpen]="checkSubMenuOpen('notification')" nz-submenu nzIcon="notification" nzTitle="Notification">
