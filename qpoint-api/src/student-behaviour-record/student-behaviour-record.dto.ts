@@ -1,4 +1,5 @@
 import {ArrayNotEmpty, IsArray, IsNotEmpty} from "class-validator";
+import { isArray } from "util";
 
 export class StudentBehaviourRecordDto {
 
@@ -21,4 +22,8 @@ export class GetStudentPointDto {
     @ArrayNotEmpty()
     @IsArray()
     studentList: number[];
+}
+
+export class GetStudentBehaviourRecordsDto {
+    studentId;
 }
