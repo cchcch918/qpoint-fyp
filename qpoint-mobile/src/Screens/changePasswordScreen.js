@@ -37,8 +37,8 @@ const changePasswordScreen = ({navigation}) => {
             <Spacer>
                 <Button title = 'Update Password' onPress={() => {
                     changePassword({email,curPassword,newPassword})
-                    navigation.navigate('StaffAccountScreen')
                 }} />
+                
             </Spacer>
 
         
@@ -46,7 +46,11 @@ const changePasswordScreen = ({navigation}) => {
 }
 
 changePasswordScreen.navigationOptions = {
-    title: 'Change Password'
+    title: 'Change Password',
+    headerStyle: {
+        backgroundColor: '#ffe6cc',
+        
+      },
 }
 
 const styles = StyleSheet.create({

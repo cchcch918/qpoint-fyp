@@ -36,7 +36,7 @@ const AuthForm = ({headerText, errorMessage, onSubmit, submitButtonText}) => {
             {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
             <Spacer>
                 <RNPickerSelect
-                    onValueChange = {(value) => setStatus(value)}
+                    onValueChange = {(value) => {setStatus(value)}}
                     placeholder = {
                         {label:'Select login as'}
                     }

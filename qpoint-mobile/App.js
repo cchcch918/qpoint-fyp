@@ -19,6 +19,9 @@ import FlashMessage from "react-native-flash-message";
 import SelectStudent from './src/Screens/StaffApp/SelectStudent'
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import {Provider as ProcessFlowProvider} from './src/Context/ProcessFlowContext'
+import SummaryScreen from './src/Screens/StaffApp/SummaryScreen'
+import { FontAwesome } from '@expo/vector-icons'; 
+import ChildrenDetails from './src/Screens/ParentApp/ChildrenDetails'
 
 console.disableYellowBox = true;
 
@@ -46,7 +49,7 @@ const StaffBottomTab = createBottomTabNavigator({
   }
 },{
     navigationOptions: ({navigation}) => ({
-      headerTitle: getHeaderTitle(navigation),
+      headerTitle: getStaffHeaderTitle(navigation),
       headerStyle: {
         backgroundColor: '#ffe6cc',
       },
@@ -58,7 +61,7 @@ const StaffBottomTab = createBottomTabNavigator({
 })
 
 
-const getHeaderTitle = (navigation) => {
+const getStaffHeaderTitle = (navigation) => {
   const currentIndex = navigation.state.index
   
   if(currentIndex === 0){
@@ -69,17 +72,43 @@ const getHeaderTitle = (navigation) => {
 }
 
 //Parent
-const ParentAccount = createStackNavigator({
-  ParentAccountScreen,
-  changePasswordScreen
-})
-
-ParentAccount.navigationOptions = {
-  title: 'Manage Account',
-  tabBarIcon: <MaterialCommunityIcons name='account' size={20}/>
+const getParentHeaderTitle = (navigation) => {
+  const currentIndex = navigation.state.index
+  
+  if(currentIndex === 0){
+     return 'Parent Home'
+  } else if (currentIndex === 1) {
+      return 'Manage Account'
+  }
 }
 
+const ParentBottomTab = createBottomTabNavigator ({
+  Home:{
+    screen: ParentHome,
+    navigationOptions: () => ({
+      tabBarLabel: 'Home',
+      tabBarIcon: <FontAwesome name="home" size={24} color="black" />
+    })
+  },
+  ParentAccount:{
+    screen: ParentAccountScreen,
+    navigationOptions: () => ({
+      tabBarLabel: 'Account',
+      tabBarIcon: <MaterialCommunityIcons name='account' size={20}/>
+    })
+  }
+},{
+  navigationOptions: ({navigation}) => ({
+    headerTitle: getParentHeaderTitle(navigation),
+    headerStyle: {
+      backgroundColor: '#ffe6cc',
+    },
+  }),
+  tabBarOptions:{
+    activeTintColor: '#e91e63',
+  }
 
+})
 
 const Switch = createSwitchNavigator({
   ResolveAuth: ResolveAuthScreen,
@@ -87,11 +116,14 @@ const Switch = createSwitchNavigator({
   staffScreen: createStackNavigator({
     StaffBottomTab,
     Behavior: BehaviorScreen,
-    ManualSelect: SelectStudent
+    ManualSelect: SelectStudent,
+    Summary: SummaryScreen,
+    changePassword: changePasswordScreen
   }),
-  parentScreen: createBottomTabNavigator({
-    Home: ParentHome,
-    ParentAccount
+  parentScreen: createStackNavigator({
+    ParentBottomTab,
+    changePassword: changePasswordScreen,
+    ChildrenDetails
   })
 });
 

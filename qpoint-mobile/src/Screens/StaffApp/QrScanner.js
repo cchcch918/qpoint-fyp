@@ -92,7 +92,7 @@ const QrScanner = ({navigation}) => {
                 buttonStyle={{
                   backgroundColor: "#ffe6cc",
                 }}
-                onPress = {() => navigation.navigate('Behavior',student)}
+                onPress = {() => navigation.navigate('Behavior',{student,staffId})}
               />
             </View>
           </Camera>

@@ -63,8 +63,8 @@ const changePassword = (dispatch) => async({email,curPassword,newPassword}) => {
         newPassword: newPassword
     })
     console.log(response.data)
-    dispatch({type: 'changepassoword', payload: response.data})
-    navigate('ParentAccountScreen')
+    dispatch({type: 'changepassword', payload: response.data})
+    navigate('Home')
 }
 
 const signin = (dispatch) => async ({username,password,status}) => {

@@ -10,13 +10,12 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 
 const AccountComponent = ({navigation}) => {
     const {signout} = useContext(AuthContext);
-    
 
     return (
         <View>
             <View>
                 <TouchableOpacity style = {styles.iconText}
-                    onPress = {() => {navigation.navigate('changePasswordScreen')}}
+                    onPress = {() => {navigation.navigate('changePassword')}}
                 >
                     <Entypo name="lock" size={24} color="black" /> 
                     <Text>Change Password</Text>
