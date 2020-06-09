@@ -29,7 +29,8 @@ export class ClassDashboardPageComponent implements OnInit {
     console.log(this.selectedClassId)
   }
 
-  showDashboard() {
+  showDashboard(event) {
+    this.selectedClassId = event;
     if (this.selectedClassId) {
       const payload = {classId: this.selectedClassId}
       this.classService.getStudentBehaviouralRecordsByClass(payload).subscribe(res => {

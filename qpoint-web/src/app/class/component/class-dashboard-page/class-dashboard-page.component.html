@@ -1,6 +1,6 @@
 <app-side-navigation-bar>
   <div class="container">
-    <nz-select (ngModelChange)="showDashboard()" [(ngModel)]="selectedClassId" nzAllowClear
+    <nz-select (ngModelChange)="showDashboard($event)" [(ngModel)]="selectedClassId" nzAllowClear
                nzPlaceHolder="Select a class"
                nzShowSearch style="width: 100%">
       <nz-option *ngFor="let class of allClasses"
