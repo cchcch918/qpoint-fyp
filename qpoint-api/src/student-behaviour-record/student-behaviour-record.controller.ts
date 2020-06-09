@@ -3,8 +3,10 @@ import {StudentBehaviourRecordService} from "./student-behaviour-record.service"
 import {ValidationPipe} from "../utils/validation.pipe";
 import {
     AddBehavioursToStudentsDto,
+    GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsDto,
-    GetStudentPointDto
+    GetStudentPointDto,
+    GetStudentRankingByClassDto
 } from "./student-behaviour-record.dto";
 
 @Controller('student-behaviour-record')
@@ -28,5 +30,17 @@ export class StudentBehaviourRecordController {
     @UsePipes(new ValidationPipe())
     getStudentBehaviouralRecords(@Body() payload: GetStudentBehaviourRecordsDto) {
         return this.studentBehaviourRecordService.getStudentBehaviouralRecords(payload);
+    }
+
+    @Post('get-student-behaviour-records-by-class')
+    @UsePipes(new ValidationPipe())
+    getStudentBehaviouralRecordsByClass(@Body() payload: GetStudentBehaviourRecordsByClassDto) {
+        return this.studentBehaviourRecordService.getStudentBehaviouralRecordsByClass(payload);
+    }
+
+    @Post('get-student-ranking-by-class')
+    @UsePipes(new ValidationPipe())
+    getStudentRankingByClass(@Body() payload: GetStudentRankingByClassDto) {
+        return this.studentBehaviourRecordService.getStudentRankingByClass(payload);
     }
 }

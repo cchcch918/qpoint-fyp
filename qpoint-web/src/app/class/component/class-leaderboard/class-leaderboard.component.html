@@ -1,0 +1,22 @@
+<ul [nzDataSource]="ranking" class="my-3 " nz-list nzBordered nzSize="large">
+  <nz-list-header class="font-weight-bold"><i nz-icon nzTheme="outline" nzType="trophy"></i> {{" Class LeaderBoard" }}
+  </nz-list-header>
+  <li *ngFor="let item of ranking ; index as i" nz-list-item>
+    <span class="align-content-center" nz-typography>{{item.studentName + " "}}</span>
+
+    <nz-badge *ngIf="i==0; else normalTemplate" [nzCount]="iconTemplate">
+      <nz-avatar [ngStyle]="{ 'background-color': '#F7882F' }" [nzText]="item.totalBehaviourPoint" nzSize="large"
+                 style="vertical-align: middle;"></nz-avatar>
+    </nz-badge>
+    <ng-template #iconTemplate>
+      <i class="ant-scroll-number-custom-component" nz-icon nzTheme="fill" nzType="crown" style="color: #f7c331; "></i>
+    </ng-template>
+
+    <ng-template #normalTemplate>
+      <nz-badge>
+        <nz-avatar [ngStyle]="{ 'background-color': '#6B7A8F' }" [nzText]="item.totalBehaviourPoint" nzSize="large"
+                   style="vertical-align: middle;"></nz-avatar>
+      </nz-badge>
+    </ng-template>
+  </li>
+</ul>

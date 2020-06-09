@@ -21,7 +21,7 @@
       </li>
       <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="shop" nzTitle="Class">
         <ul>
-          <li [routerLink]="" nz-menu-item>Class Dashboard</li>
+          <li [routerLink]="['/class/class-dashboard']" nz-menu-item nzMatchRouter>Class Dashboard</li>
           <li [routerLink]="['/class/manage-class']" nz-menu-item nzMatchRouter>Manage Class</li>
         </ul>
       </li>

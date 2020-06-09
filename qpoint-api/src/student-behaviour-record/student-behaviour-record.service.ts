@@ -1,15 +1,18 @@
 import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
+import {createQueryBuilder, Repository} from "typeorm";
 import {StudentBehaviourRecordEntity} from "./student-behaviour-record.entity";
 import {BehaviourEntity} from "../behaviour/behaviour.entity";
 import {StudentEntity} from "../student/student.entity";
 import {
     AddBehavioursToStudentsDto,
+    GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsDto,
-    GetStudentPointDto
+    GetStudentPointDto,
+    GetStudentRankingByClassDto
 } from "./student-behaviour-record.dto";
 import {StaffEntity} from "../staff/staff.entity";
+import {ClassEntity} from "../class/class.entity";
 
 @Injectable()
 export class StudentBehaviourRecordService {
@@ -18,6 +21,7 @@ export class StudentBehaviourRecordService {
         @InjectRepository(StudentEntity) private studentRepository: Repository<StudentEntity>,
         @InjectRepository(BehaviourEntity) private behaviourRepository: Repository<BehaviourEntity>,
         @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,
+        @InjectRepository(ClassEntity) private classRepository: Repository<ClassEntity>,
     ) {
     }
 
@@ -91,11 +95,45 @@ export class StudentBehaviourRecordService {
             `Student with ID ${studentId} does not exists`,
             HttpStatus.BAD_REQUEST,
         );
-
         const behaviourRecords = await this.studentBehaviourRecordRepository.find({
             where: {student: student},
             relations: ['behaviour', 'givenByTeacher']
         })
         return behaviourRecords;
+    }
+
+    async getStudentBehaviouralRecordsByClass(payload: GetStudentBehaviourRecordsByClassDto) {
+        const {classId} = payload;
+        const selectedClass = await this.classRepository.findOne({where: {classId: classId}});
+        if (!selectedClass) throw new HttpException(
+            `Class with ID ${classId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .where("StudentEntity.class.classId = :classId", {classId: classId}).getMany();
+        return behaviourRecords;
+    }
+
+    async getStudentRankingByClass(payload: GetStudentRankingByClassDto) {
+        const {classId, rankingNumber} = payload;
+        const selectedClass = await this.classRepository.findOne({where: {classId: classId}});
+        if (!selectedClass) throw new HttpException(
+            `Class with ID ${classId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        const ranking = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .select("SUM(BehaviourEntity.behaviourPoint)", "totalBehaviourPoint")
+            .addSelect("StudentEntity.studentId", "studentId")
+            .addSelect("StudentEntity.fullName", "studentName")
+            .leftJoin("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .groupBy("StudentEntity.studentId")
+            .orderBy("totalBehaviourPoint", "DESC")
+            .having("totalBehaviourPoint > 0")
+            .limit(rankingNumber)
+            .where("StudentEntity.class.classId = :classId", {classId: classId}).getRawMany();
+        return ranking;
     }
 }

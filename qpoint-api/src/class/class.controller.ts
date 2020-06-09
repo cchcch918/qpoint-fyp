@@ -21,6 +21,12 @@ export class ClassController {
         return this.classService.showAllClasses();
     }
 
+    @Post('show-only-all-classes')
+    @UsePipes(new ValidationPipe())
+    showOnlyAllClasses() {
+        return this.classService.showOnlyAllClasses();
+    }
+
     @Post('create-new-class')
     @UsePipes(new ValidationPipe())
     createNewClass(@Body() newClass: CreateClassDto) {

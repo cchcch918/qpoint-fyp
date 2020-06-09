@@ -1,0 +1,27 @@
+<app-side-navigation-bar>
+  <div class="container">
+    <nz-select (ngModelChange)="showDashboard()" [(ngModel)]="selectedClassId" nzAllowClear
+               nzPlaceHolder="Select a class"
+               nzShowSearch style="width: 100%">
+      <nz-option *ngFor="let class of allClasses"
+                 nzLabel="{{class.className}}"
+                 nzValue="{{class.classId}}"></nz-option>
+    </nz-select>
+
+    <ng-container *ngIf="selectedClassId != null">
+      <app-class-behaviour-pie-chart
+        [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-behaviour-pie-chart>
+      <app-class-heat-map-calendar [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-heat-map-calendar>
+
+      <div nz-row nzJustify="space-between">
+        <div nz-col nzSpan="11">
+          <app-class-leaderboard [classId]="selectedClassId"></app-class-leaderboard>
+        </div>
+        <div nz-col nzSpan="11">
+          <app-class-latest-record [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-latest-record>
+        </div>
+
+      </div>
+    </ng-container>
+  </div>
+</app-side-navigation-bar>

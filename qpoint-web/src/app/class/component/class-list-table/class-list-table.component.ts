@@ -130,6 +130,7 @@ export class ClassListTableComponent implements OnInit, OnChanges {
         eachClass['teachersInClass'] = teacherInClass;
         eachClass['teachersOption'] = teachersOption;
       })
+      console.log(this.allClasses)
       this.tableLoading = false;
 
     })
@@ -168,7 +169,7 @@ export class ClassListTableComponent implements OnInit, OnChanges {
   }
 
   idMapName(id: number, mapArray: any[]) {
-    if (mapArray.length != 0) {
+    if (this.allClasses) {
       const selected = mapArray.find(object => {
         return object['value'] == id
       })

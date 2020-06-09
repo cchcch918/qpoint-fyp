@@ -28,6 +28,11 @@ export class ClassService {
         return classes;
     }
 
+    async showOnlyAllClasses() {
+        const classes = await this.classRepository.find();
+        return classes;
+    }
+
     async createNewClass(payload: CreateClassDto) {
         const {className, createdByAdminId} = payload;
         const admin = await this.staffRepository.findOne({where: {staffId: createdByAdminId}});

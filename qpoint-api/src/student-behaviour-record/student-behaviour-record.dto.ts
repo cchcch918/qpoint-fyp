@@ -27,3 +27,16 @@ export class GetStudentBehaviourRecordsDto {
     @IsNotEmpty()
     studentId: number;
 }
+
+export class GetStudentBehaviourRecordsByClassDto {
+    @IsNotEmpty()
+    classId: number;
+}
+
+export class GetStudentRankingByClassDto {
+    @IsNotEmpty()
+    classId: number;
+
+    @IsNotEmpty()
+    rankingNumber: number;
+}

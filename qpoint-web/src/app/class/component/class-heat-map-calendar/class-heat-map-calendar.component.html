@@ -1,0 +1,20 @@
+<div class="bg-light" style=" height: 300px;">
+  <ngx-charts-heat-map
+    (select)="onSelect($event)"
+    [animations]="true"
+    [gradient]="gradient"
+    [innerPadding]="'10%'"
+    [legend]="showLegend"
+    [results]="calendarData"
+    [scheme]="colorScheme"
+    [showXAxisLabel]="false"
+    [showYAxisLabel]="false"
+    [tooltipDisabled]="false"
+    [tooltipText]="calendarTooltipText"
+    [view]=""
+    [xAxisTickFormatting]="calendarAxisTickFormatting"
+    [xAxis]="showXAxis"
+    [yAxis]="showYAxis"
+    class="chart-container">
+  </ngx-charts-heat-map>
+</div>

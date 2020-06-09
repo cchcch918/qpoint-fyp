@@ -6,9 +6,10 @@ import {StudentBehaviourRecordController} from "./student-behaviour-record.contr
 import {StudentEntity} from "../student/student.entity";
 import {BehaviourEntity} from "../behaviour/behaviour.entity";
 import {StaffEntity} from "../staff/staff.entity";
+import {ClassEntity} from "../class/class.entity";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([StudentBehaviourRecordEntity, StudentEntity, BehaviourEntity, StaffEntity])],
+    imports: [TypeOrmModule.forFeature([StudentBehaviourRecordEntity, StudentEntity, BehaviourEntity, StaffEntity, ClassEntity])],
     controllers: [StudentBehaviourRecordController],
     providers: [StudentBehaviourRecordService],
 })

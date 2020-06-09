@@ -40,5 +40,15 @@ export class ClassService {
     return this.http.post<any>(this.baseUrl + '/class/delete-class', payload, this.httpOptions);
   }
 
+  getStudentBehaviouralRecordsByClass(payload): Observable<any> {
+    return this.http.post<Observable<any>>(this.baseUrl + '/student-behaviour-record/get-student-behaviour-records-by-class', payload, this.httpOptions);
+  }
 
+  getStudentRankingByClass(payload): Observable<any> {
+    return this.http.post<Observable<any>>(this.baseUrl + '/student-behaviour-record/get-student-ranking-by-class', payload, this.httpOptions);
+  }
+
+  showOnlyAllClasses(): Observable<any[]> {
+    return this.http.post<any[]>(this.baseUrl + '/class/show-only-all-classes', [], this.httpOptions);
+  }
 }
