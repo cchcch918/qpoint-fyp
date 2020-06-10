@@ -1,0 +1,1210 @@
+Index: qpoint-web/src/app/class/component/class-list-table/class-list-table.component.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';\r\nimport {ClassService} from \"../../service/class.service\";\r\nimport {StudentVoModel} from \"../../../student/model/student-vo.model\";\r\nimport {NzMessageService, NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from \"ng-zorro-antd\";\r\nimport {ClassVoModel} from \"../../model/class-vo.model\";\r\nimport {StudentService} from \"../../../student/service/student.service\";\r\nimport {StaffService} from \"../../../staff/service/staff.service\";\r\n\r\ninterface ColumnItem {\r\n  name: string;\r\n  sortOrder?: NzTableSortOrder;\r\n  sortFn?: NzTableSortFn;\r\n  listOfFilter?: NzTableFilterList;\r\n  filterFn?: NzTableFilterFn;\r\n  filterMultiple?: boolean;\r\n  sortDirections?: NzTableSortOrder[];\r\n  width?: string;\r\n}\r\n\r\n@Component({\r\n  selector: 'app-class-list-table',\r\n  templateUrl: './class-list-table.component.html',\r\n  styleUrls: ['./class-list-table.component.css']\r\n})\r\n\r\nexport class ClassListTableComponent implements OnInit, OnChanges {\r\n\r\n  @Input() update: boolean;\r\n\r\n  listOfColumns: ColumnItem[] = [\r\n    {\r\n      name: 'Class Id',\r\n      sortOrder: 'descend',\r\n      sortFn: (a: ClassVoModel, b: ClassVoModel) => a.classId - b.classId,\r\n      width: \"10vh\",\r\n    },\r\n    {\r\n      name: 'Class Name',\r\n      sortOrder: null,\r\n      sortFn: (a: ClassVoModel, b: ClassVoModel) => a.className.localeCompare(b.className),\r\n      filterMultiple: true,\r\n      filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),\r\n      width: \"10vh\",\r\n\r\n    },\r\n    {\r\n      name: 'Date Created',\r\n      sortOrder: null,\r\n      sortFn: (a: ClassVoModel, b: ClassVoModel) => {\r\n        return (new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime());\r\n      },\r\n      width: \"15vh\",\r\n    },\r\n    {\r\n      name: 'Students',\r\n    },\r\n    {\r\n      name: 'Teachers',\r\n    },\r\n    {\r\n      name: 'Action',\r\n      width: \"7vh\",\r\n    },\r\n  ];\r\n\r\n  allClasses: ClassVoModel[];\r\n  allStudents: StudentVoModel[];\r\n  allStaffs: any[];\r\n  tableLoading: boolean;\r\n\r\n  constructor(private classService: ClassService, private studentService: StudentService, private staffService: StaffService, private msg: NzMessageService) {\r\n  }\r\n\r\n  ngOnInit(): void {\r\n  }\r\n\r\n  ngOnChanges(changes: SimpleChanges) {\r\n    if (changes.update) {\r\n      this.updateClassData();\r\n    }\r\n  }\r\n\r\n  updateClassData() {\r\n    this.tableLoading = true;\r\n    this.studentService.showAllStudents().subscribe(res => {\r\n      this.allStudents = res\r\n    })\r\n\r\n    this.staffService.showAllStaffs().subscribe(res => {\r\n      this.allStaffs = res\r\n    })\r\n\r\n    this.classService.showAllClasses().subscribe(res => {\r\n      this.allClasses = res;\r\n      this.allClasses.forEach(eachClass => {\r\n        let studentInClass = eachClass.students.map(student => {\r\n          return student.studentId;\r\n        });\r\n        let teacherInClass = eachClass.teachers.map(teacher => {\r\n          return teacher.staffId;\r\n        });\r\n        let studentFilterOption;\r\n        let studentsOption: Array<{ value: number; label: string }> = [];\r\n        if (this.allStudents) {\r\n          studentFilterOption = this.allStudents.filter(student => {\r\n            return student.class?.classId == eachClass.classId || student.class == null || student.class.length == 0\r\n          })\r\n          studentsOption = studentFilterOption.map(student => {\r\n            return {\r\n              value: student.studentId,\r\n              label: `${student.studentId} - ${student.fullName}`\r\n            };\r\n          })\r\n        }\r\n\r\n        let teachersOption: Array<{ value: number; label: string }> = [];\r\n        if (this.allStaffs) {\r\n          teachersOption = this.allStaffs.map(teacher => {\r\n            return {\r\n              value: teacher.staffId,\r\n              label: `${teacher.staffId} - ${teacher.username}`\r\n            };\r\n          })\r\n        }\r\n        eachClass['showEditStudentsColumn'] = false;\r\n        eachClass['studentsInClass'] = studentInClass;\r\n        eachClass['studentsOption'] = studentsOption;\r\n\r\n        eachClass['showEditTeachersColumn'] = false;\r\n        eachClass['teachersInClass'] = teacherInClass;\r\n        eachClass['teachersOption'] = teachersOption;\r\n      })\r\n      this.tableLoading = false;\r\n\r\n    })\r\n  }\r\n\r\n  updateStudents(thisClass: ClassVoModel) {\r\n    const payload = {\r\n      classId: thisClass.classId,\r\n      studentIdList: thisClass['studentsInClass']\r\n    }\r\n    this.classService.updateStudents(payload).subscribe(res => {\r\n        if (res) {\r\n          this.msg.success(`Students updated in class ${thisClass.className}`)\r\n          this.updateClassData()\r\n        }\r\n      }, error => {\r\n        this.msg.error(`Failed please try again`)\r\n      }\r\n    )\r\n  }\r\n\r\n  updateTeachers(teacher: any) {\r\n    const payload = {\r\n      classId: teacher.classId,\r\n      teacherIdList: teacher['teachersInClass']\r\n    }\r\n    this.classService.updateTeachers(payload).subscribe(res => {\r\n        if (res) {\r\n          this.msg.success(`Teachers updated in class ${teacher.className}`)\r\n          this.updateClassData()\r\n        }\r\n      }, error => {\r\n        this.msg.error(`Failed please try again`)\r\n      }\r\n    )\r\n  }\r\n\r\n  idMapName(id: number, mapArray: any[]) {\r\n    if (mapArray.length != 0) {\r\n      const selected = mapArray.find(object => {\r\n        return object['value'] == id\r\n      })\r\n      return selected['label'];\r\n    }\r\n  }\r\n\r\n  deleteClass({classId, className}) {\r\n    if (!classId) return;\r\n    this.classService.deleteClass({classId: classId}).subscribe(res => {\r\n      if (res) {\r\n        this.updateClassData();\r\n        this.msg.success(`Class ${className} deleted`)\r\n      }\r\n    }, error => {\r\n      this.msg.error(`Failed please try again`)\r\n    })\r\n  }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-list-table/class-list-table.component.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/src/app/class/component/class-list-table/class-list-table.component.ts	(date 1591537935792)
+@@ -130,6 +130,7 @@
+         eachClass['teachersInClass'] = teacherInClass;
+         eachClass['teachersOption'] = teachersOption;
+       })
++      console.log(this.allClasses)
+       this.tableLoading = false;
+ 
+     })
+@@ -168,7 +169,7 @@
+   }
+ 
+   idMapName(id: number, mapArray: any[]) {
+-    if (mapArray.length != 0) {
++    if (this.allClasses) {
+       const selected = mapArray.find(object => {
+         return object['value'] == id
+       })
+Index: qpoint-api/src/class/class.controller.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Body, Controller, Post, UsePipes} from \"@nestjs/common\";\r\nimport {ClassService} from \"./class.service\";\r\nimport {ValidationPipe} from \"../utils/validation.pipe\";\r\nimport {\r\n    CreateClassDto,\r\n    DeleteClassDto,\r\n    RemoveStudentsDto,\r\n    RemoveTeachersDto,\r\n    UpdateStudentsDto,\r\n    UpdateTeachersDto\r\n} from \"./class.dto\";\r\n\r\n@Controller('class')\r\nexport class ClassController {\r\n    constructor(private classService: ClassService) {\r\n    }\r\n\r\n    @Post('show-all-classes')\r\n    @UsePipes(new ValidationPipe())\r\n    showAllClasses() {\r\n        return this.classService.showAllClasses();\r\n    }\r\n\r\n    @Post('create-new-class')\r\n    @UsePipes(new ValidationPipe())\r\n    createNewClass(@Body() newClass: CreateClassDto) {\r\n        return this.classService.createNewClass(newClass);\r\n    }\r\n\r\n    @Post('delete-class')\r\n    @UsePipes(new ValidationPipe())\r\n    deleteClass(@Body() deleteClass: DeleteClassDto) {\r\n        return this.classService.deleteClass(deleteClass);\r\n    }\r\n\r\n    @Post('update-students')\r\n    @UsePipes(new ValidationPipe())\r\n    updateStudents(@Body() payload: UpdateStudentsDto) {\r\n        return this.classService.classUpdateStudents(payload);\r\n    }\r\n\r\n    @Post('remove-students')\r\n    @UsePipes(new ValidationPipe())\r\n    removeStudents(@Body() payload: RemoveStudentsDto) {\r\n        return this.classService.classRemoveStudents(payload);\r\n    }\r\n\r\n    @Post('update-teachers')\r\n    @UsePipes(new ValidationPipe())\r\n    updateTeachers(@Body() payload: UpdateTeachersDto) {\r\n        return this.classService.classUpdateTeachers(payload);\r\n    }\r\n\r\n    @Post('remove-teachers')\r\n    @UsePipes(new ValidationPipe())\r\n    removeTeachers(@Body() payload: RemoveTeachersDto) {\r\n        return this.classService.classRemoveTeachers(payload);\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-api/src/class/class.controller.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-api/src/class/class.controller.ts	(date 1591534952002)
+@@ -21,6 +21,12 @@
+         return this.classService.showAllClasses();
+     }
+ 
++    @Post('show-only-all-classes')
++    @UsePipes(new ValidationPipe())
++    showOnlyAllClasses() {
++        return this.classService.showOnlyAllClasses();
++    }
++
+     @Post('create-new-class')
+     @UsePipes(new ValidationPipe())
+     createNewClass(@Body() newClass: CreateClassDto) {
+Index: qpoint-api/src/student-behaviour-record/student-behaviour-record.dto.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {ArrayNotEmpty, IsArray, IsNotEmpty} from \"class-validator\";\r\n\r\nexport class StudentBehaviourRecordDto {\r\n\r\n}\r\n\r\nexport class AddBehavioursToStudentsDto {\r\n    @IsArray()\r\n    @ArrayNotEmpty()\r\n    behaviourList: number[];\r\n\r\n    @IsArray()\r\n    @ArrayNotEmpty()\r\n    studentList: number[];\r\n\r\n    @IsNotEmpty()\r\n    staffId: number;\r\n}\r\n\r\nexport class GetStudentPointDto {\r\n    @ArrayNotEmpty()\r\n    @IsArray()\r\n    studentList: number[];\r\n}\r\n\r\nexport class GetStudentBehaviourRecordsDto {\r\n    @IsNotEmpty()\r\n    studentId: number;\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-api/src/student-behaviour-record/student-behaviour-record.dto.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-api/src/student-behaviour-record/student-behaviour-record.dto.ts	(date 1591520643531)
+@@ -26,4 +26,17 @@
+ export class GetStudentBehaviourRecordsDto {
+     @IsNotEmpty()
+     studentId: number;
++}
++
++export class GetStudentBehaviourRecordsByClassDto {
++    @IsNotEmpty()
++    classId: number;
++}
++
++export class GetStudentRankingByClassDto {
++    @IsNotEmpty()
++    classId: number;
++
++    @IsNotEmpty()
++    rankingNumber: number;
+ }
+\ No newline at end of file
+Index: qpoint-api/src/student-behaviour-record/student-behaviour-record.controller.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Body, Controller, Post, UsePipes} from \"@nestjs/common\";\r\nimport {StudentBehaviourRecordService} from \"./student-behaviour-record.service\";\r\nimport {ValidationPipe} from \"../utils/validation.pipe\";\r\nimport {\r\n    AddBehavioursToStudentsDto,\r\n    GetStudentBehaviourRecordsDto,\r\n    GetStudentPointDto\r\n} from \"./student-behaviour-record.dto\";\r\n\r\n@Controller('student-behaviour-record')\r\nexport class StudentBehaviourRecordController {\r\n    constructor(private studentBehaviourRecordService: StudentBehaviourRecordService) {\r\n    }\r\n\r\n    @Post('add-behaviours-to-students')\r\n    @UsePipes(new ValidationPipe())\r\n    addBehavioursToStudents(@Body() payload: AddBehavioursToStudentsDto) {\r\n        return this.studentBehaviourRecordService.addBehavioursToStudents(payload);\r\n    }\r\n\r\n    @Post('get-students-point')\r\n    @UsePipes(new ValidationPipe())\r\n    getStudentsPoint(@Body() payload: GetStudentPointDto) {\r\n        return this.studentBehaviourRecordService.getStudentsPoint(payload);\r\n    }\r\n\r\n    @Post('get-student-behaviour-records')\r\n    @UsePipes(new ValidationPipe())\r\n    getStudentBehaviouralRecords(@Body() payload: GetStudentBehaviourRecordsDto) {\r\n        return this.studentBehaviourRecordService.getStudentBehaviouralRecords(payload);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-api/src/student-behaviour-record/student-behaviour-record.controller.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-api/src/student-behaviour-record/student-behaviour-record.controller.ts	(date 1591521333033)
+@@ -2,9 +2,9 @@
+ import {StudentBehaviourRecordService} from "./student-behaviour-record.service";
+ import {ValidationPipe} from "../utils/validation.pipe";
+ import {
+-    AddBehavioursToStudentsDto,
++    AddBehavioursToStudentsDto, GetStudentBehaviourRecordsByClassDto,
+     GetStudentBehaviourRecordsDto,
+-    GetStudentPointDto
++    GetStudentPointDto, GetStudentRankingByClassDto
+ } from "./student-behaviour-record.dto";
+ 
+ @Controller('student-behaviour-record')
+@@ -29,4 +29,16 @@
+     getStudentBehaviouralRecords(@Body() payload: GetStudentBehaviourRecordsDto) {
+         return this.studentBehaviourRecordService.getStudentBehaviouralRecords(payload);
+     }
++
++    @Post('get-student-behaviour-records-by-class')
++    @UsePipes(new ValidationPipe())
++    getStudentBehaviouralRecordsByClass(@Body() payload: GetStudentBehaviourRecordsByClassDto) {
++        return this.studentBehaviourRecordService.getStudentBehaviouralRecordsByClass(payload);
++    }
++
++    @Post('get-student-ranking-by-class')
++    @UsePipes(new ValidationPipe())
++    getStudentRankingByClass(@Body() payload: GetStudentRankingByClassDto) {
++        return this.studentBehaviourRecordService.getStudentRankingByClass(payload);
++    }
+ }
+\ No newline at end of file
+Index: qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.ts	(date 1591536204549)
++++ qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.ts	(date 1591536204549)
+@@ -0,0 +1,40 @@
++import {Component, OnInit} from '@angular/core';
++import {ClassService} from "../../service/class.service";
++import {StudentBehaviourRecordVoModel} from "../../../core/model/student-behaviour-record.vo.model";
++import {ClassVoModel} from "../../model/class-vo.model";
++
++
++@Component({
++  selector: 'app-class-dashboard-page',
++  templateUrl: './class-dashboard-page.component.html',
++  styleUrls: ['./class-dashboard-page.component.css']
++})
++
++export class ClassDashboardPageComponent implements OnInit {
++
++  behaviourRecordsByClass: StudentBehaviourRecordVoModel[];
++  allClasses: ClassVoModel[];
++  selectedClassId: number;
++
++  constructor(private classService: ClassService) {
++
++  }
++
++  ngOnInit(): void {
++    this.classService.showOnlyAllClasses().subscribe(res => {
++      if (res) {
++        this.allClasses = res;
++      }
++    })
++    console.log(this.selectedClassId)
++  }
++
++  showDashboard() {
++    if (this.selectedClassId) {
++      const payload = {classId: this.selectedClassId}
++      this.classService.getStudentBehaviouralRecordsByClass(payload).subscribe(res => {
++        this.behaviourRecordsByClass = res;
++      })
++    }
++  }
++}
+Index: qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.spec.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.spec.ts	(date 1591432196176)
++++ qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.spec.ts	(date 1591432196176)
+@@ -0,0 +1,25 @@
++import { async, ComponentFixture, TestBed } from '@angular/core/testing';
++
++import { ClassDashboardPageComponent } from './class-dashboard-page.component';
++
++describe('ClassDashboardPageComponent', () => {
++  let component: ClassDashboardPageComponent;
++  let fixture: ComponentFixture<ClassDashboardPageComponent>;
++
++  beforeEach(async(() => {
++    TestBed.configureTestingModule({
++      declarations: [ ClassDashboardPageComponent ]
++    })
++    .compileComponents();
++  }));
++
++  beforeEach(() => {
++    fixture = TestBed.createComponent(ClassDashboardPageComponent);
++    component = fixture.componentInstance;
++    fixture.detectChanges();
++  });
++
++  it('should create', () => {
++    expect(component).toBeTruthy();
++  });
++});
+Index: qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.html	(date 1591610252927)
++++ qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.html	(date 1591610252927)
+@@ -0,0 +1,26 @@
++<app-side-navigation-bar>
++  <div class="container">
++    <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Select a class" [(ngModel)]="selectedClassId"
++               (ngModelChange)="showDashboard()" style="width: 100%">
++      <nz-option *ngFor="let class of allClasses"
++                 nzLabel="{{class.className}}"
++                 nzValue="{{class.classId}}"></nz-option>
++    </nz-select>
++
++    <ng-container *ngIf="selectedClassId != null">
++      <app-class-behaviour-pie-chart
++        [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-behaviour-pie-chart>
++      <app-class-heat-map-calendar [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-heat-map-calendar>
++
++      <div nz-row nzJustify="space-between">
++        <div nz-col nzSpan="11">
++          <app-class-leaderboard [classId]="selectedClassId"></app-class-leaderboard>
++        </div>
++        <div nz-col nzSpan="11">
++          <app-class-latest-record [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-latest-record>
++        </div>
++
++      </div>
++    </ng-container>
++  </div>
++</app-side-navigation-bar>
+Index: qpoint-web/src/app/class/class.routing.module.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {RouterModule, Routes} from \"@angular/router\";\r\nimport {AuthGuard} from \"../core/service/auth-guard.service\";\r\nimport {NgModule} from \"@angular/core\";\r\nimport {ManageClassPageComponent} from \"./component/manage-class-page/manage-class-page.component\";\r\n\r\nconst routes: Routes = [\r\n  {\r\n    path: '',\r\n    redirectTo: 'manage-class',\r\n    pathMatch: 'full',\r\n    canActivate: [AuthGuard]\r\n  },\r\n  {\r\n    path: 'manage-class',\r\n    component: ManageClassPageComponent,\r\n    canActivate: [AuthGuard]\r\n  },\r\n\r\n  {\r\n    path: '**',\r\n    redirectTo: 'manage-class'\r\n  }\r\n];\r\n\r\n@NgModule({\r\n  imports: [RouterModule.forChild(routes)],\r\n  exports: [RouterModule]\r\n})\r\nexport class ClassRoutingModule {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/class.routing.module.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/src/app/class/class.routing.module.ts	(date 1591432431837)
+@@ -2,11 +2,12 @@
+ import {AuthGuard} from "../core/service/auth-guard.service";
+ import {NgModule} from "@angular/core";
+ import {ManageClassPageComponent} from "./component/manage-class-page/manage-class-page.component";
++import {ClassDashboardPageComponent} from "./component/class-dashboard-page/class-dashboard-page.component";
+ 
+ const routes: Routes = [
+   {
+     path: '',
+-    redirectTo: 'manage-class',
++    redirectTo: 'class-dashboard',
+     pathMatch: 'full',
+     canActivate: [AuthGuard]
+   },
+@@ -15,10 +16,14 @@
+     component: ManageClassPageComponent,
+     canActivate: [AuthGuard]
+   },
+-
++  {
++    path: 'class-dashboard',
++    component: ClassDashboardPageComponent,
++    canActivate: [AuthGuard]
++  },
+   {
+     path: '**',
+-    redirectTo: 'manage-class'
++    redirectTo: 'class-dashboard'
+   }
+ ];
+ 
+Index: qpoint-api/src/student-behaviour-record/student-behaviour-record.service.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {HttpException, HttpStatus, Injectable} from \"@nestjs/common\";\r\nimport {InjectRepository} from \"@nestjs/typeorm\";\r\nimport {Repository} from \"typeorm\";\r\nimport {StudentBehaviourRecordEntity} from \"./student-behaviour-record.entity\";\r\nimport {BehaviourEntity} from \"../behaviour/behaviour.entity\";\r\nimport {StudentEntity} from \"../student/student.entity\";\r\nimport {\r\n    AddBehavioursToStudentsDto,\r\n    GetStudentBehaviourRecordsDto,\r\n    GetStudentPointDto\r\n} from \"./student-behaviour-record.dto\";\r\nimport {StaffEntity} from \"../staff/staff.entity\";\r\n\r\n@Injectable()\r\nexport class StudentBehaviourRecordService {\r\n    constructor(\r\n        @InjectRepository(StudentBehaviourRecordEntity) private studentBehaviourRecordRepository: Repository<StudentBehaviourRecordEntity>,\r\n        @InjectRepository(StudentEntity) private studentRepository: Repository<StudentEntity>,\r\n        @InjectRepository(BehaviourEntity) private behaviourRepository: Repository<BehaviourEntity>,\r\n        @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,\r\n    ) {\r\n    }\r\n\r\n    async addBehavioursToStudents(payload: AddBehavioursToStudentsDto) {\r\n        const {behaviourList, studentList, staffId} = payload;\r\n\r\n        const teacher = await this.staffRepository.findOne({where: {staffId: staffId}});\r\n        if (!teacher) throw new HttpException(\r\n            `Teacher with ID ${staffId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n\r\n        const behaviours: BehaviourEntity[] = []\r\n        for (const behaviourId of behaviourList) {\r\n            behaviours.push(await (this.behaviourRepository.findOne({where: {behaviourId: behaviourId}})).then(behaviour => {\r\n                if (!behaviour) throw new HttpException(\r\n                    `Behaviour with ID ${behaviourId} does not exists`,\r\n                    HttpStatus.BAD_REQUEST,\r\n                );\r\n                return behaviour;\r\n            }));\r\n        }\r\n        const records: StudentBehaviourRecordEntity[] = []\r\n        for (const studentId of studentList) {\r\n            await (this.studentRepository.findOne({where: {studentId: studentId}})).then(student => {\r\n                if (!student) throw new HttpException(\r\n                    `Student with ID ${studentId} does not exists`,\r\n                    HttpStatus.BAD_REQUEST,\r\n                );\r\n                for (const behaviour of behaviours) {\r\n                    const newRecord = this.studentBehaviourRecordRepository.create({\r\n                        \"student\": student,\r\n                        \"behaviour\": behaviour,\r\n                        \"givenByTeacher\": teacher\r\n                    });\r\n\r\n                    this.studentBehaviourRecordRepository.save(newRecord);\r\n                    records.push(newRecord);\r\n                }\r\n            });\r\n        }\r\n        return records;\r\n\r\n    }\r\n\r\n    async getStudentsPoint(payload: GetStudentPointDto) {\r\n        const {studentList} = payload;\r\n        const students: StudentEntity[] = []\r\n        for (const studentId of studentList) {\r\n            const student = await this.studentRepository.findOne({where: {studentId: studentId}});\r\n            if (!student) throw new HttpException(\r\n                `Student with ID ${studentId} does not exists`,\r\n                HttpStatus.BAD_REQUEST,\r\n            );\r\n            const behaviourRecords = await this.studentBehaviourRecordRepository.find({\r\n                where: {student: student},\r\n                relations: ['behaviour', 'student']\r\n            });\r\n            student['totalBehaviourPoint'] = behaviourRecords.reduce((currentTotal, record) => {\r\n                return record.behaviour.behaviourPoint + currentTotal\r\n            }, 0);\r\n            students.push(student)\r\n        }\r\n        return students;\r\n    }\r\n\r\n    async getStudentBehaviouralRecords(payload: GetStudentBehaviourRecordsDto) {\r\n        const {studentId} = payload;\r\n        const student = await this.studentRepository.findOne({where: {studentId: studentId}});\r\n        if (!student) throw new HttpException(\r\n            `Student with ID ${studentId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n\r\n        const behaviourRecords = await this.studentBehaviourRecordRepository.find({\r\n            where: {student: student},\r\n            relations: ['behaviour', 'givenByTeacher']\r\n        })\r\n        return behaviourRecords;\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-api/src/student-behaviour-record/student-behaviour-record.service.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-api/src/student-behaviour-record/student-behaviour-record.service.ts	(date 1591605703181)
+@@ -1,15 +1,16 @@
+ import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
+ import {InjectRepository} from "@nestjs/typeorm";
+-import {Repository} from "typeorm";
++import {createQueryBuilder, Repository} from "typeorm";
+ import {StudentBehaviourRecordEntity} from "./student-behaviour-record.entity";
+ import {BehaviourEntity} from "../behaviour/behaviour.entity";
+ import {StudentEntity} from "../student/student.entity";
+ import {
+-    AddBehavioursToStudentsDto,
++    AddBehavioursToStudentsDto, GetStudentBehaviourRecordsByClassDto,
+     GetStudentBehaviourRecordsDto,
+-    GetStudentPointDto
++    GetStudentPointDto, GetStudentRankingByClassDto
+ } from "./student-behaviour-record.dto";
+ import {StaffEntity} from "../staff/staff.entity";
++import {ClassEntity} from "../class/class.entity";
+ 
+ @Injectable()
+ export class StudentBehaviourRecordService {
+@@ -18,6 +19,7 @@
+         @InjectRepository(StudentEntity) private studentRepository: Repository<StudentEntity>,
+         @InjectRepository(BehaviourEntity) private behaviourRepository: Repository<BehaviourEntity>,
+         @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,
++        @InjectRepository(ClassEntity) private classRepository: Repository<ClassEntity>,
+     ) {
+     }
+ 
+@@ -91,11 +93,45 @@
+             `Student with ID ${studentId} does not exists`,
+             HttpStatus.BAD_REQUEST,
+         );
+-
+         const behaviourRecords = await this.studentBehaviourRecordRepository.find({
+             where: {student: student},
+             relations: ['behaviour', 'givenByTeacher']
+         })
+         return behaviourRecords;
+     }
++
++    async getStudentBehaviouralRecordsByClass(payload: GetStudentBehaviourRecordsByClassDto) {
++        const {classId} = payload;
++        const selectedClass = await this.classRepository.findOne({where: {classId: classId}});
++        if (!selectedClass) throw new HttpException(
++            `Class with ID ${classId} does not exists`,
++            HttpStatus.BAD_REQUEST,
++        );
++        const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
++            .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
++            .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
++            .where("StudentEntity.class.classId = :classId", {classId: classId}).getMany();
++        return behaviourRecords;
++    }
++
++    async getStudentRankingByClass(payload: GetStudentRankingByClassDto) {
++        const {classId, rankingNumber} = payload;
++        const selectedClass = await this.classRepository.findOne({where: {classId: classId}});
++        if (!selectedClass) throw new HttpException(
++            `Class with ID ${classId} does not exists`,
++            HttpStatus.BAD_REQUEST,
++        );
++        const ranking = await createQueryBuilder("StudentBehaviourRecordEntity")
++            .select("SUM(BehaviourEntity.behaviourPoint)", "totalBehaviourPoint")
++            .addSelect("StudentEntity.studentId", "studentId")
++            .addSelect("StudentEntity.fullName", "studentName")
++            .leftJoin("StudentBehaviourRecordEntity.student", "StudentEntity")
++            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
++            .groupBy("StudentEntity.studentId")
++            .orderBy("totalBehaviourPoint", "DESC")
++            .having("totalBehaviourPoint > 0" )
++            .limit(rankingNumber)
++            .where("StudentEntity.class.classId = :classId", {classId: classId}) .getRawMany();
++        return ranking;
++    }
+ }
+\ No newline at end of file
+Index: qpoint-api/src/student-behaviour-record/student-behaviour-record.module.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Module} from \"@nestjs/common\";\r\nimport {TypeOrmModule} from \"@nestjs/typeorm\";\r\nimport {StudentBehaviourRecordEntity} from \"./student-behaviour-record.entity\";\r\nimport {StudentBehaviourRecordService} from \"./student-behaviour-record.service\";\r\nimport {StudentBehaviourRecordController} from \"./student-behaviour-record.controller\";\r\nimport {StudentEntity} from \"../student/student.entity\";\r\nimport {BehaviourEntity} from \"../behaviour/behaviour.entity\";\r\nimport {StaffEntity} from \"../staff/staff.entity\";\r\n\r\n@Module({\r\n    imports: [TypeOrmModule.forFeature([StudentBehaviourRecordEntity, StudentEntity, BehaviourEntity, StaffEntity])],\r\n    controllers: [StudentBehaviourRecordController],\r\n    providers: [StudentBehaviourRecordService],\r\n})\r\nexport class StudentBehaviourRecordModule {\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-api/src/student-behaviour-record/student-behaviour-record.module.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-api/src/student-behaviour-record/student-behaviour-record.module.ts	(date 1591438869715)
+@@ -6,9 +6,10 @@
+ import {StudentEntity} from "../student/student.entity";
+ import {BehaviourEntity} from "../behaviour/behaviour.entity";
+ import {StaffEntity} from "../staff/staff.entity";
++import {ClassEntity} from "../class/class.entity";
+ 
+ @Module({
+-    imports: [TypeOrmModule.forFeature([StudentBehaviourRecordEntity, StudentEntity, BehaviourEntity, StaffEntity])],
++    imports: [TypeOrmModule.forFeature([StudentBehaviourRecordEntity, StudentEntity, BehaviourEntity, StaffEntity, ClassEntity])],
+     controllers: [StudentBehaviourRecordController],
+     providers: [StudentBehaviourRecordService],
+ })
+Index: qpoint-web/src/app/class/class.module.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {NgModule} from \"@angular/core\";\r\nimport {CoreModule} from \"../core/core.module\";\r\nimport {ClassService} from \"./service/class.service\";\r\nimport {ClassRoutingModule} from \"./class.routing.module\";\r\nimport {ClassListTableComponent} from './component/class-list-table/class-list-table.component';\r\nimport {ManageClassPageComponent} from './component/manage-class-page/manage-class-page.component';\r\nimport {CreateClassFormComponent} from './component/create-class-form/create-class-form.component';\r\nimport {StudentService} from \"../student/service/student.service\";\r\nimport {StaffService} from \"../staff/service/staff.service\";\r\n\r\n@NgModule({\r\n  declarations: [\r\n    ClassListTableComponent,\r\n    ManageClassPageComponent,\r\n    CreateClassFormComponent\r\n  ],\r\n  imports: [\r\n    CoreModule,\r\n    ClassRoutingModule,\r\n  ],\r\n  providers: [\r\n    ClassService, StudentService, StaffService\r\n  ],\r\n\r\n})\r\nexport class ClassModule {\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/class.module.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/src/app/class/class.module.ts	(date 1591609414077)
+@@ -7,16 +7,29 @@
+ import {CreateClassFormComponent} from './component/create-class-form/create-class-form.component';
+ import {StudentService} from "../student/service/student.service";
+ import {StaffService} from "../staff/service/staff.service";
++import { NgxChartsModule } from '@swimlane/ngx-charts';
++import { ClassDashboardPageComponent } from './component/class-dashboard-page/class-dashboard-page.component';
++import { ClassHeatMapCalendarComponent } from './component/class-heat-map-calendar/class-heat-map-calendar.component';
++import { ClassLeaderboardComponent } from './component/class-leaderboard/class-leaderboard.component';
++import { ClassBehaviourPieChartComponent } from './component/class-behaviour-pie-chart/class-behaviour-pie-chart.component';
++import { ClassLatestRecordComponent } from './component/class-latest-record/class-latest-record.component';
++
+ 
+ @NgModule({
+   declarations: [
+     ClassListTableComponent,
+     ManageClassPageComponent,
+-    CreateClassFormComponent
++    CreateClassFormComponent,
++    ClassDashboardPageComponent,
++    ClassHeatMapCalendarComponent,
++    ClassLeaderboardComponent,
++    ClassBehaviourPieChartComponent,
++    ClassLatestRecordComponent
+   ],
+   imports: [
+     CoreModule,
+     ClassRoutingModule,
++    NgxChartsModule,
+   ],
+   providers: [
+     ClassService, StudentService, StaffService
+Index: qpoint-web/src/app/core/component/side-navigation-bar/side-navigation-bar.component.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><nz-layout>\r\n  <nz-sider [(nzCollapsed)]=\"isCollapsed\" [nzCollapsedWidth]=\"this.menuWidth\" [nzTrigger]=\"null\" nzBreakpoint=\"xl\"\r\n            nzCollapsible>\r\n    <div class=\"p-2\"><img alt=\"Qpoint logo\" class=\"logo\" src=\"../../../../assets/qpoint-logo.png\"></div>\r\n    <ul nz-menu nzMode=\"inline\" nzTheme=\"light\">\r\n      <li [routerLink]=\"\" nz-menu-item>\r\n        <i nz-icon nzType=\"bar-chart\"></i>\r\n        <span>Dashboard</span>\r\n      </li>\r\n      <li [nzOpen]=\"checkSubMenuOpen('student')\" nz-submenu nzIcon=\"user\" nzTitle=\"Student\">\r\n        <ul>\r\n          <li [routerLink]=\"['/student/student-qrcode-list']\" nz-menu-item nzMatchRouter>Student QR code</li>\r\n          <li [routerLink]=\"['/student/manage-student']\" nz-menu-item nzMatchRouter>Manage Student</li>\r\n        </ul>\r\n      </li>\r\n      <li [nzOpen]=\"checkSubMenuOpen('staff')\" nz-submenu nzIcon=\"team\" nzTitle=\"Staff\">\r\n        <ul>\r\n          <li [routerLink]=\"\" nz-menu-item>Teacher Activity</li>\r\n          <li [routerLink]=\"\" nz-menu-item>Manage Teacher</li>\r\n        </ul>\r\n      </li>\r\n      <li [nzOpen]=\"checkSubMenuOpen('class')\" nz-submenu nzIcon=\"shop\" nzTitle=\"Class\">\r\n        <ul>\r\n          <li [routerLink]=\"\" nz-menu-item>Class Dashboard</li>\r\n          <li [routerLink]=\"['/class/manage-class']\" nz-menu-item nzMatchRouter>Manage Class</li>\r\n        </ul>\r\n      </li>\r\n      <li [nzOpen]=\"checkSubMenuOpen('group')\" nz-submenu nzIcon=\"group\" nzTitle=\"Group\">\r\n        <ul>\r\n          <li [routerLink]=\"\" nz-menu-item>Group Dashboard</li>\r\n          <li [routerLink]=\"\" nz-menu-item>Manage Group</li>\r\n        </ul>\r\n      </li>\r\n      <li [nzOpen]=\"checkSubMenuOpen('behaviour')\" nz-submenu nzIcon=\"book\" nzTitle=\"Behaviour\">\r\n        <ul>\r\n          <li [routerLink]=\"['/behaviour/manage-behaviour']\" nz-menu-item nzMatchRouter>Manage Behaviour</li>\r\n        </ul>\r\n      </li>\r\n      <li [nzOpen]=\"checkSubMenuOpen('notification')\" nz-submenu nzIcon=\"notification\" nzTitle=\"Notification\">\r\n        <ul>\r\n          <li [routerLink]=\"\" nz-menu-item>Manage Notification</li>\r\n        </ul>\r\n      </li>\r\n    </ul>\r\n  </nz-sider>\r\n  <nz-layout>\r\n    <nz-header>\r\n      <i (click)=\"menuCollapsed()\" [nzType]=\"foldIcon\" class=\"trigger\"\r\n         nz-icon></i>\r\n    </nz-header>\r\n    <nz-content>\r\n      <nz-breadcrumb>\r\n        <nz-breadcrumb-item *ngFor=\"let route of routes\">{{route | titlecase }}</nz-breadcrumb-item>\r\n      </nz-breadcrumb>\r\n\r\n      <div class=\"inner-content\">\r\n        <ng-content></ng-content>\r\n      </div>\r\n    </nz-content>\r\n    <nz-footer><i nz-icon nzTheme=\"outline\" nzType=\"copyright\"></i> Qpoint ©2020 Implement By Qpoint Team</nz-footer>\r\n  </nz-layout>\r\n</nz-layout>\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/core/component/side-navigation-bar/side-navigation-bar.component.html	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/src/app/core/component/side-navigation-bar/side-navigation-bar.component.html	(date 1591432670276)
+@@ -21,7 +21,7 @@
+       </li>
+       <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="shop" nzTitle="Class">
+         <ul>
+-          <li [routerLink]="" nz-menu-item>Class Dashboard</li>
++          <li [routerLink]="['/class/class-dashboard']" nz-menu-item nzMatchRouter>Class Dashboard</li>
+           <li [routerLink]="['/class/manage-class']" nz-menu-item nzMatchRouter>Manage Class</li>
+         </ul>
+       </li>
+Index: qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.html	(date 1591612782896)
++++ qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.html	(date 1591612782896)
+@@ -0,0 +1,21 @@
++<nz-table class="my-3" #smallTable nzSize="small" nzBordered [nzData]="behaviourRecordsByClass" [nzTitle]="tableTemp" [nzPageSize]="8">
++  <ng-template #tableTemp>
++    <div class="font-weight-bold">
++      <i nz-icon nzType="solution" nzTheme="outline"></i> {{" Class Latest Record" }}
++    </div>
++  </ng-template>
++  <thead>
++  <tr>
++    <th>Student</th>
++    <th [nzSortFn]="sortFn" [nzSort]="'descend'"  >Date Given</th>
++    <th>Points</th>
++  </tr>
++  </thead>
++  <tbody>
++  <tr *ngFor="let data of smallTable.data">
++    <td>{{ data.student.fullName }}</td>
++    <td>{{ data.dateGiven  | date:'medium'}}</td>
++    <td>{{ data.behaviour.behaviourPoint }}</td>
++  </tr>
++  </tbody>
++</nz-table>
+Index: qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.ts	(date 1591536493101)
++++ qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.ts	(date 1591536493101)
+@@ -0,0 +1,65 @@
++import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
++import {StudentBehaviourRecordVoModel} from "../../../core/model/student-behaviour-record.vo.model";
++
++@Component({
++  selector: 'app-class-behaviour-pie-chart',
++  templateUrl: './class-behaviour-pie-chart.component.html',
++  styleUrls: ['./class-behaviour-pie-chart.component.css']
++})
++export class ClassBehaviourPieChartComponent implements OnInit, OnChanges {
++
++  // options for the chart
++  showXAxis = true;
++  showYAxis = true;
++  gradient = false;
++  showLegend = true;
++  showXAxisLabel = true;
++  xAxisLabel = 'Behaviour';
++  showYAxisLabel = true;
++  yAxisLabel = 'Number of Behavioral Points';
++  timeline = true;
++
++  colorScheme = {
++    domain: ['#87CEFA', '#FA8072', '#FF7F50', '#90EE90', '#9370DB', '#9370DB']
++  };
++
++  @Input() behaviourRecordsByClass: StudentBehaviourRecordVoModel[];
++  positiveBehavioralPoints: number = 0;
++  negativeBehavioralPoints: number = 0;
++  result: any[];
++
++  constructor() {
++  }
++
++  ngOnInit(): void {
++  }
++
++
++  onSelect(event: any) {
++    console.log(event);
++  }
++
++  ngOnChanges(changes: SimpleChanges): void {
++    if (changes.behaviourRecordsByClass) {
++      this.positiveBehavioralPoints = 0;
++      this.negativeBehavioralPoints = 0;
++
++      if (this.behaviourRecordsByClass) {
++        this.behaviourRecordsByClass.forEach(record => {
++          record.behaviour.behaviourPoint > 0 ? this.positiveBehavioralPoints += record.behaviour.behaviourPoint : this.negativeBehavioralPoints += record.behaviour.behaviourPoint
++        })
++        this.result = [
++          {
++            "name": "Total Positive Behaviour Points",
++            "value": this.positiveBehavioralPoints
++          },
++          {
++            "name": "Total Negative Behaviour Points",
++            "value": Math.abs(this.negativeBehavioralPoints)
++          },
++        ];
++      }
++    }
++  }
++
++}
+Index: qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.spec.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.spec.ts	(date 1591533776588)
++++ qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.spec.ts	(date 1591533776588)
+@@ -0,0 +1,25 @@
++import { async, ComponentFixture, TestBed } from '@angular/core/testing';
++
++import { ClassBehaviourPieChartComponent } from './class-behaviour-pie-chart.component';
++
++describe('ClassBehaviourPieChartComponent', () => {
++  let component: ClassBehaviourPieChartComponent;
++  let fixture: ComponentFixture<ClassBehaviourPieChartComponent>;
++
++  beforeEach(async(() => {
++    TestBed.configureTestingModule({
++      declarations: [ ClassBehaviourPieChartComponent ]
++    })
++    .compileComponents();
++  }));
++
++  beforeEach(() => {
++    fixture = TestBed.createComponent(ClassBehaviourPieChartComponent);
++    component = fixture.componentInstance;
++    fixture.detectChanges();
++  });
++
++  it('should create', () => {
++    expect(component).toBeTruthy();
++  });
++});
+Index: qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.html	(date 1591534106669)
++++ qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.html	(date 1591534106669)
+@@ -0,0 +1,9 @@
++<div style=" height: 300px;" class="bg-light ">
++  <ngx-charts-advanced-pie-chart
++    [view]=""
++    [scheme]="colorScheme"
++    [results]="result"
++    [gradient]="gradient"
++    (select)="onSelect($event)">
++  </ngx-charts-advanced-pie-chart>
++</div>
+Index: qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.ts	(date 1591535660749)
++++ qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.ts	(date 1591535660749)
+@@ -0,0 +1,34 @@
++import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
++import {ClassService} from "../../service/class.service";
++
++@Component({
++  selector: 'app-class-leaderboard',
++  templateUrl: './class-leaderboard.component.html',
++  styleUrls: ['./class-leaderboard.component.css']
++})
++export class ClassLeaderboardComponent implements OnInit, OnChanges {
++
++  constructor(private classService: ClassService) {
++  }
++
++  ranking: any[];
++  @Input() classId: number;
++
++  ngOnInit(): void {
++
++  }
++
++  ngOnChanges(changes: SimpleChanges): void {
++    if (changes.classId) {
++      if (this.classId) {
++        const payload = {classId: this.classId, rankingNumber: 10};
++        this.classService.getStudentRankingByClass(payload).subscribe(res => {
++          if (res) {
++            this.ranking = res
++          }
++        })
++      }
++    }
++  }
++
++}
+Index: qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.spec.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.spec.ts	(date 1591523521313)
++++ qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.spec.ts	(date 1591523521313)
+@@ -0,0 +1,25 @@
++import { async, ComponentFixture, TestBed } from '@angular/core/testing';
++
++import { ClassLeaderboardComponent } from './class-leaderboard.component';
++
++describe('ClassLeaderboardComponent', () => {
++  let component: ClassLeaderboardComponent;
++  let fixture: ComponentFixture<ClassLeaderboardComponent>;
++
++  beforeEach(async(() => {
++    TestBed.configureTestingModule({
++      declarations: [ ClassLeaderboardComponent ]
++    })
++    .compileComponents();
++  }));
++
++  beforeEach(() => {
++    fixture = TestBed.createComponent(ClassLeaderboardComponent);
++    component = fixture.componentInstance;
++    fixture.detectChanges();
++  });
++
++  it('should create', () => {
++    expect(component).toBeTruthy();
++  });
++});
+Index: qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.spec.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.spec.ts	(date 1591513975499)
++++ qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.spec.ts	(date 1591513975499)
+@@ -0,0 +1,25 @@
++import { async, ComponentFixture, TestBed } from '@angular/core/testing';
++
++import { ClassHeatMapCalendarComponent } from './class-heat-map-calendar.component';
++
++describe('ClassHeatMapCalendarComponent', () => {
++  let component: ClassHeatMapCalendarComponent;
++  let fixture: ComponentFixture<ClassHeatMapCalendarComponent>;
++
++  beforeEach(async(() => {
++    TestBed.configureTestingModule({
++      declarations: [ ClassHeatMapCalendarComponent ]
++    })
++    .compileComponents();
++  }));
++
++  beforeEach(() => {
++    fixture = TestBed.createComponent(ClassHeatMapCalendarComponent);
++    component = fixture.componentInstance;
++    fixture.detectChanges();
++  });
++
++  it('should create', () => {
++    expect(component).toBeTruthy();
++  });
++});
+Index: qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.ts	(date 1591611267423)
++++ qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.ts	(date 1591611267423)
+@@ -0,0 +1,25 @@
++import {Component, Input, OnInit, SimpleChanges} from '@angular/core';
++import {StudentBehaviourRecordVoModel} from "../../../core/model/student-behaviour-record.vo.model";
++import {ClassVoModel} from "../../model/class-vo.model";
++import {NzTableSortFn} from "ng-zorro-antd";
++
++
++@Component({
++  selector: 'app-class-latest-record',
++  templateUrl: './class-latest-record.component.html',
++  styleUrls: ['./class-latest-record.component.css']
++})
++export class ClassLatestRecordComponent implements OnInit {
++  @Input() behaviourRecordsByClass: StudentBehaviourRecordVoModel[];
++  sortFn: NzTableSortFn = (a: StudentBehaviourRecordVoModel, b: StudentBehaviourRecordVoModel) => {
++    return (new Date(a.dateGiven).getTime() - new Date(b.dateGiven).getTime());
++  }
++
++  constructor() {
++  }
++
++  ngOnInit(): void {
++  }
++
++
++}
+Index: qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.spec.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.spec.ts	(date 1591609414075)
++++ qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.spec.ts	(date 1591609414075)
+@@ -0,0 +1,25 @@
++import { async, ComponentFixture, TestBed } from '@angular/core/testing';
++
++import { ClassLatestRecordComponent } from './class-latest-record.component';
++
++describe('ClassLatestRecordComponent', () => {
++  let component: ClassLatestRecordComponent;
++  let fixture: ComponentFixture<ClassLatestRecordComponent>;
++
++  beforeEach(async(() => {
++    TestBed.configureTestingModule({
++      declarations: [ ClassLatestRecordComponent ]
++    })
++    .compileComponents();
++  }));
++
++  beforeEach(() => {
++    fixture = TestBed.createComponent(ClassLatestRecordComponent);
++    component = fixture.componentInstance;
++    fixture.detectChanges();
++  });
++
++  it('should create', () => {
++    expect(component).toBeTruthy();
++  });
++});
+Index: qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.html	(date 1591610252917)
++++ qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.html	(date 1591610252917)
+@@ -0,0 +1,21 @@
++<ul class="my-3 " nz-list [nzDataSource]="ranking" nzBordered nzSize="large">
++  <nz-list-header class="font-weight-bold"><i nz-icon nzType="trophy" nzTheme="outline"></i> {{" Class LeaderBoard" }}</nz-list-header>
++  <li nz-list-item *ngFor="let item of ranking ; index as i">
++    <span nz-typography class="align-content-center">{{item.studentName + " "}}</span>
++
++    <nz-badge *ngIf="i==0; else normalTemplate" [nzCount]="iconTemplate">
++      <nz-avatar [ngStyle]="{ 'background-color': '#F7882F' }" [nzText]="item.totalBehaviourPoint" nzSize="large"
++                 style="vertical-align: middle;"></nz-avatar>
++    </nz-badge>
++    <ng-template #iconTemplate>
++      <i nz-icon nzType="crown" nzTheme="fill" class="ant-scroll-number-custom-component" style="color: #f7c331; "></i>
++    </ng-template>
++
++    <ng-template #normalTemplate>
++      <nz-badge>
++        <nz-avatar [ngStyle]="{ 'background-color': '#6B7A8F' }" [nzText]="item.totalBehaviourPoint" nzSize="large"
++                   style="vertical-align: middle;"></nz-avatar>
++      </nz-badge>
++    </ng-template>
++  </li>
++</ul>
+Index: qpoint-web/src/app/core/model/student-behaviour-record.vo.model.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/core/model/student-behaviour-record.vo.model.ts	(date 1591440957915)
++++ qpoint-web/src/app/core/model/student-behaviour-record.vo.model.ts	(date 1591440957915)
+@@ -0,0 +1,10 @@
++import {BehaviourVoModel} from "../../behaviour/model/behaviour-vo-model";
++import {StudentVoModel} from "../../student/model/student-vo.model";
++
++export interface StudentBehaviourRecordVoModel {
++  recordId: number;
++  dateGiven: Date;
++  behaviour: BehaviourVoModel;
++  student: StudentVoModel;
++  givenByTeacher: any;
++}
+Index: qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.html	(date 1591514219169)
++++ qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.html	(date 1591514219169)
+@@ -0,0 +1,20 @@
++<div style=" height: 300px;" class="bg-light">
++  <ngx-charts-heat-map
++    class="chart-container"
++    [view]=""
++    [scheme]="colorScheme"
++    [results]="calendarData"
++    [animations]="true"
++    [legend]="showLegend"
++    [gradient]="gradient"
++    [xAxis]="showXAxis"
++    [yAxis]="showYAxis"
++    [showXAxisLabel]="false"
++    [showYAxisLabel]="false"
++    [xAxisTickFormatting]="calendarAxisTickFormatting"
++    [tooltipText]="calendarTooltipText"
++    [innerPadding]="'10%'"
++    [tooltipDisabled]="false"
++    (select)="onSelect($event)">
++  </ngx-charts-heat-map>
++</div>
+Index: qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.ts	(date 1591538242021)
++++ qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.ts	(date 1591538242021)
+@@ -0,0 +1,135 @@
++import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
++import {StudentBehaviourRecordVoModel} from "../../../core/model/student-behaviour-record.vo.model";
++
++const weekdayName = new Intl.DateTimeFormat('en-us', {weekday: 'short'});
++const monthName = new Intl.DateTimeFormat('en-us', {month: 'short'});
++
++@Component({
++  selector: 'app-class-heat-map-calendar',
++  templateUrl: './class-heat-map-calendar.component.html',
++  styleUrls: ['./class-heat-map-calendar.component.css']
++})
++export class ClassHeatMapCalendarComponent implements OnInit, OnChanges {
++  //options
++  showXAxis = true;
++  showYAxis = true;
++  gradient = false;
++  showLegend = true;
++  legendTitle = 'Legend';
++  showXAxisLabel = true;
++  tooltipDisabled = false;
++  xAxisLabel = 'Country';
++  showYAxisLabel = true;
++  yAxisLabel = 'GDP Per Capita';
++  showGridLines = true;
++  innerPadding = '10%';
++  barPadding = 8;
++  groupPadding = 16;
++  roundDomains = false;
++  maxRadius = 10;
++  minRadius = 3;
++  showSeriesOnHover = true;
++  roundEdges: boolean = true;
++  animations: boolean = true;
++  xScaleMin: any;
++  xScaleMax: any;
++  yScaleMin: number;
++  yScaleMax: number;
++  showDataLabel = false;
++
++  @Input() behaviourRecordsByClass: StudentBehaviourRecordVoModel[];
++  colorScheme = {
++    domain: ['#FA8072', '#87CEFA']
++  };
++
++  calendarData: any[]
++
++
++  constructor() {
++  }
++
++  ngOnInit(): void {
++  }
++
++  ngOnChanges(changes: SimpleChanges): void {
++    if (changes.behaviourRecordsByClass) {
++      if (this.behaviourRecordsByClass) {
++        this.calendarData = this.getCalendarData(this.behaviourRecordsByClass);
++      }
++    }
++  }
++
++
++  calendarTooltipText(c): string {
++    return `
++      <span class="tooltip-label">${c.label} • ${c.cell.date.toLocaleDateString()}</span>
++      <span class="tooltip-val">${c.data.toLocaleString()} points</span>
++    `;
++  }
++
++  calendarAxisTickFormatting(mondayString: string) {
++    const monday = new Date(mondayString);
++    const month = monday.getMonth();
++    const day = monday.getDate();
++    const year = monday.getFullYear();
++    const lastSunday = new Date(year, month, day - 1);
++    const nextSunday = new Date(year, month, day + 6);
++    return (lastSunday.getMonth() !== nextSunday.getMonth()) ? monthName.format(nextSunday) : '';
++  }
++
++  getCalendarData(behaviourRecordsByClass: StudentBehaviourRecordVoModel[]): any[] {
++    // today
++    const now = new Date();
++    const todaysDay = now.getDate();
++    const thisDay = new Date(now.getFullYear(), now.getMonth(), todaysDay);
++
++    // Monday
++    const thisMonday = new Date(thisDay.getFullYear(), thisDay.getMonth(), todaysDay - thisDay.getDay() + 1);
++    const thisMondayDay = thisMonday.getDate();
++    const thisMondayYear = thisMonday.getFullYear();
++    const thisMondayMonth = thisMonday.getMonth();
++
++    // 52 weeks before monday
++    const calendarData = [];
++    const getDate = d => new Date(thisMondayYear, thisMondayMonth, d);
++    for (let week = -52; week <= 0; week++) {
++      const mondayDay = thisMondayDay + (week * 7);
++      const monday = getDate(mondayDay);
++
++      // one week
++      const series = [];
++      for (let dayOfWeek = 7; dayOfWeek > 0; dayOfWeek--) {
++        const date = getDate(mondayDay - 1 + dayOfWeek);
++
++        // skip future dates
++        if (date > now) {
++          continue;
++        }
++
++        // value
++        let value = 0;
++        behaviourRecordsByClass.forEach(record => {
++          if (new Date(record.dateGiven).getFullYear() === date.getFullYear() && new Date(record.dateGiven).getMonth() === date.getMonth() && new Date(record.dateGiven).getDate() === date.getDate()) {
++            value += record.behaviour.behaviourPoint
++          }
++        })
++        series.push({
++          date,
++          name: weekdayName.format(date),
++          value
++        });
++      }
++
++      calendarData.push({
++        name: monday.toString(),
++        series
++      });
++    }
++    return calendarData;
++  }
++
++  onSelect(event: any) {
++    console.log(event);
++  }
++
++}
+Index: qpoint-web/package-lock.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/package-lock.json	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/package-lock.json	(date 1591431859141)
+@@ -1805,6 +1805,24 @@
+         }
+       }
+     },
++    "@swimlane/ngx-charts": {
++      "version": "14.0.0",
++      "resolved": "https://registry.npmjs.org/@swimlane/ngx-charts/-/ngx-charts-14.0.0.tgz",
++      "integrity": "sha512-UiAleBA4Hs7IEB+5mSmn1ojntD32lpfR7BokuVUNkhWiX4CsljKsXgm1EwIw2A14JBu4g8EDjKrdbED79eShEA==",
++      "requires": {
++        "d3-array": "^2.4.0",
++        "d3-brush": "^1.1.5",
++        "d3-color": "^1.4.0",
++        "d3-format": "^1.4.2",
++        "d3-hierarchy": "^1.1.9",
++        "d3-interpolate": "^1.4.0",
++        "d3-scale": "^3.2.1",
++        "d3-selection": "^1.4.1",
++        "d3-shape": "^1.3.7",
++        "d3-time-format": "^2.2.2",
++        "d3-transition": "^1.3.2"
++      }
++    },
+     "@types/color-name": {
+       "version": "1.1.1",
+       "resolved": "https://registry.npmjs.org/@types/color-name/-/color-name-1.1.1.tgz",
+@@ -4119,6 +4137,126 @@
+       "integrity": "sha1-WW6WmP0MgOEgOMK4LW6xs1tiJNk=",
+       "dev": true
+     },
++    "d3-array": {
++      "version": "2.4.0",
++      "resolved": "https://registry.npmjs.org/d3-array/-/d3-array-2.4.0.tgz",
++      "integrity": "sha512-KQ41bAF2BMakf/HdKT865ALd4cgND6VcIztVQZUTt0+BH3RWy6ZYnHghVXf6NFjt2ritLr8H1T8LreAAlfiNcw=="
++    },
++    "d3-brush": {
++      "version": "1.1.5",
++      "resolved": "https://registry.npmjs.org/d3-brush/-/d3-brush-1.1.5.tgz",
++      "integrity": "sha512-rEaJ5gHlgLxXugWjIkolTA0OyMvw8UWU1imYXy1v642XyyswmI1ybKOv05Ft+ewq+TFmdliD3VuK0pRp1VT/5A==",
++      "requires": {
++        "d3-dispatch": "1",
++        "d3-drag": "1",
++        "d3-interpolate": "1",
++        "d3-selection": "1",
++        "d3-transition": "1"
++      }
++    },
++    "d3-color": {
++      "version": "1.4.1",
++      "resolved": "https://registry.npmjs.org/d3-color/-/d3-color-1.4.1.tgz",
++      "integrity": "sha512-p2sTHSLCJI2QKunbGb7ocOh7DgTAn8IrLx21QRc/BSnodXM4sv6aLQlnfpvehFMLZEfBc6g9pH9SWQccFYfJ9Q=="
++    },
++    "d3-dispatch": {
++      "version": "1.0.6",
++      "resolved": "https://registry.npmjs.org/d3-dispatch/-/d3-dispatch-1.0.6.tgz",
++      "integrity": "sha512-fVjoElzjhCEy+Hbn8KygnmMS7Or0a9sI2UzGwoB7cCtvI1XpVN9GpoYlnb3xt2YV66oXYb1fLJ8GMvP4hdU1RA=="
++    },
++    "d3-drag": {
++      "version": "1.2.5",
++      "resolved": "https://registry.npmjs.org/d3-drag/-/d3-drag-1.2.5.tgz",
++      "integrity": "sha512-rD1ohlkKQwMZYkQlYVCrSFxsWPzI97+W+PaEIBNTMxRuxz9RF0Hi5nJWHGVJ3Om9d2fRTe1yOBINJyy/ahV95w==",
++      "requires": {
++        "d3-dispatch": "1",
++        "d3-selection": "1"
++      }
++    },
++    "d3-ease": {
++      "version": "1.0.6",
++      "resolved": "https://registry.npmjs.org/d3-ease/-/d3-ease-1.0.6.tgz",
++      "integrity": "sha512-SZ/lVU7LRXafqp7XtIcBdxnWl8yyLpgOmzAk0mWBI9gXNzLDx5ybZgnRbH9dN/yY5tzVBqCQ9avltSnqVwessQ=="
++    },
++    "d3-format": {
++      "version": "1.4.4",
++      "resolved": "https://registry.npmjs.org/d3-format/-/d3-format-1.4.4.tgz",
++      "integrity": "sha512-TWks25e7t8/cqctxCmxpUuzZN11QxIA7YrMbram94zMQ0PXjE4LVIMe/f6a4+xxL8HQ3OsAFULOINQi1pE62Aw=="
++    },
++    "d3-hierarchy": {
++      "version": "1.1.9",
++      "resolved": "https://registry.npmjs.org/d3-hierarchy/-/d3-hierarchy-1.1.9.tgz",
++      "integrity": "sha512-j8tPxlqh1srJHAtxfvOUwKNYJkQuBFdM1+JAUfq6xqH5eAqf93L7oG1NVqDa4CpFZNvnNKtCYEUC8KY9yEn9lQ=="
++    },
++    "d3-interpolate": {
++      "version": "1.4.0",
++      "resolved": "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-1.4.0.tgz",
++      "integrity": "sha512-V9znK0zc3jOPV4VD2zZn0sDhZU3WAE2bmlxdIwwQPPzPjvyLkd8B3JUVdS1IDUFDkWZ72c9qnv1GK2ZagTZ8EA==",
++      "requires": {
++        "d3-color": "1"
++      }
++    },
++    "d3-path": {
++      "version": "1.0.9",
++      "resolved": "https://registry.npmjs.org/d3-path/-/d3-path-1.0.9.tgz",
++      "integrity": "sha512-VLaYcn81dtHVTjEHd8B+pbe9yHWpXKZUC87PzoFmsFrJqgFwDe/qxfp5MlfsfM1V5E/iVt0MmEbWQ7FVIXh/bg=="
++    },
++    "d3-scale": {
++      "version": "3.2.1",
++      "resolved": "https://registry.npmjs.org/d3-scale/-/d3-scale-3.2.1.tgz",
++      "integrity": "sha512-huz5byJO/6MPpz6Q8d4lg7GgSpTjIZW/l+1MQkzKfu2u8P6hjaXaStOpmyrD6ymKoW87d2QVFCKvSjLwjzx/rA==",
++      "requires": {
++        "d3-array": "1.2.0 - 2",
++        "d3-format": "1",
++        "d3-interpolate": "^1.2.0",
++        "d3-time": "1",
++        "d3-time-format": "2"
++      }
++    },
++    "d3-selection": {
++      "version": "1.4.1",
++      "resolved": "https://registry.npmjs.org/d3-selection/-/d3-selection-1.4.1.tgz",
++      "integrity": "sha512-BTIbRjv/m5rcVTfBs4AMBLKs4x8XaaLkwm28KWu9S2vKNqXkXt2AH2Qf0sdPZHjFxcWg/YL53zcqAz+3g4/7PA=="
++    },
++    "d3-shape": {
++      "version": "1.3.7",
++      "resolved": "https://registry.npmjs.org/d3-shape/-/d3-shape-1.3.7.tgz",
++      "integrity": "sha512-EUkvKjqPFUAZyOlhY5gzCxCeI0Aep04LwIRpsZ/mLFelJiUfnK56jo5JMDSE7yyP2kLSb6LtF+S5chMk7uqPqw==",
++      "requires": {
++        "d3-path": "1"
++      }
++    },
++    "d3-time": {
++      "version": "1.1.0",
++      "resolved": "https://registry.npmjs.org/d3-time/-/d3-time-1.1.0.tgz",
++      "integrity": "sha512-Xh0isrZ5rPYYdqhAVk8VLnMEidhz5aP7htAADH6MfzgmmicPkTo8LhkLxci61/lCB7n7UmE3bN0leRt+qvkLxA=="
++    },
++    "d3-time-format": {
++      "version": "2.2.3",
++      "resolved": "https://registry.npmjs.org/d3-time-format/-/d3-time-format-2.2.3.tgz",
++      "integrity": "sha512-RAHNnD8+XvC4Zc4d2A56Uw0yJoM7bsvOlJR33bclxq399Rak/b9bhvu/InjxdWhPtkgU53JJcleJTGkNRnN6IA==",
++      "requires": {
++        "d3-time": "1"
++      }
++    },
++    "d3-timer": {
++      "version": "1.0.10",
++      "resolved": "https://registry.npmjs.org/d3-timer/-/d3-timer-1.0.10.tgz",
++      "integrity": "sha512-B1JDm0XDaQC+uvo4DT79H0XmBskgS3l6Ve+1SBCfxgmtIb1AVrPIoqd+nPSv+loMX8szQ0sVUhGngL7D5QPiXw=="
++    },
++    "d3-transition": {
++      "version": "1.3.2",
++      "resolved": "https://registry.npmjs.org/d3-transition/-/d3-transition-1.3.2.tgz",
++      "integrity": "sha512-sc0gRU4PFqZ47lPVHloMn9tlPcv8jxgOQg+0zjhfZXMQuvppjG6YuwdMBE0TuqCZjeJkLecku/l9R0JPcRhaDA==",
++      "requires": {
++        "d3-color": "1",
++        "d3-dispatch": "1",
++        "d3-ease": "1",
++        "d3-interpolate": "1",
++        "d3-selection": "^1.1.0",
++        "d3-timer": "1"
++      }
++    },
+     "damerau-levenshtein": {
+       "version": "1.0.6",
+       "resolved": "https://registry.npmjs.org/damerau-levenshtein/-/damerau-levenshtein-1.0.6.tgz",
+Index: qpoint-api/src/class/class.service.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {HttpException, HttpStatus, Injectable} from \"@nestjs/common\";\r\nimport {InjectRepository} from \"@nestjs/typeorm\";\r\nimport {Repository} from \"typeorm\";\r\nimport {ClassEntity} from \"./class.entity\";\r\nimport {\r\n    CreateClassDto,\r\n    DeleteClassDto,\r\n    RemoveStudentsDto,\r\n    RemoveTeachersDto,\r\n    UpdateStudentsDto,\r\n    UpdateTeachersDto\r\n} from \"./class.dto\";\r\nimport {StudentEntity} from \"../student/student.entity\";\r\nimport {StaffEntity} from \"../staff/staff.entity\";\r\n\r\n\r\n@Injectable()\r\nexport class ClassService {\r\n    constructor(\r\n        @InjectRepository(ClassEntity) private classRepository: Repository<ClassEntity>,\r\n        @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,\r\n        @InjectRepository(StudentEntity) private studentRepository: Repository<StudentEntity>,\r\n    ) {\r\n    }\r\n\r\n    async showAllClasses() {\r\n        const classes = await this.classRepository.find({relations: ['students', 'teachers']});\r\n        return classes;\r\n    }\r\n\r\n    async createNewClass(payload: CreateClassDto) {\r\n        const {className, createdByAdminId} = payload;\r\n        const admin = await this.staffRepository.findOne({where: {staffId: createdByAdminId}});\r\n        if (!admin) {\r\n            throw new HttpException(\r\n                'Admin does not exists',\r\n                HttpStatus.BAD_REQUEST,\r\n            );\r\n        }\r\n        const newClass = await this.classRepository.create({\"className\": className});\r\n        newClass.createdByAdmin = admin;\r\n        await this.classRepository.save(newClass);\r\n        return newClass.toResponseObject();\r\n    }\r\n\r\n    async deleteClass(payload: DeleteClassDto) {\r\n        const {classId} = payload;\r\n        const thisClass = await this.classRepository.findOne({where: {classId: classId}, relations: ['students']});\r\n        if (!thisClass) throw new HttpException(\r\n            `Class ${classId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n        if (thisClass.students) {\r\n            const students: StudentEntity[] = thisClass.students;\r\n            for (const student of students) {\r\n                await this.studentRepository.update(student.studentId, {class: null});\r\n            }\r\n        }\r\n        await this.classRepository.delete({classId: classId});\r\n        return {deletedClass: classId};\r\n    }\r\n\r\n    async classUpdateStudents(payload: UpdateStudentsDto) {\r\n        const {classId, studentIdList} = payload;\r\n        const students: StudentEntity[] = [];\r\n        for (const studentId of studentIdList) {\r\n            students.push(await (this.studentRepository.findOne({where: {studentId: studentId}})).then(res => {\r\n                if (!res) throw new HttpException(\r\n                    `Student with ID ${studentId} does not exists`,\r\n                    HttpStatus.BAD_REQUEST,\r\n                );\r\n                return res;\r\n            }));\r\n        }\r\n\r\n        const thisClass = await this.classRepository.findOne({where: {classId: classId}, relations: ['students']});\r\n        if (!thisClass) throw new HttpException(\r\n            `Class ${classId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n        thisClass.students = students;\r\n        await this.classRepository.save(thisClass)\r\n        return thisClass.toResponseObject();\r\n    }\r\n\r\n    async classRemoveStudents(payload: RemoveStudentsDto) {\r\n        const {classId, studentIdList} = payload;\r\n        const thisClass = await this.classRepository.findOne({where: {classId: classId}, relations: ['students']});\r\n        if (!thisClass) throw new HttpException(\r\n            `Class ${classId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n        for (const studentId of studentIdList) {\r\n            if (!thisClass.students.some(student => {\r\n                return +student.studentId === +studentId;\r\n            })) {\r\n                throw new HttpException(\r\n                    `Student ${studentId} does not exists`,\r\n                    HttpStatus.BAD_REQUEST,\r\n                );\r\n            }\r\n            thisClass.students = thisClass.students.filter(student => {\r\n                return student.studentId != studentId;\r\n            })\r\n        }\r\n        await this.classRepository.save(thisClass)\r\n        return {removedStudents: studentIdList};\r\n    }\r\n\r\n    async classUpdateTeachers(payload: UpdateTeachersDto) {\r\n        const {classId, teacherIdList} = payload;\r\n        const teachers: StaffEntity[] = [];\r\n        for (const teacherId of teacherIdList) {\r\n            teachers.push(await (this.staffRepository.findOne({where: {staffId: teacherId}})).then(res => {\r\n                if (!res) throw new HttpException(\r\n                    `Teacher with ID ${teacherId} does not exists`,\r\n                    HttpStatus.BAD_REQUEST,\r\n                );\r\n                return res;\r\n            }));\r\n        }\r\n        const thisClass = await this.classRepository.findOne({where: {classId: classId}, relations: ['teachers']});\r\n        if (!thisClass) throw new HttpException(\r\n            `Class ${classId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n        thisClass.teachers = teachers;\r\n        await this.classRepository.save(thisClass)\r\n        return thisClass.toResponseObject();\r\n    }\r\n\r\n    async classRemoveTeachers(payload: RemoveTeachersDto) {\r\n        const {classId, teacherIdList} = payload;\r\n        const thisClass = await this.classRepository.findOne({where: {classId: classId}, relations: ['teachers']});\r\n        if (!thisClass) throw new HttpException(\r\n            `Class ${classId} does not exists`,\r\n            HttpStatus.BAD_REQUEST,\r\n        );\r\n        for (const teacherId of teacherIdList) {\r\n            if (!thisClass.teachers.some(teacher => {\r\n                return +teacher.staffId === +teacherId;\r\n            })) {\r\n                throw new HttpException(\r\n                    `Teacher ${teacherId} does not exists`,\r\n                    HttpStatus.BAD_REQUEST,\r\n                );\r\n            }\r\n            thisClass.teachers = thisClass.teachers.filter(teacher => {\r\n                return teacher.staffId != teacherId;\r\n            })\r\n        }\r\n        await this.classRepository.save(thisClass)\r\n        return {removedTeachers: teacherIdList};\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-api/src/class/class.service.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-api/src/class/class.service.ts	(date 1591534952033)
+@@ -28,6 +28,11 @@
+         return classes;
+     }
+ 
++    async showOnlyAllClasses() {
++        const classes = await this.classRepository.find();
++        return classes;
++    }
++
+     async createNewClass(payload: CreateClassDto) {
+         const {className, createdByAdminId} = payload;
+         const admin = await this.staffRepository.findOne({where: {staffId: createdByAdminId}});
+Index: qpoint-web/package.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{\r\n  \"name\": \"qpoint-web\",\r\n  \"version\": \"0.0.0\",\r\n  \"scripts\": {\r\n    \"ng\": \"ng\",\r\n    \"start\": \"ng serve\",\r\n    \"build\": \"ng build\",\r\n    \"test\": \"ng test\",\r\n    \"lint\": \"ng lint\",\r\n    \"e2e\": \"ng e2e\"\r\n  },\r\n  \"private\": true,\r\n  \"dependencies\": {\r\n    \"@angular/animations\": \"~9.1.3\",\r\n    \"@angular/cdk\": \"^9.1.3\",\r\n    \"@angular/common\": \"~9.1.3\",\r\n    \"@angular/compiler\": \"~9.1.3\",\r\n    \"@angular/core\": \"~9.1.3\",\r\n    \"@angular/forms\": \"~9.1.3\",\r\n    \"@angular/material\": \"^9.1.3\",\r\n    \"@angular/platform-browser\": \"~9.1.3\",\r\n    \"@angular/platform-browser-dynamic\": \"~9.1.3\",\r\n    \"@angular/router\": \"~9.1.3\",\r\n    \"@date-io/date-fns\": \"^2.6.1\",\r\n    \"bootstrap\": \"^4.4.1\",\r\n    \"date-fns\": \"^2.0.0-beta.5\",\r\n    \"jquery\": \"^3.5.0\",\r\n    \"jspdf\": \"^1.5.3\",\r\n    \"ng-zorro-antd\": \"^9.0.2\",\r\n    \"ng2-search-filter\": \"^0.5.1\",\r\n    \"popper.js\": \"^1.16.1\",\r\n    \"rxjs\": \"~6.5.4\",\r\n    \"tslib\": \"^1.10.0\",\r\n    \"zone.js\": \"~0.10.2\"\r\n  },\r\n  \"devDependencies\": {\r\n    \"@angular-devkit/build-angular\": \"~0.901.3\",\r\n    \"@angular/cli\": \"~9.1.3\",\r\n    \"@angular/compiler-cli\": \"~9.1.3\",\r\n    \"@angular/language-service\": \"~9.1.3\",\r\n    \"@types/jasmine\": \"~3.5.0\",\r\n    \"@types/jasminewd2\": \"~2.0.3\",\r\n    \"@types/node\": \"^12.12.35\",\r\n    \"codelyzer\": \"^5.1.2\",\r\n    \"jasmine-core\": \"~3.5.0\",\r\n    \"jasmine-spec-reporter\": \"~4.2.1\",\r\n    \"karma\": \"~4.3.0\",\r\n    \"karma-chrome-launcher\": \"~3.1.0\",\r\n    \"karma-coverage-istanbul-reporter\": \"~2.1.0\",\r\n    \"karma-jasmine\": \"~2.0.1\",\r\n    \"karma-jasmine-html-reporter\": \"^1.4.2\",\r\n    \"protractor\": \"~5.4.3\",\r\n    \"ts-node\": \"~8.3.0\",\r\n    \"tslint\": \"~5.18.0\",\r\n    \"typescript\": \"~3.7.5\"\r\n  }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/package.json	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/package.json	(date 1591431857974)
+@@ -22,6 +22,7 @@
+     "@angular/platform-browser-dynamic": "~9.1.3",
+     "@angular/router": "~9.1.3",
+     "@date-io/date-fns": "^2.6.1",
++    "@swimlane/ngx-charts": "^14.0.0",
+     "bootstrap": "^4.4.1",
+     "date-fns": "^2.0.0-beta.5",
+     "jquery": "^3.5.0",
+Index: qpoint-web/src/app/class/service/class.service.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import {Injectable} from \"@angular/core\";\r\nimport {environment} from \"../../../environments/environment\";\r\nimport {HttpClient, HttpHeaders} from \"@angular/common/http\";\r\nimport {Router} from \"@angular/router\";\r\nimport {Observable} from \"rxjs\";\r\n\r\n@Injectable({\r\n  providedIn: 'root'\r\n})\r\n\r\nexport class ClassService {\r\n\r\n  baseUrl = environment.apiUrl;\r\n  httpOptions = {\r\n    headers: new HttpHeaders({\r\n      'Content-Type': 'application/json'\r\n    })\r\n  };\r\n\r\n  constructor(public http: HttpClient, public router: Router) {\r\n  }\r\n\r\n  showAllClasses(): Observable<any[]> {\r\n    return this.http.post<any[]>(this.baseUrl + '/class/show-all-classes', [], this.httpOptions);\r\n  }\r\n\r\n  createNewClass(payload): Observable<any> {\r\n    return this.http.post<any>(this.baseUrl + '/class/create-new-class', payload, this.httpOptions);\r\n  }\r\n\r\n  updateStudents(payload): Observable<any> {\r\n    return this.http.post<any>(this.baseUrl + '/class/update-students', payload, this.httpOptions);\r\n  }\r\n\r\n  updateTeachers(payload): Observable<any> {\r\n    return this.http.post<any>(this.baseUrl + '/class/update-teachers', payload, this.httpOptions);\r\n  }\r\n\r\n  deleteClass(payload): Observable<any> {\r\n    return this.http.post<any>(this.baseUrl + '/class/delete-class', payload, this.httpOptions);\r\n  }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- qpoint-web/src/app/class/service/class.service.ts	(revision c33c2d52046d36eb847e0950963a858aae6faf67)
++++ qpoint-web/src/app/class/service/class.service.ts	(date 1591534951857)
+@@ -40,5 +40,15 @@
+     return this.http.post<any>(this.baseUrl + '/class/delete-class', payload, this.httpOptions);
+   }
+ 
++  getStudentBehaviouralRecordsByClass(payload): Observable<any> {
++    return this.http.post<Observable<any>>(this.baseUrl + '/student-behaviour-record/get-student-behaviour-records-by-class', payload, this.httpOptions);
++  }
+ 
++  getStudentRankingByClass(payload): Observable<any> {
++    return this.http.post<Observable<any>>(this.baseUrl + '/student-behaviour-record/get-student-ranking-by-class', payload, this.httpOptions);
++  }
++
++  showOnlyAllClasses(): Observable<any[]> {
++    return this.http.post<any[]>(this.baseUrl + '/class/show-only-all-classes', [], this.httpOptions);
++  }
+ }
+diff --git qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.css qpoint-web/src/app/class/component/class-dashboard-page/class-dashboard-page.component.css
+new file mode 100644
+diff --git qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.css qpoint-web/src/app/class/component/class-behaviour-pie-chart/class-behaviour-pie-chart.component.css
+new file mode 100644
+diff --git qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.css qpoint-web/src/app/class/component/class-latest-record/class-latest-record.component.css
+new file mode 100644
+diff --git qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.css qpoint-web/src/app/class/component/class-leaderboard/class-leaderboard.component.css
+new file mode 100644
+diff --git qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.css qpoint-web/src/app/class/component/class-heat-map-calendar/class-heat-map-calendar.component.css
+new file mode 100644

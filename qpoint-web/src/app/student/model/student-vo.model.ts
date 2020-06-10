@@ -5,4 +5,5 @@ export interface StudentVoModel {
   groups: any[];
   class: any;
   parent: any;
+  profileImagePath: string;
 }

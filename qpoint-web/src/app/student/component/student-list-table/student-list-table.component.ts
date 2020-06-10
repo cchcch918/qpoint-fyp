@@ -1,7 +1,15 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
+import {
+  NzMessageService,
+  NzTableFilterFn,
+  NzTableFilterList,
+  NzTableSortFn,
+  NzTableSortOrder,
+  UploadFile
+} from "ng-zorro-antd";
 import {StudentService} from "../../service/student.service";
 import {StudentVoModel} from "../../model/student-vo.model";
+import {Observable, Observer} from "rxjs";
 
 
 interface ColumnItem {
@@ -59,12 +67,20 @@ export class StudentListTableComponent implements OnInit, OnChanges {
       name: 'Group',
       sortOrder: null,
     },
+    {
+      name: 'Action',
+      sortOrder: null,
+    },
   ];
 
   students: StudentVoModel[];
+  fileList: UploadFile[] = [];
+  isModalVisible: boolean;
+  uploadLoading: boolean
+  selectedStudent: StudentVoModel;
+  tableLoading: boolean;
 
-
-  constructor(private studentService: StudentService) {
+  constructor(private studentService: StudentService, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {
@@ -73,11 +89,75 @@ export class StudentListTableComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.update) {
-      this.studentService.showAllStudents().subscribe(res => {
-        this.students = res;
-      })
+      this.updateTable()
     }
   }
 
+  updateTable() {
+    this.tableLoading = true;
+    this.studentService.showAllStudents().subscribe(res => {
+      if (res) {
+        this.students = res;
+        this.tableLoading = false;
+      }
+    })
+  }
 
+
+  beforeUpload = (file: UploadFile) => {
+    return new Observable((observer: Observer<boolean>) => {
+      console.log("file", file)
+      const isImage = (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg');
+      if (!isImage) {
+        this.msg.error('You can only upload an image!');
+        observer.complete();
+        return;
+      }
+      this.fileList = this.fileList.concat(file);
+      observer.next(!isImage);
+      observer.complete();
+    });
+  };
+
+  handleCancel() {
+    this.isModalVisible = false
+    this.fileList = [];
+    this.selectedStudent = null;
+  }
+
+  handleOk() {
+
+    this.uploadLoading = true
+    const formData = new FormData();
+    this.fileList.forEach((file: any) => {
+      // const payload ={
+      //   studentId: this.selectedStudent.studentId
+      // }
+      formData.append('student', JSON.stringify(this.selectedStudent));
+      formData.append('image', file);
+
+    });
+
+    this.studentService.uploadStudentProfileImage(formData).subscribe(res => {
+      if (res) {
+        this.fileList = [];
+        this.uploadLoading = false;
+        this.msg.success("Successfully update student profile picture !")
+        this.updateTable()
+        this.handleCancel();
+      }
+    }, err => {
+      if (err) {
+        this.msg.error("Please try again later");
+        this.uploadLoading = false;
+      }
+    })
+  }
+
+  openUpdateModal(selectedStudent: StudentVoModel) {
+    this.isModalVisible = true
+    this.selectedStudent = selectedStudent;
+  }
 }
+
+

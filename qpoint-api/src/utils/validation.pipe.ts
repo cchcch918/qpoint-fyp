@@ -1,7 +1,7 @@
 import {ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform} from "@nestjs/common";
 import {plainToClass} from "class-transformer";
 import {validate} from 'class-validator';
-
+import {extname} from "path";
 
 @Injectable()
 export class ValidationPipe implements PipeTransform {
@@ -49,3 +49,24 @@ export class ValidationPipe implements PipeTransform {
         return true;
     }
 }
+
+export const editFileName = (req, file, callback) => {
+    const student = JSON.parse(req.body.student)
+    const fileExtName = extname(file.originalname);
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+    const fileName = `${student.studentId}-${student.fullName}-${year}${month}${day}${fileExtName}`
+    callback(null, fileName);
+};
+
+export const imageFileFilter = (req, file, callback) => {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+        return callback(new HttpException(
+            `Only image files are allowed`,
+            HttpStatus.BAD_REQUEST,
+        ), false);
+    }
+    callback(null, true);
+};

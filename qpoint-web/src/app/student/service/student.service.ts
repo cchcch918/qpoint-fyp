@@ -43,5 +43,17 @@ export class StudentService {
     });
   }
 
+  uploadStudentProfileImage(formData: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/student/upload-student-profile-image', formData, {
+      headers: new HttpHeaders({
+        'enctype': 'multipart/form-data',
+      })
+    });
+  }
+
+  getStudentProfileImage(fileName: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/student/get-student-profile-image/${fileName}`, {responseType: "blob"});
+  }
+
 
 }

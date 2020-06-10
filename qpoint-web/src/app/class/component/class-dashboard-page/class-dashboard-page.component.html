@@ -8,6 +8,10 @@
                  nzValue="{{class.classId}}"></nz-option>
     </nz-select>
 
+    <ng-container *ngIf="selectedClassId == null">
+      <nz-alert class="my-2" nzMessage="Please select a class to continue" nzShowIcon nzType="info"></nz-alert>
+    </ng-container>
+
     <ng-container *ngIf="selectedClassId != null">
       <app-class-behaviour-pie-chart
         [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-behaviour-pie-chart>

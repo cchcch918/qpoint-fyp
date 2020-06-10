@@ -1,4 +1,5 @@
-<nz-table #filterTable [nzData]="students" class="my-5" nzSize="middle" nzTableLayout="fixed">
+<nz-table #filterTable [nzData]="students" [nzLoading]="tableLoading" class="my-5" nzSize="middle"
+          nzTableLayout="fixed">
   <thead>
   <tr>
     <th
@@ -23,7 +24,49 @@
     <td>{{ data.parent.email}}</td>
     <td>{{ data.class ? data.class.className : "-" }}</td>
     <td>{{ data.groups.length > 0 ? data.groups.toString() : "-" }}</td>
+    <td>
+      <div *ngIf="data?.profileImagePath; else noProfilePicTemplate"><a (click)="openUpdateModal(data)" nz-icon
+                                                                        nzTheme="outline"
+                                                                        nzType="upload"></a></div>
+      <ng-template #noProfilePicTemplate>
+        <nz-badge [nzCount]="iconTemplate">
+          <a (click)="openUpdateModal(data)" nz-icon nzTheme="outline" nzType="upload"></a>
+        </nz-badge>
+        <ng-template #iconTemplate>
+          <i class="ant-scroll-number-custom-component" nz-icon nz-tooltip
+             nzTooltipTitle="This student dont have a profile image. Please upload now" nzType="exclamation-circle"
+             style="color: #f5222d"></i>
+        </ng-template>
+      </ng-template>
+
+    </td>
 
   </tr>
   </tbody>
 </nz-table>
+
+<nz-modal [(nzVisible)]="isModalVisible" [nzClosable]="false" [nzFooter]="modalFooter">
+
+
+  <nz-upload
+    [(nzFileList)]="fileList"
+    [nzBeforeUpload]="beforeUpload"
+    [nzDisabled]="fileList.length >= 1"
+    nzAction="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+    nzType="drag"
+  >
+    <p class="ant-upload-drag-icon">
+      <i nz-icon nzType="inbox"></i>
+    </p>
+    <p class="ant-upload-text">Click or drag image to this area to upload</p>
+    <p class="ant-upload-hint">
+      Only jpg, jpeg and png format is allowed
+    </p>
+  </nz-upload>
+
+  <ng-template #modalFooter>
+    <button (click)="handleCancel()" nz-button nzType="default">Cancel</button>
+    <button (click)="handleOk()" [nzLoading]="uploadLoading" nz-button nzType="primary">Upload</button>
+  </ng-template>
+
+</nz-modal>

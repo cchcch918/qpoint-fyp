@@ -1,5 +1,6 @@
 import {IsNotEmpty} from "class-validator";
 
+
 export class CreateStudentDto {
     @IsNotEmpty()
     fullName: string;
@@ -7,4 +8,6 @@ export class CreateStudentDto {
     @IsNotEmpty()
     parentEmail: string;
 }
+
+
 

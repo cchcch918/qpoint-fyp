@@ -9,6 +9,7 @@
   <tr>
     <th>Student</th>
     <th [nzSortFn]="sortFn" [nzSort]="'descend'">Date Given</th>
+    <th>Behaviour</th>
     <th>Points</th>
   </tr>
   </thead>
@@ -16,6 +17,7 @@
   <tr *ngFor="let data of smallTable.data">
     <td>{{ data.student.fullName }}</td>
     <td>{{ data.dateGiven  | date:'medium'}}</td>
+    <td>{{ data.behaviour.behaviourName }}</td>
     <td>{{ data.behaviour.behaviourPoint }}</td>
   </tr>
   </tbody>

@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {StudentEntity} from "./student.entity";
@@ -67,6 +67,21 @@ export class StudentService {
             }));
         });
         return (await Promise.all(promises));
+    }
+
+    async uploadStudentProfileImage(payload) {
+        const {filename} = payload
+        const studentId = filename.split('-')[0]
+        const student = await this.studentRepository.findOne({where: {studentId: studentId}});
+        if (!student) {
+            throw new HttpException(
+                'Student does not exists',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        student.profileImagePath = filename;
+        await this.studentRepository.save(student);
+        return {updatedStudentImage: studentId};
     }
 
 

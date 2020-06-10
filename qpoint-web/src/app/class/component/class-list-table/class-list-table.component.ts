@@ -84,56 +84,54 @@ export class ClassListTableComponent implements OnInit, OnChanges {
     this.tableLoading = true;
     this.studentService.showAllStudents().subscribe(res => {
       this.allStudents = res
-    })
+      this.staffService.showAllStaffs().subscribe(res => {
+        this.allStaffs = res
+        this.classService.showAllClasses().subscribe(res => {
+          this.allClasses = res;
+          this.allClasses.forEach(eachClass => {
+            let studentInClass = eachClass.students.map(student => {
+              return student.studentId;
+            });
+            let teacherInClass = eachClass.teachers.map(teacher => {
+              return teacher.staffId;
+            });
+            let studentFilterOption;
+            let studentsOption: Array<{ value: number; label: string }> = [];
+            if (this.allStudents) {
+              studentFilterOption = this.allStudents.filter(student => {
+                return student.class?.classId == eachClass.classId || student.class == null || student.class.length == 0
+              })
+              studentsOption = studentFilterOption.map(student => {
+                return {
+                  value: student.studentId,
+                  label: `${student.studentId} - ${student.fullName}`
+                };
+              })
+            }
 
-    this.staffService.showAllStaffs().subscribe(res => {
-      this.allStaffs = res
-    })
+            let teachersOption: Array<{ value: number; label: string }> = [];
+            if (this.allStaffs) {
+              teachersOption = this.allStaffs.map(teacher => {
+                return {
+                  value: teacher.staffId,
+                  label: `${teacher.staffId} - ${teacher.username}`
+                };
+              })
+            }
+            eachClass['showEditStudentsColumn'] = false;
+            eachClass['studentsInClass'] = studentInClass;
+            eachClass['studentsOption'] = studentsOption;
 
-    this.classService.showAllClasses().subscribe(res => {
-      this.allClasses = res;
-      this.allClasses.forEach(eachClass => {
-        let studentInClass = eachClass.students.map(student => {
-          return student.studentId;
-        });
-        let teacherInClass = eachClass.teachers.map(teacher => {
-          return teacher.staffId;
-        });
-        let studentFilterOption;
-        let studentsOption: Array<{ value: number; label: string }> = [];
-        if (this.allStudents) {
-          studentFilterOption = this.allStudents.filter(student => {
-            return student.class?.classId == eachClass.classId || student.class == null || student.class.length == 0
+            eachClass['showEditTeachersColumn'] = false;
+            eachClass['teachersInClass'] = teacherInClass;
+            eachClass['teachersOption'] = teachersOption;
           })
-          studentsOption = studentFilterOption.map(student => {
-            return {
-              value: student.studentId,
-              label: `${student.studentId} - ${student.fullName}`
-            };
-          })
-        }
+          this.tableLoading = false;
 
-        let teachersOption: Array<{ value: number; label: string }> = [];
-        if (this.allStaffs) {
-          teachersOption = this.allStaffs.map(teacher => {
-            return {
-              value: teacher.staffId,
-              label: `${teacher.staffId} - ${teacher.username}`
-            };
-          })
-        }
-        eachClass['showEditStudentsColumn'] = false;
-        eachClass['studentsInClass'] = studentInClass;
-        eachClass['studentsOption'] = studentsOption;
-
-        eachClass['showEditTeachersColumn'] = false;
-        eachClass['teachersInClass'] = teacherInClass;
-        eachClass['teachersOption'] = teachersOption;
+        })
       })
-      console.log(this.allClasses)
-      this.tableLoading = false;
-
     })
+
   }
 
   updateStudents(thisClass: ClassVoModel) {

@@ -27,6 +27,19 @@ export class StudentQrcodeListComponent implements OnInit {
       if (res) {
         this.studentQrList = res;
         this.qrCodeIsLoading = false
+        this.studentQrList.forEach(studentQr => {
+          if (studentQr.student.profileImagePath) {
+            this.studentService.getStudentProfileImage(studentQr.student.profileImagePath).subscribe(res => {
+              let reader = new FileReader();
+              reader.addEventListener("load", () => {
+                studentQr.image = reader.result;
+              }, false);
+              if (res) {
+                reader.readAsDataURL(res);
+              }
+            })
+          }
+        })
       }
     })
   }
@@ -50,4 +63,5 @@ export class StudentQrcodeListComponent implements OnInit {
       doc.save("students.pdf");
     })
   }
+
 }

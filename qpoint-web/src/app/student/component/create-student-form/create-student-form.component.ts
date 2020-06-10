@@ -82,7 +82,6 @@ export class CreateStudentFormComponent implements OnInit {
     this.fileList.forEach((file: any) => {
       formData.append('csvFile', file);
     });
-    console.log('formdata', formData);
     this.uploading = true;
     this.studentService.createNewStudentsFromExcel(formData).subscribe(res => {
       if (res) {

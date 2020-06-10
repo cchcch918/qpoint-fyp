@@ -1,8 +1,21 @@
-import {Body, Controller, Post, UploadedFiles, UseInterceptors, UsePipes} from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    Res,
+    UploadedFile,
+    UploadedFiles,
+    UseInterceptors,
+    UsePipes
+} from "@nestjs/common";
 import {StudentService} from "./student.service";
 import {CreateStudentDto} from "./student.dto";
-import {ValidationPipe} from "../utils/validation.pipe";
-import {AnyFilesInterceptor} from "@nestjs/platform-express";
+import {editFileName, imageFileFilter, ValidationPipe} from "../utils/validation.pipe";
+import {AnyFilesInterceptor, FileInterceptor} from "@nestjs/platform-express";
+import {diskStorage} from 'multer';
+
 
 @Controller('student')
 export class StudentController {
@@ -31,4 +44,22 @@ export class StudentController {
         return this.studentService.createNewStudentsFromExcel(csvFiles);
     }
 
+    @Post('upload-student-profile-image')
+    @UseInterceptors(FileInterceptor('image', {
+        storage: diskStorage({
+            destination: './assets/student-profile',
+            filename: editFileName,
+        }),
+        fileFilter: imageFileFilter,
+    }))
+    uploadStudentProfileImage(@UploadedFile() image) {
+        return this.studentService.uploadStudentProfileImage(image);
+    }
+
+    @Get('get-student-profile-image/:imgpath')
+    seeUploadedFile(@Param('imgpath') image, @Res() res) {
+        return res.sendFile(image, {root: './assets/student-profile'});
+    }
+
 }
+

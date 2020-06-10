@@ -21,7 +21,12 @@
               <img [src]="studentQr.qrCode" alt="{{studentQr.student.fullName}}+'s qrCode'"/>
             </ng-template>
             <ng-template #avatarTemplate>
-              <nz-avatar [nzSize]="'large'" nzSrc="../../../../assets/photo.jpg"></nz-avatar>
+              <div *ngIf="studentQr?.image ; else noProfilePicTemplate">
+                <nz-avatar [nzSize]="'large'" nzSrc="{{studentQr.image}}"></nz-avatar>
+              </div>
+              <ng-template #noProfilePicTemplate>
+                <nz-avatar [nzIcon]="'user'" [nzSize]="'large'"></nz-avatar>
+              </ng-template>
             </ng-template>
             <ng-template #cardDescription>
               <div nz-row>
@@ -37,6 +42,8 @@
       </div>
     </nz-spin>
   </div>
+
+
 </app-side-navigation-bar>
 
 

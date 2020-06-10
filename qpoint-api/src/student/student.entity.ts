@@ -62,6 +62,9 @@ export class StudentEntity {
     })
     badges: BadgeEntity[];
 
+    @Column({name: 'profile_image_path', nullable: true})
+    profileImagePath: string;
+
 
     toResponseObject(): any {
         const {studentId, dateCreated, fullName, parent} = this;
