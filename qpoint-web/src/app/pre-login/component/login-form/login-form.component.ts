@@ -2,9 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LoginService} from "../../../core/service/login.service";
 import {Router} from "@angular/router";
+import {NzMessageService} from "ng-zorro-antd";
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-form',
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.css']
 })
@@ -12,7 +13,7 @@ export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
 
 
-  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router) {
+  constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {
@@ -38,7 +39,9 @@ export class LoginFormComponent implements OnInit {
         this.router.navigate(['/student/student-qrcode-list']);
       },
       (error) => {
-        throw error
+        if (error) {
+          this.msg.error('Please try again later. ' + error.error.errorMessage);
+        }
       }
     )
   }

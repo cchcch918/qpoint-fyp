@@ -2,20 +2,23 @@
   <div class="py-5" class="container justify-content-center">
     <input [(ngModel)]="searchStudentName" nz-input placeholder="Search student's name"/>
     <div class="m-4" nz-row nzJustify="center" nzType="flex">
-      <button (click)="downloadPdf()" [nzLoading]="downloadIsLoading" [nzSize]="'large'" nz-button nz-col
+      <button (nzOnConfirm)="downloadStudent()" [nzLoading]="downloadIsLoading"
+              [nzSize]="'large'"
+              nz-button
+              nz-col nz-popconfirm nzPopconfirmTitle="Are you sure you want to download the student list below?"
               nzType="default">
         <i nz-icon nzType="download"></i>Download
       </button>
     </div>
     <ng-template #indicatorTemplate><i class="mt-5" nz-icon nzType="loading" style="font-size: 50px;"></i></ng-template>
     <nz-spin [nzIndicator]="indicatorTemplate" [nzSpinning]="qrCodeIsLoading">
-      <div #downloadContent nz-row nzJustify="center" nzType="flex">
-        <div *ngFor="let studentQr of studentQrList | filter:searchStudentName"
+      <div nz-row nzJustify="center" nzType="flex">
+        <div *ngFor="let studentQr of studentQrList | filter:searchStudentName ; let i = index"
              nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
-          <nz-card (click)="createCopySuccessMessage(studentQr.student.fullName)"
+          <nz-card (click)="createCopySuccessMessage(studentQr.student.fullName)" id="{{ 'downloadContent' + i }}"
                    [cdkCopyToClipboard]="studentQr.qrCode"
                    [nzCover]="coverTemplate" [nzHoverable]="true" class="m-2">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzDescription]="cardDescription"
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzDescription]="cardDescription" class="studentName"
                           nzTitle="{{studentQr.student.fullName}}"></nz-card-meta>
             <ng-template #coverTemplate>
               <img [src]="studentQr.qrCode" alt="{{studentQr.student.fullName}}+'s qrCode'"/>

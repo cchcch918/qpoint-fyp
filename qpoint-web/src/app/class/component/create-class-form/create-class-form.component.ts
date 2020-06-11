@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NzMessageService, NzModalService} from "ng-zorro-antd";
 import {HttpClient} from "@angular/common/http";
 import {ClassService} from "../../service/class.service";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-class-form',
@@ -18,7 +17,7 @@ export class CreateClassFormComponent implements OnInit {
   createClassLoading: boolean;
 
 
-  constructor(private fb: FormBuilder, private classService: ClassService, private modalService: NzModalService, private http: HttpClient, private msg: NzMessageService, private router: Router) {
+  constructor(private fb: FormBuilder, private classService: ClassService, private modalService: NzModalService, private http: HttpClient, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {

@@ -7,6 +7,7 @@ import {CoreModule} from "../core/core.module";
 import {RegisterFormComponent} from "./component/register-form/register-form.component";
 import {PasswordRecoveryFormComponent} from './component/password-recovery-form/password-recovery-form.component';
 import {ForgetPasswordVerificationComponent} from "./component/forget-password-verification/forget-password-verification.component";
+import {PreLoginMainMenuComponent} from './component/pre-login-main-menu/pre-login-main-menu.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import {ForgetPasswordVerificationComponent} from "./component/forget-password-v
     LoginFormComponent,
     RegisterFormComponent,
     PasswordRecoveryFormComponent,
-    ForgetPasswordVerificationComponent
+    ForgetPasswordVerificationComponent,
+    PreLoginMainMenuComponent
   ],
   imports: [
     CoreModule,
