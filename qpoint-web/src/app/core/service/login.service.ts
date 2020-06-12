@@ -1,9 +1,10 @@
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {Injectable} from "@angular/core";
-import {LoginStaffVoModel} from "../../pre-login/model/login-staff-vo.model";
+import {StaffVoModel} from "../../pre-login/model/staff-vo.model";
 import {environment} from "../../../environments/environment";
 import {Router} from "@angular/router";
+import {NzMessageService} from "ng-zorro-antd";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class LoginService {
     })
   };
 
-  constructor(public http: HttpClient, public router: Router) {
+  constructor(public http: HttpClient, public router: Router, private msg: NzMessageService) {
   }
 
   get token(): string {
@@ -41,27 +42,26 @@ export class LoginService {
     return this.http.post<any>(this.baseUrl + '/staff/get-admin-account-details', payload, this.httpOptions)
   }
 
-  staffRegister(staffDetails: any): Observable<any> {
+  adminRegister(staffDetails: any): Observable<any> {
     return this.http.post<any>(this.baseUrl + '/staff/auth/register', staffDetails, this.httpOptions)
   }
 
-  staffLogin(staffDetails: any): Observable<LoginStaffVoModel> {
-    return this.http.post<any>(this.baseUrl + '/staff/auth/login', staffDetails, this.httpOptions);
+  adminLogin(staffDetails: any): Observable<StaffVoModel> {
+    return this.http.post<any>(this.baseUrl + '/staff/admin-login', staffDetails, this.httpOptions);
   }
 
   changePassword(payload: any): Observable<any> {
-    console.log("payload1", payload)
     return this.http.post<any>(this.baseUrl + '/staff/auth/change-password', payload, this.httpOptions);
   }
 
-  staffLogout() {
+  adminLogout() {
     localStorage.removeItem('login_token');
     this.token = null;
     this.router.navigate(['/pre-login']);
+    this.msg.success("Logout successful")
   }
 
   checkStaffExists(staffUsername: string) {
-    console.log('servioce')
     return this.http.get<any>(this.baseUrl + '/staff/api/check-staff-exists/' + staffUsername, this.httpOptions);
   }
 

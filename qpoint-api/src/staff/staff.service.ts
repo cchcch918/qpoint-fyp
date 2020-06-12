@@ -5,6 +5,7 @@ import {StaffEntity} from "./staff.entity";
 import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
 import {sendEmail} from "../utils/send-forget-password-email";
 import {AuthGuard} from "../utils/auth.guard";
+import {AppConstant} from "../utils/constant/app.constant";
 
 @Injectable()
 export class StaffService {
@@ -41,25 +42,57 @@ export class StaffService {
 
     async login(data: StaffLoginDto) {
         const {username, password} = data;
-        const user = await this.staffRepository.findOne({where: {username}});
-        if (!user || !(await user.comparePassword(password))) {
+        const staff = await this.staffRepository.findOne({where: {username: username}});
+        if (!staff) {
             throw new HttpException(
-                'Invalid username/password',
+                'Invalid username',
                 HttpStatus.BAD_REQUEST,
             );
         }
-        return user.toResponseObject();
+        if (!(await staff.comparePassword(password))) {
+            throw new HttpException(
+                'Invalid password',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        return staff.toResponseObject();
     }
 
-    async register(data: StaffRegisterDto) {
+    async adminLogin(data: StaffLoginDto) {
+        const {username, password} = data;
+        const admin = await this.staffRepository.findOne({where: {username: username}});
+        if (!admin) {
+            throw new HttpException(
+                'Invalid username',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        if (!(await admin.comparePassword(password))) {
+            throw new HttpException(
+                'Invalid password',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        if (admin.isAdmin !== AppConstant.IS_ADMIN || admin.isAdmin == null) {
+            throw new HttpException(
+                'Only admin is allow to login',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        return admin.toResponseObject();
+    }
+
+
+    async adminRegister(data: StaffRegisterDto) {
         const {username} = data;
-        let user = await this.staffRepository.findOne({where: {username}});
-        if (user) {
+        let admin = await this.staffRepository.findOne({where: {username}});
+        if (admin) {
             throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
         }
-        user = await this.staffRepository.create(data);
-        await this.staffRepository.save(user);
-        return user.toResponseObject();
+        admin = await this.staffRepository.create(data);
+        admin.isAdmin = AppConstant.IS_ADMIN
+        await this.staffRepository.save(admin);
+        return admin.toResponseObject();
     }
 
 

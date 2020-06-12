@@ -41,6 +41,10 @@
           <li [routerLink]="" nz-menu-item>Manage Notification</li>
         </ul>
       </li>
+      <li (click)="logout()" nz-menu-item style="color: red;">
+        <i nz-icon nzType="logout"></i>
+        <span>Logout</span>
+      </li>
     </ul>
   </nz-sider>
   <nz-layout>

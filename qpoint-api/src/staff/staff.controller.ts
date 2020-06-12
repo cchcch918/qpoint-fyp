@@ -40,10 +40,16 @@ export class StaffController {
         return this.staffService.login(data);
     }
 
+    @Post('admin-login')
+    @UsePipes(new ValidationPipe())
+    adminLogin(@Body() data: StaffLoginDto) {
+        return this.staffService.adminLogin(data);
+    }
+
     @Post('auth/register')
     @UsePipes(new ValidationPipe())
-    register(@Body() data: StaffRegisterDto) {
-        return this.staffService.register(data);
+    adminRegister(@Body() data: StaffRegisterDto) {
+        return this.staffService.adminRegister(data);
     }
 
     @Post('auth/change-password')

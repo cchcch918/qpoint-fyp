@@ -79,7 +79,7 @@ export class RegisterFormComponent implements OnInit {
       email: this.registerForm.controls['email'].value,
     };
 
-    this.loginService.staffRegister(staffDetails).subscribe(
+    this.loginService.adminRegister(staffDetails).subscribe(
       res => {
         if (res) {
           const modal: NzModalRef = this.modalService.create({

@@ -44,7 +44,6 @@ export class StudentListTableComponent implements OnInit, OnChanges {
       sortFn: (a: StudentVoModel, b: StudentVoModel) => a.fullName.localeCompare(b.fullName),
       filterMultiple: true,
       filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),
-      width: "15vh",
 
     },
     {
@@ -60,16 +59,29 @@ export class StudentListTableComponent implements OnInit, OnChanges {
       sortOrder: null,
     },
     {
+      name: 'Total Points',
+      sortOrder: null,
+      sortFn: (a: StudentVoModel, b: StudentVoModel) => a.totalBehaviourPoint - (b.totalBehaviourPoint),
+      width: "10vh",
+
+    },
+    {
       name: 'Class',
       sortOrder: null,
+      width: "10vh",
+
     },
     {
       name: 'Group',
       sortOrder: null,
+      width: "10vh",
+
     },
     {
       name: 'Action',
       sortOrder: null,
+      width: "10vh",
+
     },
   ];
 
@@ -130,9 +142,6 @@ export class StudentListTableComponent implements OnInit, OnChanges {
     this.uploadLoading = true
     const formData = new FormData();
     this.fileList.forEach((file: any) => {
-      // const payload ={
-      //   studentId: this.selectedStudent.studentId
-      // }
       formData.append('student', JSON.stringify(this.selectedStudent));
       formData.append('image', file);
 
@@ -157,6 +166,18 @@ export class StudentListTableComponent implements OnInit, OnChanges {
   openUpdateModal(selectedStudent: StudentVoModel) {
     this.isModalVisible = true
     this.selectedStudent = selectedStudent;
+  }
+
+  deleteStudent(data: StudentVoModel) {
+    let payload = {studentId: data.studentId}
+    this.studentService.deleteStudent(payload).subscribe(res => {
+        console.log(res);
+        this.msg.success(`Student ${data.fullName} deleted`);
+        this.updateTable();
+      },
+      error => {
+        this.msg.error('Please try again later' + error?.errorMessage);
+      })
   }
 }
 

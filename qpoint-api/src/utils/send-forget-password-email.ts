@@ -3,7 +3,7 @@ import {StaffEntity} from "../staff/staff.entity";
 
 export const sendEmail = async (user: StaffEntity) => {
 
-
+console.log("[email]:", user.email)
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,

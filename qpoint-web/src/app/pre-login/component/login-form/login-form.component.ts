@@ -11,6 +11,7 @@ import {NzMessageService} from "ng-zorro-antd";
 })
 export class LoginFormComponent implements OnInit {
   loginForm: FormGroup;
+  loginLoading: boolean;
 
 
   constructor(private fb: FormBuilder, private loginService: LoginService, private router: Router, private msg: NzMessageService) {
@@ -33,14 +34,17 @@ export class LoginFormComponent implements OnInit {
       username: this.loginForm.controls['username'].value,
       password: this.loginForm.controls['password'].value
     };
-    this.loginService.staffLogin(staffLoginVo).subscribe(
+    this.loginService.adminLogin(staffLoginVo).subscribe(
       (res) => {
         this.loginService.token = res.token;
         this.router.navigate(['/student/student-qrcode-list']);
+        this.loginLoading = false
       },
       (error) => {
         if (error) {
-          this.msg.error('Please try again later. ' + error.error.errorMessage);
+          this.msg.error(error.error.errorMessage + 'Please try again later. ');
+          this.loginLoading = false
+
         }
       }
     )

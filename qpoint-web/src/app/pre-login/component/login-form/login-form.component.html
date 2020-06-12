@@ -19,7 +19,7 @@
         <nz-form-item>
           <nz-form-control>
             <a (click)=forgetPassword() class="login-form-forgot" class="login-form-forgot">Forgot password</a>
-            <button [disabled]="!loginForm.valid" nz-button nzType="primary">Log in</button>
+            <button [disabled]="!loginForm.valid" [nzLoading]="loginLoading" nz-button nzType="primary">Log in</button>
             Or
             <a (click)="registerStaff()">register now!</a>
           </nz-form-control>
