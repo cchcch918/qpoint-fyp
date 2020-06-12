@@ -35,6 +35,10 @@ export class StudentService {
     return this.http.post<any>(this.baseUrl + '/student/create-new-student', payload, this.httpOptions);
   }
 
+  deleteStudent(payload: any): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/student/delete-student', payload, this.httpOptions);
+  }
+
   createNewStudentsFromExcel(payload: any): Observable<any> {
     return this.http.post<any>(this.baseUrl + '/student/create-new-students-from-excel', payload, {
       headers: new HttpHeaders({

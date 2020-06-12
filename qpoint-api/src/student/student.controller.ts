@@ -11,7 +11,7 @@ import {
     UsePipes
 } from "@nestjs/common";
 import {StudentService} from "./student.service";
-import {CreateStudentDto} from "./student.dto";
+import {CreateStudentDto, DeleteStudentDto} from "./student.dto";
 import {editFileName, imageFileFilter, ValidationPipe} from "../utils/validation.pipe";
 import {AnyFilesInterceptor, FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from 'multer';
@@ -26,6 +26,12 @@ export class StudentController {
     @UsePipes(new ValidationPipe())
     createNewStudent(@Body() student: CreateStudentDto) {
         return this.studentService.createNewStudent(student);
+    }
+
+    @Post('delete-student')
+    @UsePipes(new ValidationPipe())
+    deleteStudent(@Body() student: DeleteStudentDto) {
+        return this.studentService.deleteStudent(student);
     }
 
     @Post('show-all-students-qrcode')

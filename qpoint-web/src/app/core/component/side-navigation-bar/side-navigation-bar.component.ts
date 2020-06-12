@@ -1,5 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import {LoginService} from "../../service/login.service";
 
 @Component({
   selector: 'app-side-navigation-bar',
@@ -14,7 +15,7 @@ export class SideNavigationBarComponent implements OnInit {
   foldIcon: string = 'menu-fold'
   private WIDTH_BREAKPOINT = 500;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private loginService: LoginService) {
   }
 
   ngOnInit(): void {
@@ -53,6 +54,10 @@ export class SideNavigationBarComponent implements OnInit {
       this.isCollapsed ? this.foldIcon = 'menu-unfold' : this.foldIcon = 'menu-fold';
     }
 
+  }
+
+  logout() {
+    this.loginService.adminLogout();
   }
 }
 

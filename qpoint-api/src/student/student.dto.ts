@@ -9,5 +9,10 @@ export class CreateStudentDto {
     parentEmail: string;
 }
 
+export class DeleteStudentDto {
+    @IsNotEmpty()
+    studentId: number;
+}
+
 
 

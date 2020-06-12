@@ -5,18 +5,19 @@ import {StudentEntity} from "./student.entity";
 import * as QRCode from 'qrcode'
 import * as XLSX from 'xlsx';
 
-import {CreateStudentDto} from "./student.dto";
+import {CreateStudentDto, DeleteStudentDto} from "./student.dto";
 import {sendParentsLoginEmail} from "../utils/send-parents-account-login-email";
 import {ParentEntity} from "../parent/parent.entity";
+import {StudentBehaviourRecordService} from "../student-behaviour-record/student-behaviour-record.service";
 
 
 @Injectable()
 export class StudentService {
     constructor(@InjectRepository(StudentEntity) private studentRepository: Repository<StudentEntity>,
                 @InjectRepository(ParentEntity) private parentRepository: Repository<ParentEntity>,
+                private studentBehaviourRecordService: StudentBehaviourRecordService
     ) {
     }
-
 
     async createNewStudent(payload: CreateStudentDto) {
         const {fullName, parentEmail} = payload;
@@ -54,7 +55,13 @@ export class StudentService {
 
     async showAllStudents() {
         const students = await this.studentRepository.find({relations: ['groups', 'class', 'parent']});
-        return students;
+        const promises: any[] = [];
+        for (const student of students) {
+            const payload = {studentList: [student.studentId]}
+            student['totalBehaviourPoint'] = (await this.studentBehaviourRecordService.getStudentsPoint(payload))[0]['totalBehaviourPoint'];
+            promises.push(student);
+        }
+        return (await Promise.all(promises));
     }
 
     async showAllStudentsQrCode() {
@@ -68,6 +75,20 @@ export class StudentService {
         });
         return (await Promise.all(promises));
     }
+
+    async deleteStudent(payload: DeleteStudentDto) {
+        const {studentId} = payload;
+        const student = await this.studentRepository.findOne({where: {studentId: studentId}});
+        if (!student) {
+            throw new HttpException(
+                'Student does not exists',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        await this.studentRepository.delete({studentId: studentId});
+        return {deletedStudent: studentId};
+    }
+
 
     async uploadStudentProfileImage(payload) {
         const {filename} = payload

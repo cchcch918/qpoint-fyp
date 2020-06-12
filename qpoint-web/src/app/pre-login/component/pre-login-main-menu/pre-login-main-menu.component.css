@@ -1,0 +1,15 @@
+[nz-carousel-content] {
+  text-align: center;
+  line-height: 100%;
+  background: #364d79;
+  color: #fff;
+  overflow: hidden
+}
+
+.logo {
+  align-content: center;
+
+  height: auto;
+  width: 60%;
+}
+

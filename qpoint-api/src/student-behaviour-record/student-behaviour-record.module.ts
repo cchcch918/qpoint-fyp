@@ -12,6 +12,8 @@ import {ClassEntity} from "../class/class.entity";
     imports: [TypeOrmModule.forFeature([StudentBehaviourRecordEntity, StudentEntity, BehaviourEntity, StaffEntity, ClassEntity])],
     controllers: [StudentBehaviourRecordController],
     providers: [StudentBehaviourRecordService],
+    exports: [StudentBehaviourRecordService]
+
 })
 export class StudentBehaviourRecordModule {
 }

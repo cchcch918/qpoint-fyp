@@ -44,6 +44,9 @@ export class StaffEntity {
     @JoinColumn({name: 'school_id'})
     school: SchoolEntity;
 
+    @Column({name: 'is_admin', nullable: true})
+    isAdmin: string;
+
     @Column({name: 'reset_password_token', nullable: true})
     resetPasswordToken: string;
 
@@ -78,9 +81,9 @@ export class StaffEntity {
     }
 
     toResponseObject(): any {
-        const {staffId, dateCreated, username, email, token} = this;
+        const {staffId, dateCreated, username, email, token, isAdmin} = this;
         const responseObject = {
-            staffId, dateCreated, username, email, token
+            staffId, dateCreated, username, email, token, isAdmin
         };
         return responseObject;
     }

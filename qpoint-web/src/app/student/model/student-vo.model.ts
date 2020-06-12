@@ -6,4 +6,5 @@ export interface StudentVoModel {
   class: any;
   parent: any;
   profileImagePath: string;
+  totalBehaviourPoint?: number;
 }

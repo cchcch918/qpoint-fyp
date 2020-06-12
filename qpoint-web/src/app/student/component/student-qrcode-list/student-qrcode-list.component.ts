@@ -2,7 +2,10 @@ import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {StudentService} from "../../service/student.service";
 import {StudentQrVoModel} from "../../model/student-qr-vo.model";
 import {NzMessageService} from "ng-zorro-antd";
-import * as JsPdf from 'jspdf';
+import html2canvas from "html2canvas";
+import * as JSZip from "jszip";
+import {saveAs} from '@progress/kendo-file-saver';
+
 
 @Component({
   selector: 'app-student-qrcode-list',
@@ -48,20 +51,46 @@ export class StudentQrcodeListComponent implements OnInit {
     this.message.create('success', studentName + `'s Qr Code copied! `);
   }
 
-  downloadPdf() {
+  async downloadStudent() {
     this.downloadIsLoading = true;
-    let doc = new JsPdf();
-    doc.fromHTML(this.downloadContent.nativeElement.innerHTML, 15, 15, {
-      'width': 190,
-      'elementHandlers': {
-        '#editor': (element, renderer) => {
-          return true
-        }
+    let cardNumber = 0
+    let promise = [];
+    while (document.getElementById("downloadContent" + cardNumber) !== null) {
+      cardNumber++
+    }
+    for (let i = 0; i < cardNumber; i++) {
+      promise.push(this.generateCanvas(i))
+    }
+    this.imageToZip(await Promise.all(promise))
+  }
+
+  async generateCanvas(id: number) {
+    let canvas = await html2canvas(document.getElementById("downloadContent" + id))
+    const studentName = (document.getElementById("downloadContent" + id).getElementsByClassName("studentName").item(0).getAttribute("ng-reflect-nz-title"))
+    const imgData = canvas.toDataURL("image/png");
+    console.log("generate canvas")
+    return {imgData: imgData, studentName: studentName};
+  }
+
+  imageToZip(imageArray: any[]) {
+    const jszip = new JSZip();
+    for (let i = 0; i < imageArray.length; i++) {
+      var binary = atob(imageArray[i].imgData.split(',')[1]);
+      var array = [];
+      for (let j = 0; j < binary.length; j++) {
+        array.push(binary.charCodeAt(j));
       }
-    }, () => {
-      this.downloadIsLoading = false;
-      doc.save("students.pdf");
-    })
+      let image = new Blob([new Uint8Array(array)], {
+        type: 'image/png'
+      });
+      jszip.file(`${imageArray[i].studentName}-${Math.floor(Math.random() * 999999)}.png`, image)
+      if (i === (imageArray.length - 1)) {
+        jszip.generateAsync({type: 'blob'}).then(function (content) {
+          saveAs(content, 'StudentMatrixCards.zip');
+        });
+      }
+    }
+    this.downloadIsLoading = false;
   }
 
 }

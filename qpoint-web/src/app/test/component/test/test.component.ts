@@ -23,7 +23,7 @@ export class TestComponent implements OnInit {
   }
 
   logout() {
-    this.loginService.staffLogout();
+    this.loginService.adminLogout();
 
   }
 }

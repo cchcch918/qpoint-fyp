@@ -22,22 +22,35 @@
     <td>{{ data.fullName }}</td>
     <td>{{ data.dateCreated | date:'medium'}}</td>
     <td>{{ data.parent.email}}</td>
+    <td>{{ data.totalBehaviourPoint}}</td>
     <td>{{ data.class ? data.class.className : "-" }}</td>
     <td>{{ data.groups.length > 0 ? data.groups.toString() : "-" }}</td>
     <td>
-      <div *ngIf="data?.profileImagePath; else noProfilePicTemplate"><a (click)="openUpdateModal(data)" nz-icon
-                                                                        nzTheme="outline"
-                                                                        nzType="upload"></a></div>
-      <ng-template #noProfilePicTemplate>
-        <nz-badge [nzCount]="iconTemplate">
-          <a (click)="openUpdateModal(data)" nz-icon nzTheme="outline" nzType="upload"></a>
-        </nz-badge>
-        <ng-template #iconTemplate>
-          <i class="ant-scroll-number-custom-component" nz-icon nz-tooltip
-             nzTooltipTitle="This student dont have a profile image. Please upload now" nzType="exclamation-circle"
-             style="color: #f5222d"></i>
+      <nz-row nzAlign="middle" nzJustify="center">
+
+        <div *ngIf="data?.profileImagePath; else noProfilePicTemplate"><a (click)="openUpdateModal(data)" nz-icon
+                                                                          nzTheme="outline"
+                                                                          nzType="upload"></a></div>
+        <ng-template #noProfilePicTemplate>
+          <nz-badge [nzCount]="iconTemplate">
+            <a (click)="openUpdateModal(data)" nz-icon nzTheme="outline" nzType="upload"></a>
+          </nz-badge>
+          <ng-template #iconTemplate>
+            <i class="ant-scroll-number-custom-component" nz-icon nz-tooltip
+               nzTooltipTitle="This student dont have a profile image. Please upload now" nzType="exclamation-circle"
+               style="color: #f5222d"></i>
+          </ng-template>
         </ng-template>
-      </ng-template>
+
+        <div class="ml-2">
+          <a (nzOnConfirm)="deleteStudent(data)" [nzIcon]="deleteIconTpl" nz-icon nz-popconfirm
+             nzPopconfirmTitle="Are you sure delete this {{data.fullName}} ?" nzTheme="outline"
+             nzType="delete"></a>
+          <ng-template #deleteIconTpl>
+            <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+          </ng-template>
+        </div>
+      </nz-row>
 
     </td>
 
