@@ -7,7 +7,7 @@ import {Card,ListItem, Button } from 'react-native-elements'
 
           
 const BehaviorScreen = ({navigation}) => {
-    const {state, fetchBehaviours, addBehaviours} = useContext(ProcessFlowContext)
+    const {state, fetchBehaviours} = useContext(ProcessFlowContext)
     const staffId = navigation.getParam('staffId')
     const studentList = navigation.getParam('student')
     const [behaviourList, setBehaviourList] = useState([])
@@ -22,36 +22,41 @@ const BehaviorScreen = ({navigation}) => {
                     return(
                         <TouchableOpacity
                             onPress = {() => {
-                                setBehaviourList([...behaviourList, item.behaviourId])
+                                setBehaviourList([...behaviourList, {behaviourName: item.behaviourName, behaviourId: item.behaviourId, behaviourPoint: item.behaviourPoint}])
                             }}
                         >
-                            <Card title="Behaviour">
+                            <Card title={item.behaviourName}>
                                 <View >
-                                    <Text>{item.behaviourName}</Text>
+                                    <Text>{`${item.behaviourPoint} points`}</Text>
                                 </View>
                             </Card>
                         </TouchableOpacity>
                     )
                 }}
             />
-            <Button
-                title='proceed'
-                onPress = {() => {
-                    navigation.navigate('Summary',{behaviourList, studentList: studentList, staffId})
-                }}
-            />
+                <Button
+                    style = {styles.button}
+                    title='proceed'
+                    onPress = {() => {
+                        navigation.navigate('Summary',{behaviourList, studentList: studentList, staffId})
+                    }}
+                />
         </View>
+        
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
+        // flexDirection: 'row',
+        // alignItems: 'center'
     },
     card: {
-        width: '100%' // is 50% of container width
+        // width: '100%' // is 50% of container width
+    },
+    button: {
+        flex: 1
     }
 })
 

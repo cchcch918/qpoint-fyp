@@ -4,7 +4,6 @@ import { NavigationEvents } from 'react-navigation';
 import { Camera } from 'expo-camera';
 import { showMessage, hideMessage } from "react-native-flash-message";
 import { Button } from 'react-native-elements';
-import { color } from 'react-native-reanimated';
 import { FontAwesome5 } from '@expo/vector-icons'; 
 import {Context as AuthContext} from '../../Context/AuthContext'
 
@@ -92,7 +91,7 @@ const QrScanner = ({navigation}) => {
                 buttonStyle={{
                   backgroundColor: "#ffe6cc",
                 }}
-                onPress = {() => navigation.navigate('Behavior',{student,staffId})}
+                onPress = {() => navigation.navigate('Behaviour',{student,staffId})}
               />
             </View>
           </Camera>
@@ -103,68 +102,6 @@ const QrScanner = ({navigation}) => {
     )
   }
 }
-
-// QrScanner.navigationOptions = {
-//   headerRight: () => {
-//     <TouchableOpacity
-//       onPress={() => navigation.navigate('ManualSelect')}
-//     >
-//       <FontAwesome5 style = {{ paddingRight:20 }}name="list-ul" size={24} color="black"/>
-//     </TouchableOpacity>
-//   }
-
-// }
-
-// const QrScanner = ({navigation}) => {
-//   const [hasPermission, setHasPermission] = useState('');
-//   const [scanned, setScanned] = useState(false);
-//   const [student,setStudent] = useState([])
-  
-//   useEffect(() => {
-//     (async () => {
-//       const { status } = await BarCodeScanner.requestPermissionsAsync();
-//       setHasPermission(status === 'granted');
-//     })();
-//   },);
-
-
-
-//   const onBarCodeScanned = async ({ type, data }) => {
-//       setScanned('true')
-//       setStudent([...student,data])
-//     }
-
-//   if (hasPermission === null) {
-//     return <Text>Requesting for camera permission</Text>;
-//   }
-//   if (hasPermission === false) {
-//     return <Text>No access to camera</Text>;
-//   }
-
- 
-
-//   return (
-//     <View
-//       style={{flex: 1}}>
-//       <NavigationEvents onDidBlur={() => {
-//         setScanned(false)
-//         setStudent([])
-//         }} /> 
-//       <BarCodeScanner
-//         onBarCodeScanned={scanned ? undefined :onBarCodeScanned}
-//         style={StyleSheet.absoluteFillObject}
-//       />
-      
-//       <Button
-//         title = "Select Task"
-//         onPress = {() => navigation.navigate('Behavior',student)}
-//       />
-//       {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
-//     </View>
-//   )
-
-// }
-
 
 const styles = StyleSheet.create({
   button:{

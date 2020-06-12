@@ -15,6 +15,8 @@ const ProcessFlowReducer = (state, action) => {
             return action.payload
         case 'fetch_behaviour_records':
             return action.payload;
+        case 'get_students_point':
+            return action.payload
         default:
             return state   
     }
@@ -28,6 +30,7 @@ const fetchClasses = dispatch => async () => {
 
 const fetchBehaviours = dispatch => async () => {
     const response = await qpointApi.post('/behaviour/show-all-behaviours')
+    // console.log(response.data)
     dispatch({type: 'fetch_behaviours', payload: response.data})
 }
 
@@ -54,9 +57,16 @@ const fetchBehaviourRecords = dispatch => async (studentId) => {
     dispatch({type: 'fetch_behaviour_records', payload: response.data})
 }
 
+const getStudentsPoint = dispatch => async (studentList) => {
+    const response = await qpointApi.post('/student-behaviour-record/get-students-point', {studentList})
+    console.log('test')
+    dispatch({type: 'get_students_point', payload: response.data})
+
+}
+
 export const {Provider, Context} = createDataContext(
     ProcessFlowReducer,
-    {fetchClasses, fetchBehaviours, addBehaviours, fetchParentDetails, fetchBehaviourRecords},
+    {fetchClasses, fetchBehaviours, addBehaviours, fetchParentDetails, fetchBehaviourRecords, getStudentsPoint},
     []
     
 )

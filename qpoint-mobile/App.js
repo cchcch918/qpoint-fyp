@@ -1,5 +1,4 @@
 import React from 'react'
-import {TouchableOpacity} from 'react-native'
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import SigninScreen from './src/Screens/SigninScreen'
@@ -17,11 +16,12 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 import BehaviorScreen from './src/Screens/StaffApp/BehaviorScreen'
 import FlashMessage from "react-native-flash-message";
 import SelectStudent from './src/Screens/StaffApp/SelectStudent'
-import { FontAwesome5 } from '@expo/vector-icons'; 
 import {Provider as ProcessFlowProvider} from './src/Context/ProcessFlowContext'
 import SummaryScreen from './src/Screens/StaffApp/SummaryScreen'
 import { FontAwesome } from '@expo/vector-icons'; 
 import ChildrenDetails from './src/Screens/ParentApp/ChildrenDetails'
+import CheckHistoryScreen from './src/Screens/StaffApp/CheckHistoryScreen'
+import SavePhotoScreen from './src/Screens/StaffApp/SavePhotoScreen'
 
 console.disableYellowBox = true;
 
@@ -40,13 +40,21 @@ const StaffBottomTab = createBottomTabNavigator({
       tabBarIcon: <MaterialCommunityIcons name="qrcode" size={24} color="black" />
     })
   },
+  CheckHistory:{
+    screen: CheckHistoryScreen,
+    navigationOptions: () => ({
+      tabBarLabel: 'History',
+      tabBarIcon: <FontAwesome name="history" size={24} color="black" />
+    })
+  },
   StaffAccount:{
     screen: StaffAccountScreen,
     navigationOptions: () => ({
       tabBarLabel: 'Manage Account',
       tabBarIcon: <MaterialCommunityIcons name='account' size={20}/>
     })
-  }
+  },
+  
 },{
     navigationOptions: ({navigation}) => ({
       headerTitle: getStaffHeaderTitle(navigation),
@@ -67,6 +75,8 @@ const getStaffHeaderTitle = (navigation) => {
   if(currentIndex === 0){
      return 'Scan QR'
   } else if (currentIndex === 1) {
+      return 'History'
+  } else if (currentIndex === 2) {
       return 'Manage Account'
   }
 }
@@ -115,9 +125,10 @@ const Switch = createSwitchNavigator({
   Signin: SigninScreen,
   staffScreen: createStackNavigator({
     StaffBottomTab,
-    Behavior: BehaviorScreen,
+    Behaviour: BehaviorScreen,
     ManualSelect: SelectStudent,
     Summary: SummaryScreen,
+    SavePhoto: SavePhotoScreen,
     changePassword: changePasswordScreen
   }),
   parentScreen: createStackNavigator({
