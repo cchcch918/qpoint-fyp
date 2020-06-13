@@ -1,5 +1,5 @@
 <ul [nzDataSource]="ranking" class="my-3 " nz-list nzBordered nzSize="large">
-  <nz-list-header class="font-weight-bold"><i nz-icon nzTheme="outline" nzType="trophy"></i> {{" Class LeaderBoard" }}
+  <nz-list-header class="font-weight-bold"><i nz-icon nzTheme="outline" nzType="trophy"></i>{{" Class LeaderBoard" }}
   </nz-list-header>
   <li *ngFor="let item of ranking ; index as i" nz-list-item>
     <span class="align-content-center" nz-typography>{{item.studentName + " "}}</span>

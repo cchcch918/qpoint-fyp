@@ -21,7 +21,7 @@ export class ClassLeaderboardComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.classId) {
       if (this.classId) {
-        const payload = {classId: this.classId, rankingNumber: 10};
+        const payload = {classId: this.classId, rankingNumber: 5};
         this.classService.getStudentRankingByClass(payload).subscribe(res => {
           if (res) {
             this.ranking = res
