@@ -51,9 +51,7 @@ export class CreateStudentFormComponent implements OnInit {
           this.msg.success('Student has been created');
           this.createStudentForm.reset();
           this.updateTableEvent.emit(true);
-
         }
-
       },
       (error) => {
         this.createStudentLoading = false;

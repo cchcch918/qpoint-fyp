@@ -36,7 +36,7 @@ export class CreateBehaviourFormComponent implements OnInit {
     this.behaviourService.createNewBehaviour(payload).subscribe(res => {
         this.createBehaviourLoading = false;
         this.createBehaviourForm.reset();
-        this.msg.success(`Class ${payload.behaviourName} created`);
+        this.msg.success(`Behaviour ${payload.behaviourName} created`);
         this.updateTableEvent.emit(true);
       }
       ,
