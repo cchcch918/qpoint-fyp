@@ -113,6 +113,7 @@ export class ClassHeatMapCalendarComponent implements OnInit, OnChanges {
             value += record.behaviour.behaviourPoint
           }
         })
+
         series.push({
           date,
           name: weekdayName.format(date),

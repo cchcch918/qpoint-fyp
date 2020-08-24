@@ -42,7 +42,7 @@ export class LoginFormComponent implements OnInit {
       },
       (error) => {
         if (error) {
-          this.msg.error(error.error.errorMessage + 'Please try again later. ');
+          this.msg.error(error.error.errorMessage + ' Please try again later. ');
           this.loginLoading = false
 
         }
