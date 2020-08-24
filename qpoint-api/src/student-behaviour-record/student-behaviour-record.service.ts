@@ -128,16 +128,18 @@ export class StudentBehaviourRecordService {
     }
 
     async deleteStudentBehaviourRecords(payload: DeleteStudentBehaviourRecordsDto) {
-        const {recordId} = payload;
-        const record = await this.studentBehaviourRecordRepository.findOne({
-            where: {recordId: recordId}
-        })
-        if (!record) throw new HttpException(
-            `Record with ID ${recordId} does not exist`,
-            HttpStatus.BAD_REQUEST,
-        );
-        await this.studentBehaviourRecordRepository.delete({recordId: recordId});
-        return {deletedRecord: recordId}
+        const {recordList} = payload;
+        for(const recordId of recordList){
+            const record = await this.studentBehaviourRecordRepository.findOne({
+                where: {recordId: recordId}
+            })
+            if (!record) throw new HttpException(
+                `Record with ID ${recordId} does     not exist`,
+                HttpStatus.BAD_REQUEST,
+            );
+            await this.studentBehaviourRecordRepository.delete({recordId: recordId});
+        }
+        return {deletedRecord: recordList}
     }
 
     async getStudentBehaviouralRecordsByStaff(payload: GetStudentBehaviourRecordsbyStaffDto) {

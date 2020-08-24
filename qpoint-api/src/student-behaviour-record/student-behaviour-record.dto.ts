@@ -42,8 +42,9 @@ export class UpdateStudentBehaviouralRecordsDto {
 }
 
 export class DeleteStudentBehaviourRecordsDto {
-    @IsNotEmpty()
-    recordId: number;
+    @IsArray()
+    @ArrayNotEmpty()
+    recordList: number[];
 }
 
 export class GetStudentBehaviourRecordsByClassDto {
