@@ -2,12 +2,19 @@ import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ParentEntity} from "./parent.entity";
+import {AuthGuard} from "../utils/auth.guard";
 import {ParentChangePasswordDto, ParentLoginDto} from "./parent.dto";
 
 @Injectable()
 export class ParentService {
     constructor(
-        @InjectRepository(ParentEntity) private parentRepository: Repository<ParentEntity>) {
+        @InjectRepository(ParentEntity) private parentRepository: Repository<ParentEntity>,
+        private authGuard: AuthGuard) {
+    }
+
+    async getParentAccountDetails(payload: any) {
+        const {token} = payload;
+        return await this.authGuard.validateToken(token);
     }
 
     async parentLogin(payload: ParentLoginDto) {

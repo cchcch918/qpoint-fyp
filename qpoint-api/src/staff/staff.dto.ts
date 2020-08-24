@@ -19,3 +19,8 @@ export class StaffRegisterDto {
     @IsNotEmpty()
     email: string;
 }
+
+export class ShowClassWithStaffIdDto {
+    @IsNotEmpty()
+    staffId: number
+}

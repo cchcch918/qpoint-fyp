@@ -8,6 +8,11 @@ export class ParentController {
     constructor(private parentService: ParentService) {
     }
 
+    @Post('get-parent-account-details')
+    getAdminAccountDetails(@Body() payload: any) {
+        return this.parentService.getParentAccountDetails(payload);
+    }
+
     @Post('parent-login')
     @UsePipes(new ValidationPipe())
     parentLogin(@Body() payload: ParentLoginDto) {

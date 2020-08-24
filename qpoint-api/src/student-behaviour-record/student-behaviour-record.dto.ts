@@ -28,6 +28,24 @@ export class GetStudentBehaviourRecordsDto {
     studentId: number;
 }
 
+export class GetStudentBehaviourRecordsbyStaffDto {
+    @IsNotEmpty()
+    staffId:number
+}
+
+export class UpdateStudentBehaviouralRecordsDto {
+    @IsNotEmpty()
+    recordId: number;
+
+    @IsNotEmpty()
+    behaviourId: number;
+}
+
+export class DeleteStudentBehaviourRecordsDto {
+    @IsNotEmpty()
+    recordId: number;
+}
+
 export class GetStudentBehaviourRecordsByClassDto {
     @IsNotEmpty()
     classId: number;

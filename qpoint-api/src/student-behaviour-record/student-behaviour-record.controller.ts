@@ -6,7 +6,10 @@ import {
     GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
-    GetStudentRankingByClassDto
+    GetStudentRankingByClassDto,
+    UpdateStudentBehaviouralRecordsDto,
+    DeleteStudentBehaviourRecordsDto,
+    GetStudentBehaviourRecordsbyStaffDto
 } from "./student-behaviour-record.dto";
 
 @Controller('student-behaviour-record')
@@ -30,6 +33,24 @@ export class StudentBehaviourRecordController {
     @UsePipes(new ValidationPipe())
     getStudentBehaviouralRecords(@Body() payload: GetStudentBehaviourRecordsDto) {
         return this.studentBehaviourRecordService.getStudentBehaviouralRecords(payload);
+    }
+
+    @Post('get-student-behaviour-records-by-staff')
+    @UsePipes(new ValidationPipe())
+    getStudentBehaviouralRecordsByStaff(@Body() payload: GetStudentBehaviourRecordsbyStaffDto) {
+        return this.studentBehaviourRecordService.getStudentBehaviouralRecordsByStaff(payload);
+    }
+
+    @Post('update-student-behaviour-records')
+    @UsePipes(new ValidationPipe())
+    updateStudentBehaviouralRecords(@Body() payload: UpdateStudentBehaviouralRecordsDto) {
+        return this.studentBehaviourRecordService.updateStudentBehaviouralRecords(payload)
+    }
+
+    @Post('delete-student-behaviour-records')
+    @UsePipes(new ValidationPipe())
+    deleteStudentBehaviourRecords(@Body() payload: DeleteStudentBehaviourRecordsDto) {
+        return this.studentBehaviourRecordService.deleteStudentBehaviourRecords(payload)
     }
 
     @Post('get-student-behaviour-records-by-class')

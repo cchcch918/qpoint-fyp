@@ -1,7 +1,8 @@
 import {Body, Controller, Get, Param, Post, UsePipes} from "@nestjs/common";
 import {ValidationPipe} from "../utils/validation.pipe";
 import {StaffService} from "./staff.service";
-import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
+import {StaffLoginDto, StaffRegisterDto, ShowClassWithStaffIdDto} from "./staff.dto";
+
 
 @Controller('staff')
 export class StaffController {
@@ -73,6 +74,12 @@ export class StaffController {
     @UsePipes(new ValidationPipe())
     verifyPasswordResetToken(@Body() payload: any) {
         return this.staffService.verifyPasswordResetToken(payload);
+    }
+
+    @Post('show-class-with-staffId')
+    @UsePipes(new ValidationPipe())
+    showClassWithStaffId(@Body() payload: ShowClassWithStaffIdDto) {
+        return this.staffService.showClassWithStaffId(payload)
     }
 
 }

@@ -7,7 +7,7 @@ import {
     RemoveStudentsDto,
     RemoveTeachersDto,
     UpdateStudentsDto,
-    UpdateTeachersDto
+    UpdateTeachersDto,
 } from "./class.dto";
 
 @Controller('class')

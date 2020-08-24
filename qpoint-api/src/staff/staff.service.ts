@@ -2,7 +2,7 @@ import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {StaffEntity} from "./staff.entity";
-import {StaffLoginDto, StaffRegisterDto} from "./staff.dto";
+import {StaffLoginDto, StaffRegisterDto, ShowClassWithStaffIdDto} from "./staff.dto";
 import {sendEmail} from "../utils/send-forget-password-email";
 import {AuthGuard} from "../utils/auth.guard";
 import {AppConstant} from "../utils/constant/app.constant";
@@ -148,5 +148,17 @@ export class StaffService {
         }
     }
 
+    async showClassWithStaffId(payload: ShowClassWithStaffIdDto) {
+        const {staffId} = payload;
+        const classes = await this.staffRepository.findOne({
+            where: {staffId: staffId},
+            relations: ['classes']
+        })
+        if(!classes) throw new HttpException(
+            `Staff with ID ${staffId} does not exist`,
+            HttpStatus.BAD_REQUEST,
+        )
+        return classes
+    }
 
 }

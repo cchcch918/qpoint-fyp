@@ -8,7 +8,7 @@ import {
     RemoveStudentsDto,
     RemoveTeachersDto,
     UpdateStudentsDto,
-    UpdateTeachersDto
+    UpdateTeachersDto,
 } from "./class.dto";
 import {StudentEntity} from "../student/student.entity";
 import {StaffEntity} from "../staff/staff.entity";

@@ -9,7 +9,10 @@ import {
     GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
-    GetStudentRankingByClassDto
+    GetStudentRankingByClassDto,
+    UpdateStudentBehaviouralRecordsDto,
+    DeleteStudentBehaviourRecordsDto,
+    GetStudentBehaviourRecordsbyStaffDto
 } from "./student-behaviour-record.dto";
 import {StaffEntity} from "../staff/staff.entity";
 import {ClassEntity} from "../class/class.entity";
@@ -100,6 +103,56 @@ export class StudentBehaviourRecordService {
             relations: ['behaviour', 'givenByTeacher']
         })
         return behaviourRecords;
+    }
+
+    async updateStudentBehaviouralRecords(payload: UpdateStudentBehaviouralRecordsDto){
+        const{recordId,behaviourId} = payload;
+        const record = await this.studentBehaviourRecordRepository.findOne({
+            where: {recordId: recordId},
+            relations: ['behaviour']
+        })
+        if (!record) throw new HttpException(
+            `Record with ID ${recordId} does not exist`,
+            HttpStatus.BAD_REQUEST,
+        );
+        const newBehaviour = await this.behaviourRepository.findOne({
+            where: {behaviourId: behaviourId}
+        })
+        if (!newBehaviour) throw new HttpException(
+            `Behaviour with ID ${behaviourId} does not exist`,
+            HttpStatus.BAD_REQUEST,
+        );
+        record.behaviour = newBehaviour;
+        await this.studentBehaviourRecordRepository.save(record)
+        return record; 
+    }
+
+    async deleteStudentBehaviourRecords(payload: DeleteStudentBehaviourRecordsDto) {
+        const {recordId} = payload;
+        const record = await this.studentBehaviourRecordRepository.findOne({
+            where: {recordId: recordId}
+        })
+        if (!record) throw new HttpException(
+            `Record with ID ${recordId} does not exist`,
+            HttpStatus.BAD_REQUEST,
+        );
+        await this.studentBehaviourRecordRepository.delete({recordId: recordId});
+        return {deletedRecord: recordId}
+    }
+
+    async getStudentBehaviouralRecordsByStaff(payload: GetStudentBehaviourRecordsbyStaffDto) {
+        const {staffId} = payload;
+        const selectedStaff = await this.staffRepository.findOne({where: {staffId: staffId}});
+        if (!selectedStaff) throw new HttpException(
+            `Staff with ID ${staffId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId}).getMany();
+        return behaviourRecords;
+        
     }
 
     async getStudentBehaviouralRecordsByClass(payload: GetStudentBehaviourRecordsByClassDto) {

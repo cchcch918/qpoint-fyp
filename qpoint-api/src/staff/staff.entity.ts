@@ -54,10 +54,10 @@ export class StaffEntity {
     resetPasswordExpires: Date;
 
     private get token(): string {
-        const {staffId, username} = this;
+        const {staffId, username, email} = this;
         return jwt.sign(
             {
-                staffId, username,
+                staffId, username, email
             },
             process.env.SECRET,
             {expiresIn: '7d'},
