@@ -151,6 +151,7 @@ export class StudentBehaviourRecordService {
         );
         const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoinAndSelect("StudentEntity.class","ClassEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
             .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId}).getMany();
         return behaviourRecords;
