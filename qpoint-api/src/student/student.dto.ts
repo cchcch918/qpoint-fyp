@@ -1,4 +1,4 @@
-import {IsNotEmpty} from "class-validator";
+import {ArrayNotEmpty, IsArray, IsNotEmpty} from "class-validator";
 
 
 export class CreateStudentDto {
@@ -14,5 +14,10 @@ export class DeleteStudentDto {
     studentId: number;
 }
 
+export class ShowStudentWithIdDto {
+    @IsArray()
+    @ArrayNotEmpty()
+    studentList: number[]
+}
 
 

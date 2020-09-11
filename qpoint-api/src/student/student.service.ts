@@ -5,7 +5,7 @@ import {StudentEntity} from "./student.entity";
 import * as QRCode from 'qrcode'
 import * as XLSX from 'xlsx';
 
-import {CreateStudentDto, DeleteStudentDto} from "./student.dto";
+import {CreateStudentDto, DeleteStudentDto, ShowStudentWithIdDto} from "./student.dto";
 import {sendParentsLoginEmail} from "../utils/send-parents-account-login-email";
 import {ParentEntity} from "../parent/parent.entity";
 import {StudentBehaviourRecordService} from "../student-behaviour-record/student-behaviour-record.service";
@@ -89,6 +89,20 @@ export class StudentService {
         return {deletedStudent: studentId};
     }
 
+    async showStudentsWithId(payload: ShowStudentWithIdDto) {
+        const {studentList} = payload;
+        const students: StudentEntity[] = []
+        for (const studentId of studentList) {
+            students.push(await (this.studentRepository.findOne({where: {studentId: studentId},relations:['class']})).then(student => {
+                if (!student) throw new HttpException(
+                    `Behaviour with ID ${studentId} does not exists`,
+                    HttpStatus.BAD_REQUEST,
+                );
+                return student;
+            }));
+        }
+        return students;
+    }
 
     async uploadStudentProfileImage(payload) {
         const {filename} = payload
