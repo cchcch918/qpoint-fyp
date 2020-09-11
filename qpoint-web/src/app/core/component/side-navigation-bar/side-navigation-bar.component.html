@@ -27,8 +27,8 @@
       </li>
       <li [nzOpen]="checkSubMenuOpen('group')" nz-submenu nzIcon="group" nzTitle="Group">
         <ul>
-          <li [routerLink]="" nz-menu-item>Group Dashboard</li>
-          <li [routerLink]="" nz-menu-item>Manage Group</li>
+          <li [routerLink]="['/group/group-dashboard']" nz-menu-item nzMatchRouter>Group Dashboard</li>
+          <li [routerLink]="['/group/manage-group']" nz-menu-item nzMatchRouter>Manage Group</li>
         </ul>
       </li>
       <li [nzOpen]="checkSubMenuOpen('behaviour')" nz-submenu nzIcon="book" nzTitle="Behaviour">

@@ -1,18 +1,23 @@
-<nz-table #filterTable [nzData]="allClasses" [nzLoading]="tableLoading" class="my-5" nzBordered nzSize="middle"
+<nz-table #filterTable [nzData]="allClassesDisplay" [nzLoading]="tableLoading" class="my-5" nzBordered
+          nzSize="middle"
           nzTableLayout="fixed">
   <thead>
   <tr>
-    <th
-      *ngFor="let column of listOfColumns"
-      [nzFilterFn]="column.filterFn"
-      [nzFilterMultiple]="column.filterMultiple"
-      [nzFilters]="column.listOfFilter"
-      [nzSortDirections]="column.sortDirections"
-      [nzSortFn]="column.sortFn"
-      [nzSortOrder]="column.sortOrder"
-      [nzWidth]="column.width"
+    <th nzCustomFilter
+        *ngFor="let column of listOfColumns"
+        [nzFilterFn]="column.filterFn"
+        [nzFilterMultiple]="column.filterMultiple"
+        [nzFilters]="column.listOfFilter"
+        [nzSortDirections]="column.sortDirections"
+        [nzSortFn]="column.sortFn"
+        [nzSortOrder]="column.sortOrder"
+        [nzWidth]="column.width"
     >
       {{ column.name }}
+      <nz-filter-trigger *ngIf="column.name == 'Class Name'" [(nzVisible)]="searchVisible"
+                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">
+        <i nz-icon nzType="search"></i>
+      </nz-filter-trigger>
     </th>
   </tr>
   </thead>
@@ -22,19 +27,19 @@
     <td>{{ data.className }}</td>
     <td>{{ data.dateCreated | date:'medium'}}</td>
     <td>
-      <div *ngIf="!data['showEditStudentsColumn']">
+      <div *ngIf="!data['showEditStudentColumn']">
         <nz-row nzAlign="middle" nzJustify="space-around">
           <div nz-col nzSpan="20">
             <div *ngIf="!data['studentsInClass'] || data['studentsInClass'].length == 0">-</div>
             <nz-tag *ngFor="let o of data['studentsInClass']"
-                    class="my-1">{{ idMapName(o, data['studentsOption'])}}</nz-tag>
+                    class="my-1"> {{ idMapName(o, data['studentsOption'])}}</nz-tag>
           </div>
           <div nz-col nzSpan="2">
-            <a (click)="data['showEditStudentsColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
+            <a (click)="data['showEditStudentColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
           </div>
         </nz-row>
       </div>
-      <div *ngIf="data['showEditStudentsColumn']">
+      <div *ngIf="data['showEditStudentColumn']">
         <nz-row nzAlign="middle" nzJustify="space-around">
           <div nz-col nzSpan="20">
             <nz-select [(ngModel)]="data['studentsInClass']" nzMode="tag" nzPlaceHolder="Select students"
@@ -43,7 +48,7 @@
             </nz-select>
           </div>
           <div nz-col nzSpan="2">
-            <a (click)="data['showEditidMapNameStudentsColumn'] = false; updateStudents(data);" nz-icon
+            <a (click)="data['showEditStudentColumn'] = false; updateStudents(data);" nz-icon
                nzTheme="outline"
                nzType="check"></a>
           </div>
@@ -51,7 +56,7 @@
       </div>
     </td>
     <td>
-      <div *ngIf="!data['showEditTeachersColumn']">
+      <div *ngIf="!data['showEditTeacherColumn']">
         <nz-row nzAlign="middle" nzJustify="space-around">
           <div nz-col nzSpan="20">
             <div *ngIf="!data['teachersInClass'] || data['teachersInClass'].length == 0">-</div>
@@ -59,11 +64,11 @@
                     class="my-1">{{idMapName(o, data['teachersOption'])}}</nz-tag>
           </div>
           <div nz-col nzSpan="2">
-            <a (click)="data['showEditTeachersColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
+            <a (click)="data['showEditTeacherColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
           </div>
         </nz-row>
       </div>
-      <div *ngIf="data['showEditTeachersColumn']">
+      <div *ngIf="data['showEditTeacherColumn']">
         <nz-row nzAlign="middle" nzJustify="space-around">
           <div nz-col nzSpan="20">
             <nz-select [(ngModel)]="data['teachersInClass']" nzMode="tag" nzPlaceHolder="Select teachers"
@@ -72,7 +77,7 @@
             </nz-select>
           </div>
           <div nz-col nzSpan="2">
-            <a (click)="data['showEditTeachersColumn'] = false; updateTeachers(data);" nz-icon nzTheme="outline"
+            <a (click)="data['showEditTeacherColumn'] = false; updateTeachers(data);" nz-icon nzTheme="outline"
                nzType="check"></a>
           </div>
         </nz-row>
@@ -92,3 +97,14 @@
   </tbody>
 </nz-table>
 
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="ant-table-filter-dropdown">
+    <div class="search-box">
+      <input [(ngModel)]="searchValue" nz-input placeholder="Search class name" type="text"/>
+      <button (click)="search()" class="search-button" nz-button nzSize="small" nzType="primary">
+        Search
+      </button>
+      <button (click)="reset()" nz-button nzSize="small">Reset</button>
+    </div>
+  </div>
+</nz-dropdown-menu>

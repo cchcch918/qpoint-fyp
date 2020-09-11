@@ -31,6 +31,7 @@ interface ColumnItem {
 export class StudentListTableComponent implements OnInit, OnChanges {
   @Input() update: boolean;
 
+
   listOfColumns: ColumnItem[] = [
     {
       name: 'Student Id',
@@ -72,7 +73,7 @@ export class StudentListTableComponent implements OnInit, OnChanges {
 
     },
     {
-      name: 'Group',
+      name: 'Groups',
       sortOrder: null,
       width: "10vh",
 
@@ -86,11 +87,15 @@ export class StudentListTableComponent implements OnInit, OnChanges {
   ];
 
   students: StudentVoModel[];
+  studentsDisplay: StudentVoModel[];
   fileList: UploadFile[] = [];
   isModalVisible: boolean;
   uploadLoading: boolean
   selectedStudent: StudentVoModel;
   tableLoading: boolean;
+
+  searchVisible: boolean = false;
+  searchValue = '';
 
   constructor(private studentService: StudentService, private msg: NzMessageService) {
   }
@@ -110,6 +115,7 @@ export class StudentListTableComponent implements OnInit, OnChanges {
     this.studentService.showAllStudents().subscribe(res => {
       if (res) {
         this.students = res;
+        this.studentsDisplay = res;
         this.tableLoading = false;
       }
     })
@@ -118,7 +124,6 @@ export class StudentListTableComponent implements OnInit, OnChanges {
 
   beforeUpload = (file: UploadFile) => {
     return new Observable((observer: Observer<boolean>) => {
-      console.log("file", file)
       const isImage = (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg');
       if (!isImage) {
         this.msg.error('You can only upload an image!');
@@ -171,13 +176,22 @@ export class StudentListTableComponent implements OnInit, OnChanges {
   deleteStudent(data: StudentVoModel) {
     let payload = {studentId: data.studentId}
     this.studentService.deleteStudent(payload).subscribe(res => {
-        console.log(res);
         this.msg.success(`Student ${data.fullName} deleted`);
         this.updateTable();
       },
       error => {
         this.msg.error('Please try again later' + error?.errorMessage);
       })
+  }
+
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  search(): void {
+    this.searchVisible = false;
+    this.studentsDisplay = this.students.filter((student) => student.fullName.toLocaleLowerCase().indexOf(this.searchValue.toLocaleLowerCase()) !== -1);
   }
 }
 

@@ -1,7 +1,7 @@
 <app-side-navigation-bar>
   <div class="container">
-    <app-create-class-form (updateTableEvent)="update = !update" [adminId]="adminId"></app-create-class-form>
+    <app-create-class-form [adminId]="adminId"></app-create-class-form>
 
-    <app-class-list-table [update]="update"></app-class-list-table>
+    <app-class-list-table></app-class-list-table>
   </div>
 </app-side-navigation-bar>

@@ -1,0 +1,33 @@
+<app-side-navigation-bar>
+  <div class="container">
+    <nz-select (ngModelChange)="showDashboard($event)" [(ngModel)]="selectedGroupId" nzAllowClear
+               nzPlaceHolder="Select a group"
+               nzShowSearch style="width: 100%">
+      <nz-option *ngFor="let group of allGroups"
+                 nzLabel="{{group.groupId}} - {{group.groupName}}"
+                 nzValue="{{group.groupId}}"></nz-option>
+    </nz-select>
+
+    <ng-container *ngIf="selectedGroupId == null">
+      <nz-alert class="my-2" nzMessage="Please select a group to continue" nzShowIcon nzType="info"></nz-alert>
+    </ng-container>
+
+    <ng-container *ngIf="selectedGroupId != null">
+      <app-shared-behaviour-pie-chart
+        [behaviourRecords]="behaviourRecordsByGroup"></app-shared-behaviour-pie-chart>
+      <app-shared-behaviour-heat-map-calendar
+        [behaviourRecords]="behaviourRecordsByGroup"></app-shared-behaviour-heat-map-calendar>
+
+      <div nz-row nzJustify="space-between">
+        <div nz-col nzSpan="11">
+          <app-group-leaderboard [groupId]="selectedGroupId"></app-group-leaderboard>
+        </div>
+        <div nz-col nzSpan="11">
+          <app-group-latest-record [behaviourRecordsByGroup]="behaviourRecordsByGroup"></app-group-latest-record>
+        </div>
+
+      </div>
+    </ng-container>
+  </div>
+</app-side-navigation-bar>
+

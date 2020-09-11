@@ -9,7 +9,6 @@ import {LoginService} from "../../../core/service/login.service";
 export class ManageClassPageComponent implements OnInit {
 
   adminId: number;
-  update: boolean = false;
 
   constructor(private loginService: LoginService) {
   }

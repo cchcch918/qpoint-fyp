@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {NzMessageService, NzModalService} from "ng-zorro-antd";
 import {HttpClient} from "@angular/common/http";
@@ -11,7 +11,6 @@ import {ClassService} from "../../service/class.service";
 })
 export class CreateClassFormComponent implements OnInit {
   @Input() adminId: number;
-  @Output() updateTableEvent: EventEmitter<any> = new EventEmitter();
 
   createClassForm: FormGroup;
   createClassLoading: boolean;
@@ -37,7 +36,8 @@ export class CreateClassFormComponent implements OnInit {
           this.createClassLoading = false;
           this.createClassForm.reset();
           this.msg.success(`Class ${payload.className} created`);
-          this.updateTableEvent.emit(true);
+          this.classService.sendCreateClassEvent();
+
         }
       },
       error => {

@@ -1,18 +1,23 @@
-<nz-table #filterTable [nzData]="students" [nzLoading]="tableLoading" class="my-5" nzSize="middle"
+<nz-table #filterTable [nzData]="studentsDisplay" [nzLoading]="tableLoading" class="my-5" nzSize="middle"
           nzTableLayout="fixed">
   <thead>
   <tr>
-    <th
-      *ngFor="let column of listOfColumns"
-      [nzFilterFn]="column.filterFn"
-      [nzFilterMultiple]="column.filterMultiple"
-      [nzFilters]="column.listOfFilter"
-      [nzSortDirections]="column.sortDirections"
-      [nzSortFn]="column.sortFn"
-      [nzSortOrder]="column.sortOrder"
-      [nzWidth]="column.width"
+    <th *ngFor="let column of listOfColumns"
+        [nzFilterFn]="column.filterFn"
+        [nzFilterMultiple]="column.filterMultiple"
+        [nzFilters]="column.listOfFilter"
+        [nzSortDirections]="column.sortDirections"
+        [nzSortFn]="column.sortFn"
+        [nzSortOrder]="column.sortOrder"
+        [nzWidth]="column.width"
+        nzCustomFilter
     >
       {{ column.name }}
+
+      <nz-filter-trigger *ngIf="column.name == 'Student Name'" [(nzVisible)]="searchVisible"
+                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">
+        <i nz-icon nzType="search"></i>
+      </nz-filter-trigger>
     </th>
   </tr>
   </thead>
@@ -24,7 +29,11 @@
     <td>{{ data.parent.email}}</td>
     <td>{{ data.totalBehaviourPoint}}</td>
     <td>{{ data.class ? data.class.className : "-" }}</td>
-    <td>{{ data.groups.length > 0 ? data.groups.toString() : "-" }}</td>
+    <td>
+      <nz-tag *ngFor="let group of data.groups"
+              class="my-1"> {{group.groupName}}</nz-tag>
+      <div *ngIf="data.groups.length == 0">-</div>
+    </td>
     <td>
       <nz-row nzAlign="middle" nzJustify="center">
 
@@ -83,3 +92,16 @@
   </ng-template>
 
 </nz-modal>
+
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="ant-table-filter-dropdown">
+    <div class="search-box">
+      <input [(ngModel)]="searchValue" nz-input placeholder="Search group name" type="text"/>
+      <button (click)="search()" class="search-button" nz-button nzSize="small" nzType="primary">
+        Search
+      </button>
+      <button (click)="reset()" nz-button nzSize="small">Reset</button>
+    </div>
+  </div>
+</nz-dropdown-menu>

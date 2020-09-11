@@ -3,13 +3,15 @@ import {StudentBehaviourRecordService} from "./student-behaviour-record.service"
 import {ValidationPipe} from "../utils/validation.pipe";
 import {
     AddBehavioursToStudentsDto,
+    DeleteStudentBehaviourRecordsDto,
     GetStudentBehaviourRecordsByClassDto,
+    GetStudentBehaviourRecordsByGroupDto,
+    GetStudentBehaviourRecordsbyStaffDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
     GetStudentRankingByClassDto,
-    UpdateStudentBehaviouralRecordsDto,
-    DeleteStudentBehaviourRecordsDto,
-    GetStudentBehaviourRecordsbyStaffDto
+    GetStudentRankingByGroupDto,
+    UpdateStudentBehaviouralRecordsDto
 } from "./student-behaviour-record.dto";
 
 @Controller('student-behaviour-record')
@@ -59,9 +61,21 @@ export class StudentBehaviourRecordController {
         return this.studentBehaviourRecordService.getStudentBehaviouralRecordsByClass(payload);
     }
 
+    @Post('get-student-behaviour-records-by-group')
+    @UsePipes(new ValidationPipe())
+    getStudentBehaviouralRecordsByGroup(@Body() payload: GetStudentBehaviourRecordsByGroupDto) {
+        return this.studentBehaviourRecordService.getStudentBehaviouralRecordsByGroup(payload);
+    }
+
     @Post('get-student-ranking-by-class')
     @UsePipes(new ValidationPipe())
     getStudentRankingByClass(@Body() payload: GetStudentRankingByClassDto) {
         return this.studentBehaviourRecordService.getStudentRankingByClass(payload);
+    }
+
+    @Post('get-student-ranking-by-group')
+    @UsePipes(new ValidationPipe())
+    getStudentRankingByGroup(@Body() payload: GetStudentRankingByGroupDto) {
+        return this.studentBehaviourRecordService.getStudentRankingByGroup(payload);
     }
 }

@@ -23,7 +23,6 @@ export class StudentService {
   }
 
   showAllStudentsQrCode(): Observable<StudentQrVoModel[]> {
-    console.log("httpOptions", this.httpOptions)
     return this.http.post<StudentQrVoModel[]>(this.baseUrl + '/student/show-all-students-qrcode', [], this.httpOptions);
   }
 

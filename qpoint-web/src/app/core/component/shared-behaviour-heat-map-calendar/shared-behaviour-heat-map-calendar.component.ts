@@ -1,15 +1,15 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {StudentBehaviourRecordVoModel} from "../../../core/model/student-behaviour-record.vo.model";
+import {StudentBehaviourRecordVoModel} from "../../model/student-behaviour-record.vo.model";
 
 const weekdayName = new Intl.DateTimeFormat('en-us', {weekday: 'short'});
 const monthName = new Intl.DateTimeFormat('en-us', {month: 'short'});
 
 @Component({
-  selector: 'app-class-heat-map-calendar',
-  templateUrl: './class-heat-map-calendar.component.html',
-  styleUrls: ['./class-heat-map-calendar.component.css']
+  selector: 'app-shared-behaviour-heat-map-calendar',
+  templateUrl: './shared-behaviour-heat-map-calendar.component.html',
+  styleUrls: ['./shared-behaviour-heat-map-calendar.component.css']
 })
-export class ClassHeatMapCalendarComponent implements OnInit, OnChanges {
+export class SharedBehaviourHeatMapCalendarComponent implements OnInit, OnChanges {
   //options
   showXAxis = true;
   showYAxis = true;
@@ -37,7 +37,7 @@ export class ClassHeatMapCalendarComponent implements OnInit, OnChanges {
   yScaleMax: number;
   showDataLabel = false;
 
-  @Input() behaviourRecordsByClass: StudentBehaviourRecordVoModel[];
+  @Input() behaviourRecords: StudentBehaviourRecordVoModel[];
   colorScheme = {
     domain: ['#FA8072', '#87CEFA']
   };
@@ -52,9 +52,9 @@ export class ClassHeatMapCalendarComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.behaviourRecordsByClass) {
-      if (this.behaviourRecordsByClass) {
-        this.calendarData = this.getCalendarData(this.behaviourRecordsByClass);
+    if (changes.behaviourRecords) {
+      if (this.behaviourRecords) {
+        this.calendarData = this.getCalendarData(this.behaviourRecords);
       }
     }
   }

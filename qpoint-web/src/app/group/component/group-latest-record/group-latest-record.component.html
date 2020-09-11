@@ -1,0 +1,24 @@
+<nz-table #smallTable [nzData]="behaviourRecordsByGroup" [nzPageSize]="8" [nzTitle]="tableTemp" class="my-3" nzBordered
+          nzSize="small">
+  <ng-template #tableTemp>
+    <div class="font-weight-bold">
+      <i nz-icon nzTheme="outline" nzType="solution"></i> {{" Group Latest Record" }}
+    </div>
+  </ng-template>
+  <thead>
+  <tr>
+    <th>Student</th>
+    <th [nzSortFn]="sortFn" [nzSort]="'descend'">Date Given</th>
+    <th>Behaviour</th>
+    <th>Points</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of smallTable.data">
+    <td>{{ data.student.fullName }}</td>
+    <td>{{ data.dateGiven  | date:'medium'}}</td>
+    <td>{{ data.behaviour.behaviourName }}</td>
+    <td>{{ data.behaviour.behaviourPoint }}</td>
+  </tr>
+  </tbody>
+</nz-table>

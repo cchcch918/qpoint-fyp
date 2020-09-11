@@ -1,12 +1,12 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {StudentBehaviourRecordVoModel} from "../../../core/model/student-behaviour-record.vo.model";
+import {StudentBehaviourRecordVoModel} from "../../model/student-behaviour-record.vo.model";
 
 @Component({
-  selector: 'app-class-behaviour-pie-chart',
-  templateUrl: './class-behaviour-pie-chart.component.html',
-  styleUrls: ['./class-behaviour-pie-chart.component.css']
+  selector: 'app-shared-behaviour-pie-chart',
+  templateUrl: './shared-behaviour-pie-chart.component.html',
+  styleUrls: ['./shared-behaviour-pie-chart.component.css']
 })
-export class ClassBehaviourPieChartComponent implements OnInit, OnChanges {
+export class SharedBehaviourPieChartComponent implements OnInit, OnChanges {
 
   // options for the chart
   showXAxis = true;
@@ -23,7 +23,7 @@ export class ClassBehaviourPieChartComponent implements OnInit, OnChanges {
     domain: ['#87CEFA', '#FA8072', '#FF7F50', '#90EE90', '#9370DB', '#9370DB']
   };
 
-  @Input() behaviourRecordsByClass: StudentBehaviourRecordVoModel[];
+  @Input() behaviourRecords: StudentBehaviourRecordVoModel[];
   positiveBehavioralPoints: number = 0;
   negativeBehavioralPoints: number = 0;
   result: any[];
@@ -40,12 +40,12 @@ export class ClassBehaviourPieChartComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.behaviourRecordsByClass) {
+    if (changes.behaviourRecords) {
       this.positiveBehavioralPoints = 0;
       this.negativeBehavioralPoints = 0;
 
-      if (this.behaviourRecordsByClass) {
-        this.behaviourRecordsByClass.forEach(record => {
+      if (this.behaviourRecords) {
+        this.behaviourRecords.forEach(record => {
           record.behaviour.behaviourPoint > 0 ? this.positiveBehavioralPoints += record.behaviour.behaviourPoint : this.negativeBehavioralPoints += record.behaviour.behaviourPoint
         })
         this.result = [

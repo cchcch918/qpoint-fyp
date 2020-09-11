@@ -6,10 +6,15 @@ import {NgZorroAntdModule} from "ng-zorro-antd";
 import {RouterModule} from "@angular/router";
 import {Ng2SearchPipeModule} from "ng2-search-filter";
 import {ClipboardModule} from "@angular/cdk/clipboard";
+import {SharedBehaviourPieChartComponent} from "./component/shared-behaviour-pie-chart/shared-behaviour-pie-chart.component";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {SharedBehaviourHeatMapCalendarComponent} from "./component/shared-behaviour-heat-map-calendar/shared-behaviour-heat-map-calendar.component";
 
 
 let CoreComponent = [
   SideNavigationBarComponent,
+  SharedBehaviourPieChartComponent,
+  SharedBehaviourHeatMapCalendarComponent,
 ]
 
 @NgModule({
@@ -20,6 +25,7 @@ let CoreComponent = [
     CommonModule,
     NgZorroAntdModule,
     RouterModule,
+    NgxChartsModule,
   ],
   exports: [
     CommonModule,

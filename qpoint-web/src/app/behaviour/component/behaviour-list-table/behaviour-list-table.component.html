@@ -1,18 +1,24 @@
-<nz-table #filterTable [nzData]="allBehaviours" [nzLoading]="tableLoading" class="my-5" nzBordered nzSize="middle"
+<nz-table #filterTable [nzData]="allBehavioursDisplay" [nzLoading]="tableLoading" class="my-5" nzBordered
+          nzSize="middle"
           nzTableLayout="fixed">
   <thead>
   <tr>
-    <th
-      *ngFor="let column of listOfColumns"
-      [nzFilterFn]="column.filterFn"
-      [nzFilterMultiple]="column.filterMultiple"
-      [nzFilters]="column.listOfFilter"
-      [nzSortDirections]="column.sortDirections"
-      [nzSortFn]="column.sortFn"
-      [nzSortOrder]="column.sortOrder"
-      [nzWidth]="column.width"
+    <th *ngFor="let column of listOfColumns"
+        [nzFilterFn]="column.filterFn"
+        [nzFilterMultiple]="column.filterMultiple"
+        [nzFilters]="column.listOfFilter"
+        [nzSortDirections]="column.sortDirections"
+        [nzSortFn]="column.sortFn"
+        [nzSortOrder]="column.sortOrder"
+        [nzWidth]="column.width"
+        nzCustomFilter
     >
       {{ column.name }}
+
+      <nz-filter-trigger *ngIf="column.name == 'Behaviour Name'" [(nzVisible)]="searchVisible"
+                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">
+        <i nz-icon nzType="search"></i>
+      </nz-filter-trigger>
     </th>
   </tr>
   </thead>
@@ -61,3 +67,15 @@
   </tr>
   </tbody>
 </nz-table>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="ant-table-filter-dropdown">
+    <div class="search-box">
+      <input [(ngModel)]="searchValue" nz-input placeholder="Search behaviour name" type="text"/>
+      <button (click)="search()" class="search-button" nz-button nzSize="small" nzType="primary">
+        Search
+      </button>
+      <button (click)="reset()" nz-button nzSize="small">Reset</button>
+    </div>
+  </div>
+</nz-dropdown-menu>

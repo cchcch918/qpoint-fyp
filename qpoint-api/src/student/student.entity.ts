@@ -33,18 +33,7 @@ export class StudentEntity {
     @JoinColumn({name: 'class_id'})
     class: ClassEntity;
 
-    @ManyToMany(type => GroupEntity)
-    @JoinTable({
-        name: 'student_group',
-        joinColumn: {
-            name: "student_id",
-            referencedColumnName: "studentId"
-        },
-        inverseJoinColumn: {
-            name: "group_id",
-            referencedColumnName: "groupId"
-        }
-    })
+    @ManyToMany(type => GroupEntity, groupEntity => groupEntity.students, {onDelete: "CASCADE"})
     groups: GroupEntity[];
 
 

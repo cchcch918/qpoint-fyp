@@ -37,7 +37,7 @@ export class StaffEntity {
     @ManyToMany(type => ClassEntity, classEntity => classEntity.teachers, {onDelete: "CASCADE"})
     classes: ClassEntity[];
 
-    @OneToMany(type => GroupEntity, group => group.staff, {cascade: true})
+    @OneToMany(type => GroupEntity, group => group.teacher, {cascade: true})
     groups: GroupEntity[];
 
     @ManyToOne(type => SchoolEntity, school => school.staffs)

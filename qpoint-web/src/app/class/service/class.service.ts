@@ -2,13 +2,16 @@ import {Injectable} from "@angular/core";
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
-import {Observable} from "rxjs";
+import {Observable, Subject} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ClassService {
+
+  private subject = new Subject<any>();
+
 
   baseUrl = environment.apiUrl;
   httpOptions = {
@@ -26,6 +29,14 @@ export class ClassService {
 
   createNewClass(payload): Observable<any> {
     return this.http.post<any>(this.baseUrl + '/class/create-new-class', payload, this.httpOptions);
+  }
+
+  sendCreateClassEvent() {
+    this.subject.next(true);
+  }
+
+  getCreateClassEvent(): Observable<any> {
+    return this.subject.asObservable();
   }
 
   updateStudents(payload): Observable<any> {

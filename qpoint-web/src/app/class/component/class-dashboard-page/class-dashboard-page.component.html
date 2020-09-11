@@ -4,7 +4,7 @@
                nzPlaceHolder="Select a class"
                nzShowSearch style="width: 100%">
       <nz-option *ngFor="let class of allClasses"
-                 nzLabel="{{class.className}}"
+                 nzLabel="{{class.classId}} - {{class.className}}"
                  nzValue="{{class.classId}}"></nz-option>
     </nz-select>
 
@@ -13,9 +13,10 @@
     </ng-container>
 
     <ng-container *ngIf="selectedClassId != null">
-      <app-class-behaviour-pie-chart
-        [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-behaviour-pie-chart>
-      <app-class-heat-map-calendar [behaviourRecordsByClass]="behaviourRecordsByClass"></app-class-heat-map-calendar>
+      <app-shared-behaviour-pie-chart
+        [behaviourRecords]="behaviourRecordsByClass"></app-shared-behaviour-pie-chart>
+      <app-shared-behaviour-heat-map-calendar
+        [behaviourRecords]="behaviourRecordsByClass"></app-shared-behaviour-heat-map-calendar>
 
       <div nz-row nzJustify="space-between">
         <div nz-col nzSpan="11">
@@ -29,3 +30,4 @@
     </ng-container>
   </div>
 </app-side-navigation-bar>
+

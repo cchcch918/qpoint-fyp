@@ -6,16 +6,19 @@ import {BehaviourEntity} from "../behaviour/behaviour.entity";
 import {StudentEntity} from "../student/student.entity";
 import {
     AddBehavioursToStudentsDto,
+    DeleteStudentBehaviourRecordsDto,
     GetStudentBehaviourRecordsByClassDto,
+    GetStudentBehaviourRecordsByGroupDto,
+    GetStudentBehaviourRecordsbyStaffDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
     GetStudentRankingByClassDto,
-    UpdateStudentBehaviouralRecordsDto,
-    DeleteStudentBehaviourRecordsDto,
-    GetStudentBehaviourRecordsbyStaffDto
+    GetStudentRankingByGroupDto,
+    UpdateStudentBehaviouralRecordsDto
 } from "./student-behaviour-record.dto";
 import {StaffEntity} from "../staff/staff.entity";
 import {ClassEntity} from "../class/class.entity";
+import {GroupEntity} from "../group/group.entity";
 
 @Injectable()
 export class StudentBehaviourRecordService {
@@ -25,6 +28,7 @@ export class StudentBehaviourRecordService {
         @InjectRepository(BehaviourEntity) private behaviourRepository: Repository<BehaviourEntity>,
         @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,
         @InjectRepository(ClassEntity) private classRepository: Repository<ClassEntity>,
+        @InjectRepository(GroupEntity) private groupRepository: Repository<GroupEntity>,
     ) {
     }
 
@@ -105,8 +109,8 @@ export class StudentBehaviourRecordService {
         return behaviourRecords;
     }
 
-    async updateStudentBehaviouralRecords(payload: UpdateStudentBehaviouralRecordsDto){
-        const{recordId,behaviourId} = payload;
+    async updateStudentBehaviouralRecords(payload: UpdateStudentBehaviouralRecordsDto) {
+        const {recordId, behaviourId} = payload;
         const record = await this.studentBehaviourRecordRepository.findOne({
             where: {recordId: recordId},
             relations: ['behaviour']
@@ -124,12 +128,12 @@ export class StudentBehaviourRecordService {
         );
         record.behaviour = newBehaviour;
         await this.studentBehaviourRecordRepository.save(record)
-        return record; 
+        return record;
     }
 
     async deleteStudentBehaviourRecords(payload: DeleteStudentBehaviourRecordsDto) {
         const {recordList} = payload;
-        for(const recordId of recordList){
+        for (const recordId of recordList) {
             const record = await this.studentBehaviourRecordRepository.findOne({
                 where: {recordId: recordId}
             })
@@ -151,11 +155,11 @@ export class StudentBehaviourRecordService {
         );
         const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
-            .leftJoinAndSelect("StudentEntity.class","ClassEntity")
+            .leftJoinAndSelect("StudentEntity.class", "ClassEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
             .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId}).getMany();
         return behaviourRecords;
-        
+
     }
 
     async getStudentBehaviouralRecordsByClass(payload: GetStudentBehaviourRecordsByClassDto) {
@@ -169,6 +173,21 @@ export class StudentBehaviourRecordService {
             .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
             .where("StudentEntity.class.classId = :classId", {classId: classId}).getMany();
+        return behaviourRecords;
+    }
+
+    async getStudentBehaviouralRecordsByGroup(payload: GetStudentBehaviourRecordsByGroupDto) {
+        const {groupId} = payload;
+        const selectedGroup = await this.groupRepository.findOne({where: {groupId: groupId}});
+        if (!selectedGroup) throw new HttpException(
+            `Group with ID ${groupId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .leftJoin("StudentEntity.groups", "GroupEntity")
+            .where("GroupEntity.groupId = :groupId", {groupId: groupId}).getMany();
         return behaviourRecords;
     }
 
@@ -190,6 +209,29 @@ export class StudentBehaviourRecordService {
             .having("totalBehaviourPoint > 0")
             .limit(rankingNumber)
             .where("StudentEntity.class.classId = :classId", {classId: classId}).getRawMany();
+        return ranking;
+    }
+
+
+    async getStudentRankingByGroup(payload: GetStudentRankingByGroupDto) {
+        const {groupId, rankingNumber} = payload;
+        const selectedGroup = await this.groupRepository.findOne({where: {groupId: groupId}});
+        if (!selectedGroup) throw new HttpException(
+            `Group with ID ${groupId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        const ranking = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .select("SUM(BehaviourEntity.behaviourPoint)", "totalBehaviourPoint")
+            .addSelect("StudentEntity.studentId", "studentId")
+            .addSelect("StudentEntity.fullName", "studentName")
+            .leftJoin("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .leftJoin("StudentEntity.groups", "GroupEntity")
+            .groupBy("StudentEntity.studentId")
+            .orderBy("totalBehaviourPoint", "DESC")
+            .having("totalBehaviourPoint > 0")
+            .limit(rankingNumber)
+            .where("GroupEntity.groupId = :groupId", {groupId: groupId}).getRawMany();
         return ranking;
     }
 }

@@ -1,0 +1,118 @@
+<nz-table #filterTable [nzData]="allGroupsDisplay" [nzLoading]="tableLoading" class="my-5" nzBordered
+          nzSize="middle"
+          nzTableLayout="fixed">
+  <thead>
+  <tr>
+    <th *ngFor="let column of listOfColumns"
+        [nzFilterFn]="column.filterFn"
+        [nzFilterMultiple]="column.filterMultiple"
+        [nzFilters]="column.listOfFilter"
+        [nzSortDirections]="column.sortDirections"
+        [nzSortFn]="column.sortFn"
+        [nzSortOrder]="column.sortOrder"
+        [nzWidth]="column.width"
+        nzCustomFilter
+    >
+
+      {{ column.name }}
+
+      <nz-filter-trigger *ngIf="column.name == 'Group Name'" [(nzVisible)]="searchVisible"
+                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">
+        <i nz-icon nzType="search"></i>
+      </nz-filter-trigger>
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of filterTable.data">
+    <td>{{ data.groupId }}</td>
+    <td>
+      {{ data.groupName }}
+    </td>
+    <td>{{ data.dateCreated | date:'medium'}}</td>
+    <td>
+      <div *ngIf="!data['showEditStudentsColumn']">
+        <nz-row nzAlign="middle" nzJustify="space-around">
+          <div nz-col nzSpan="20">
+            <div *ngIf="!data['studentsInGroup'] || data['studentsInGroup'].length == 0">-</div>
+            <nz-tag *ngFor="let o of data['studentsInGroup']"
+                    class="my-1"> {{ idMapName(o, data['studentsOption'])}}</nz-tag>
+          </div>
+          <div nz-col nzSpan="2">
+            <a (click)="data['showEditStudentsColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
+          </div>
+        </nz-row>
+      </div>
+      <div *ngIf="data['showEditStudentsColumn']">
+        <nz-row nzAlign="middle" nzJustify="space-around">
+          <div nz-col nzSpan="20">
+            <nz-select [(ngModel)]="data['studentsInGroup']" nzMode="tag" nzPlaceHolder="Select students"
+                       style="width: 100%;">
+              <nz-option *ngFor="let o of data['studentsOption']" [nzLabel]="o.label" [nzValue]="o.value"></nz-option>
+            </nz-select>
+          </div>
+          <div nz-col nzSpan="2">
+            <a (click)="data['showEditStudentsColumn'] = false; updateStudents(data);" nz-icon
+               nzTheme="outline"
+               nzType="check"></a>
+          </div>
+        </nz-row>
+      </div>
+    </td>
+    <td>
+      <div *ngIf="!data['showEditTeachersColumn']">
+        <nz-row nzAlign="middle" nzJustify="space-around">
+          <div nz-col nzSpan="20">
+            <div *ngIf="!data['teacherInGroup'] else showTag">-</div>
+            <ng-template #showTag>
+              <nz-tag class="my-1">{{idMapName(data['teacherInGroup'], data['teachersOption'])}}</nz-tag>
+            </ng-template>
+
+          </div>
+          <div nz-col nzSpan="2">
+            <a (click)="data['showEditTeachersColumn'] = true" nz-icon nzTheme="outline" nzType="edit"></a>
+          </div>
+        </nz-row>
+      </div>
+      <div *ngIf="data['showEditTeachersColumn']">
+        <nz-row nzAlign="middle" nzJustify="space-around">
+          <div nz-col nzSpan="20">
+            <nz-select [(ngModel)]="data['teacherInGroup']" nzAllowClear nzMode="default"
+                       nzPlaceHolder="Select teachers" nzShowSearch
+                       style="width: 100%;">
+              <nz-option *ngFor="let o of data['teachersOption']" [nzLabel]="o.label" [nzValue]="o.value"></nz-option>
+            </nz-select>
+          </div>
+          <div nz-col nzSpan="2">
+            <a (click)="data['showEditTeachersColumn'] = false; updateTeacher(data);" nz-icon nzTheme="outline"
+               nzType="check"></a>
+          </div>
+        </nz-row>
+      </div>
+    </td>
+    <td>
+      <nz-row nzAlign="middle" nzJustify="center">
+        <a (nzOnConfirm)="deleteGroup(data)" [nzIcon]="iconTpl" nz-icon nz-popconfirm
+           nzPopconfirmTitle="Are you sure delete this group {{data.groupName}}?" nzTheme="outline"
+           nzType="delete"></a>
+        <ng-template #iconTpl>
+          <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+        </ng-template>
+      </nz-row>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="ant-table-filter-dropdown">
+    <div class="search-box">
+      <input [(ngModel)]="searchValue" nz-input placeholder="Search group name" type="text"/>
+      <button (click)="search()" class="search-button" nz-button nzSize="small" nzType="primary">
+        Search
+      </button>
+      <button (click)="reset()" nz-button nzSize="small">Reset</button>
+    </div>
+  </div>
+</nz-dropdown-menu>
+

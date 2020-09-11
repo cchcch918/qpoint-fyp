@@ -1,0 +1,26 @@
+<nz-divider nzOrientation="left" nzText="Create Group"></nz-divider>
+
+<form (ngSubmit)="submitForm()" [formGroup]="createGroupForm" nz-form>
+  <div nz-row nzAlign="middle" nzJustify="space-between">
+    <div nz-col nzSpan="6">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please enter the group name">
+          <nz-input-group nzPrefixIcon="user">
+            <input formControlName="groupName" nz-input placeholder="Group Name" required/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-control>
+          <button [disabled]="!createGroupForm.valid" [nzLoading]="createGroupLoading" nz-button
+                  nzType="primary">
+            Create
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

@@ -52,9 +52,22 @@ export class GetStudentBehaviourRecordsByClassDto {
     classId: number;
 }
 
+export class GetStudentBehaviourRecordsByGroupDto {
+    @IsNotEmpty()
+    groupId: number;
+}
+
 export class GetStudentRankingByClassDto {
     @IsNotEmpty()
     classId: number;
+
+    @IsNotEmpty()
+    rankingNumber: number;
+}
+
+export class GetStudentRankingByGroupDto {
+    @IsNotEmpty()
+    groupId: number;
 
     @IsNotEmpty()
     rankingNumber: number;

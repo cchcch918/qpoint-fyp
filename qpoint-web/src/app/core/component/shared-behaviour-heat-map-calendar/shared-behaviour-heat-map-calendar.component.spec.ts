@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ClassHeatMapCalendarComponent} from './class-heat-map-calendar.component';
+import {SharedBehaviourHeatMapCalendarComponent} from './shared-behaviour-heat-map-calendar.component';
 
 describe('ClassHeatMapCalendarComponent', () => {
-  let component: ClassHeatMapCalendarComponent;
-  let fixture: ComponentFixture<ClassHeatMapCalendarComponent>;
+  let component: SharedBehaviourHeatMapCalendarComponent;
+  let fixture: ComponentFixture<SharedBehaviourHeatMapCalendarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ClassHeatMapCalendarComponent]
+      declarations: [SharedBehaviourHeatMapCalendarComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClassHeatMapCalendarComponent);
+    fixture = TestBed.createComponent(SharedBehaviourHeatMapCalendarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

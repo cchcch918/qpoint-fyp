@@ -29,7 +29,7 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
       name: 'Behaviour Id',
       sortOrder: 'descend',
       sortFn: (a: BehaviourVoModel, b: BehaviourVoModel) => a.behaviourId - b.behaviourId,
-      width: "10vh",
+      width: "12vh",
     },
     {
       name: 'Behaviour Name',
@@ -64,7 +64,11 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
 
   tableLoading: boolean;
   allBehaviours: BehaviourVoModel[];
+  allBehavioursDisplay: BehaviourVoModel[];
   editingBehaviour: BehaviourVoModel;
+
+  searchVisible: boolean = false;
+  searchValue = '';
 
   constructor(private behaviourService: BehaviourService, private msg: NzMessageService,) {
   }
@@ -81,8 +85,8 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
   updateBehaviourData() {
     this.tableLoading = true
     this.behaviourService.showAllBehaviours().subscribe(res => {
-      console.table(res);
       this.allBehaviours = res;
+      this.allBehavioursDisplay = res;
       this.tableLoading = false;
     })
   }
@@ -101,12 +105,12 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
   }
 
   editBehaviour() {
+    this.searchValue = '';
     let payload = {
       behaviourId: this.editingBehaviour.behaviourId,
       behaviourName: this.editingBehaviour.behaviourName,
       behaviourPoint: +this.editingBehaviour.behaviourPoint
     }
-    console.log("payload", payload)
     this.behaviourService.updateBehaviour(payload).subscribe(res => {
         if (res) {
           this.msg.success(`Behaviour ${this.editingBehaviour.behaviourId} updated`);
@@ -127,5 +131,15 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
 
   startEdit(behaviour: BehaviourVoModel) {
     this.editingBehaviour = Object.create(behaviour);
+  }
+
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  search(): void {
+    this.searchVisible = false;
+    this.allBehavioursDisplay = this.allBehaviours.filter((behaviour) => behaviour.behaviourName.toLocaleLowerCase().indexOf(this.searchValue.toLocaleLowerCase()) !== -1);
   }
 }

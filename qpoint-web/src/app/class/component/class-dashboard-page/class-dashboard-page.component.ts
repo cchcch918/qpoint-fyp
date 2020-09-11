@@ -26,7 +26,6 @@ export class ClassDashboardPageComponent implements OnInit {
         this.allClasses = res;
       }
     })
-    console.log(this.selectedClassId)
   }
 
   showDashboard(event) {
