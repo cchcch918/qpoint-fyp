@@ -5,16 +5,15 @@ export class StudentBehaviourRecordDto {
 }
 
 export class AddBehavioursToStudentsDto {
-    @IsArray()
-    @ArrayNotEmpty()
-    behaviourList: number[];
+    @IsNotEmpty()
+    behaviourId: number;
 
-    @IsArray()
-    @ArrayNotEmpty()
-    studentList: number[];
+    @IsNotEmpty()
+    studentId: number;
 
     @IsNotEmpty()
     staffId: number;
+    imageUri: string;
 }
 
 export class GetStudentPointDto {

@@ -32,8 +32,8 @@ export class StudentBehaviourRecordService {
     ) {
     }
 
-    async addBehavioursToStudents(payload: AddBehavioursToStudentsDto) {
-        const {behaviourList, studentList, staffId} = payload;
+    async addBehavioursToStudents(payload: AddBehavioursToStudentsDto){
+        const {behaviourId,studentId,staffId,imageUri} = payload
 
         const teacher = await this.staffRepository.findOne({where: {staffId: staffId}});
         if (!teacher) throw new HttpException(
@@ -41,37 +41,39 @@ export class StudentBehaviourRecordService {
             HttpStatus.BAD_REQUEST,
         );
 
-        const behaviours: BehaviourEntity[] = []
-        for (const behaviourId of behaviourList) {
-            behaviours.push(await (this.behaviourRepository.findOne({where: {behaviourId: behaviourId}})).then(behaviour => {
-                if (!behaviour) throw new HttpException(
-                    `Behaviour with ID ${behaviourId} does not exists`,
-                    HttpStatus.BAD_REQUEST,
-                );
-                return behaviour;
-            }));
-        }
-        const records: StudentBehaviourRecordEntity[] = []
-        for (const studentId of studentList) {
-            await (this.studentRepository.findOne({where: {studentId: studentId}})).then(student => {
-                if (!student) throw new HttpException(
-                    `Student with ID ${studentId} does not exists`,
-                    HttpStatus.BAD_REQUEST,
-                );
-                for (const behaviour of behaviours) {
-                    const newRecord = this.studentBehaviourRecordRepository.create({
-                        "student": student,
-                        "behaviour": behaviour,
-                        "givenByTeacher": teacher
-                    });
+        const behaviour = await this.behaviourRepository.findOne({where: {behaviourId: behaviourId}});
+        if(!behaviour) throw new HttpException(
+            `Behaviour with ID ${behaviourId} does not exists`,
+            HttpStatus.BAD_REQUEST
+        )
 
-                    this.studentBehaviourRecordRepository.save(newRecord);
-                    records.push(newRecord);
-                }
-            });
-        }
-        return records;
+        const student = await this.studentRepository.findOne({where: {studentId: studentId}});
+        if(!student) throw new HttpException(
+            `Student with ID ${studentId} does not exists`,
+            HttpStatus.BAD_REQUEST
+        )
+        
+        let newRecord = null
 
+        if(imageUri){
+             newRecord = await this.studentBehaviourRecordRepository.create({
+                "student": student,
+                "behaviour": behaviour,
+                "givenByTeacher": teacher,
+                "imageUri": imageUri
+            })
+            this.studentBehaviourRecordRepository.save(newRecord)
+        }
+        else{
+            newRecord = await this.studentBehaviourRecordRepository.create({
+                "student": student,
+                "behaviour": behaviour,
+                "givenByTeacher": teacher,
+                "imageUri": null
+            })
+            this.studentBehaviourRecordRepository.save(newRecord)
+        }
+        return newRecord
     }
 
     async getStudentsPoint(payload: GetStudentPointDto) {

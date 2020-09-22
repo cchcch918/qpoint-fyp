@@ -1,4 +1,4 @@
-import {CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {StudentEntity} from "../student/student.entity";
 import {BehaviourEntity} from "../behaviour/behaviour.entity";
 import {StaffEntity} from "../staff/staff.entity";
@@ -22,4 +22,7 @@ export class StudentBehaviourRecordEntity {
 
     @CreateDateColumn({name: 'date_given'})
     dateGiven: Date;
+
+    @Column({name: 'image_Uri', nullable: true})
+    imageUri: string;
 }
