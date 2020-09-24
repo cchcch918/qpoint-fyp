@@ -36,8 +36,9 @@ export class UpdateStudentBehaviouralRecordsDto {
     @IsNotEmpty()
     recordId: number;
 
-    @IsNotEmpty()
     behaviourId: number;
+    
+    imageUri: string;
 }
 
 export class DeleteStudentBehaviourRecordsDto {

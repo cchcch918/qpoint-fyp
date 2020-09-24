@@ -112,7 +112,7 @@ export class StudentBehaviourRecordService {
     }
 
     async updateStudentBehaviouralRecords(payload: UpdateStudentBehaviouralRecordsDto) {
-        const {recordId, behaviourId} = payload;
+        const {recordId, behaviourId, imageUri} = payload;
         const record = await this.studentBehaviourRecordRepository.findOne({
             where: {recordId: recordId},
             relations: ['behaviour']
@@ -121,14 +121,17 @@ export class StudentBehaviourRecordService {
             `Record with ID ${recordId} does not exist`,
             HttpStatus.BAD_REQUEST,
         );
-        const newBehaviour = await this.behaviourRepository.findOne({
-            where: {behaviourId: behaviourId}
-        })
-        if (!newBehaviour) throw new HttpException(
-            `Behaviour with ID ${behaviourId} does not exist`,
-            HttpStatus.BAD_REQUEST,
-        );
-        record.behaviour = newBehaviour;
+        if(behaviourId){
+            const newBehaviour = await this.behaviourRepository.findOne({
+                where: {behaviourId: behaviourId}
+            })
+            if (!newBehaviour) throw new HttpException(
+                `Behaviour with ID ${behaviourId} does not exist`,
+                HttpStatus.BAD_REQUEST,
+            );
+            record.behaviour = newBehaviour;
+        }
+        record.imageUri = imageUri
         await this.studentBehaviourRecordRepository.save(record)
         return record;
     }
