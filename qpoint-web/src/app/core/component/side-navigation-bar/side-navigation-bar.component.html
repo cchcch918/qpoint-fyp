@@ -16,7 +16,7 @@
       <li [nzOpen]="checkSubMenuOpen('staff')" nz-submenu nzIcon="team" nzTitle="Staff">
         <ul>
           <li [routerLink]="" nz-menu-item>Teacher Activity</li>
-          <li [routerLink]="" nz-menu-item>Manage Teacher</li>
+          <li [routerLink]="['/staff/manage-staff']" nz-menu-item nzMatchRouter>Manage Teacher</li>
         </ul>
       </li>
       <li [nzOpen]="checkSubMenuOpen('class')" nz-submenu nzIcon="shop" nzTitle="Class">
@@ -38,7 +38,7 @@
       </li>
       <li [nzOpen]="checkSubMenuOpen('notification')" nz-submenu nzIcon="notification" nzTitle="Notification">
         <ul>
-          <li [routerLink]="" nz-menu-item>Manage Notification</li>
+          <li [routerLink]="['/notification/manage-notification']" nz-menu-item nzMatchRouter>Manage Notification</li>
         </ul>
       </li>
       <li (click)="logout()" nz-menu-item style="color: red;">

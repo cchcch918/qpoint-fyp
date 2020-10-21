@@ -6,6 +6,10 @@ export class ParentLoginDto {
 
     @IsNotEmpty()
     password: string;
+
+    deviceId?: string;
+
+    devicePlatform?: string;
 }
 
 export class ParentChangePasswordDto {

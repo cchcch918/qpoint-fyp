@@ -37,6 +37,10 @@ const routes: Routes = [
     loadChildren: () => import('./behaviour/behaviour.module').then(mod => mod.BehaviourModule)
   },
   {
+    path: 'notification',
+    loadChildren: () => import('./notification/notification.module').then(mod => mod.NotificationModule)
+  },
+  {
     path: '**',
     redirectTo: 'pre-login'
   }

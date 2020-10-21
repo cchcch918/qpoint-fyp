@@ -11,7 +11,6 @@ export class CreateGroupDto {
     createdByAdminId: string;
 }
 
-
 export class DeleteGroupDto {
     @IsNotEmpty()
     groupId: number;

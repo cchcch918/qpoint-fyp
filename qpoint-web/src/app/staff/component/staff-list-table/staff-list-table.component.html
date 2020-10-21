@@ -1,0 +1,45 @@
+<nz-table #filterTable [nzData]="staffsDisplay" [nzLoading]="tableLoading" class="my-5" nzSize="middle"
+          nzTableLayout="fixed">
+  <thead>
+  <tr>
+    <th *ngFor="let column of listOfColumns"
+        [nzFilterFn]="column.filterFn"
+        [nzFilterMultiple]="column.filterMultiple"
+        [nzFilters]="column.listOfFilter"
+        [nzSortDirections]="column.sortDirections"
+        [nzSortFn]="column.sortFn"
+        [nzSortOrder]="column.sortOrder"
+        [nzWidth]="column.width"
+        nzCustomFilter
+    >
+      {{ column.name }}
+
+      <!--      <nz-filter-trigger *ngIf="column.name == 'Student Name'" [(nzVisible)]="searchVisible"-->
+      <!--                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">-->
+      <!--        <i nz-icon nzType="search"></i>-->
+      <!--      </nz-filter-trigger>-->
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of filterTable.data">
+    <td>{{ data.staffId }}</td>
+    <td>{{ data.username }}</td>
+    <td>{{ data.dateCreated | date:'medium'}}</td>
+    <td>{{ data.email}}</td>
+    <td>{{ data.isAdmin ? "Admin" : "Teacher"}}</td>
+    <td>
+      <div class="ml-2">
+        <a (nzOnConfirm)="deleteStaff(data)" [nzIcon]="deleteIconTpl" nz-icon nz-popconfirm
+           nzPopconfirmTitle="Are you sure delete staff {{data.username}} ?" nzTheme="outline"
+           nzType="delete"></a>
+        <ng-template #deleteIconTpl>
+          <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+        </ng-template>
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
+
+

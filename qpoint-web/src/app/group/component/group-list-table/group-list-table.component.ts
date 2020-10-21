@@ -35,8 +35,6 @@ export class GroupListTableComponent implements OnInit {
       name: 'Group Name',
       sortOrder: null,
       sortFn: (a: GroupVoModel, b: GroupVoModel) => a.groupName.localeCompare(b.groupName),
-      filterMultiple: true,
-      filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),
       width: "16vh",
 
     },

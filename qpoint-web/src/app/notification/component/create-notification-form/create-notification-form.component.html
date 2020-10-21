@@ -1,0 +1,34 @@
+<nz-divider nzOrientation="left" nzText="Create Notification"></nz-divider>
+
+<form (ngSubmit)="submitForm()" [formGroup]="createNotificationForm" nz-form>
+  <div nz-row nzAlign="middle" nzJustify="space-between">
+    <div nz-col nzSpan="6">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input the notification title">
+          <nz-input-group>
+            <input formControlName="notificationTitle" nz-input placeholder="Title" required/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input the notification message">
+          <nz-input-group>
+            <input formControlName="notificationMessage" nz-input placeholder="Message" required/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <!---->
+    </div>
+
+    <div nz-col nzSpan="16">
+      <nz-form-item>
+        <nz-form-control>
+          <button [disabled]="!createNotificationForm.valid" [nzLoading]="createNotificationLoading" nz-button
+                  nzType="primary">
+            Create
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

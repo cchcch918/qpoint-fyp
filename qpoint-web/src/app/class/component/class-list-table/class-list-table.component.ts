@@ -38,8 +38,6 @@ export class ClassListTableComponent implements OnInit {
       name: 'Class Name',
       sortOrder: null,
       sortFn: (a: ClassVoModel, b: ClassVoModel) => a.className.localeCompare(b.className),
-      filterMultiple: true,
-      filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),
       width: "16vh",
 
     },
@@ -108,7 +106,7 @@ export class ClassListTableComponent implements OnInit {
         let studentsOption: Array<{ value: number; label: string }> = [];
         if (this.allStudents) {
           let studentFilterOption = this.allStudents.filter(student => {
-            return student.class?.classId == eachClass.classId || student.class == null || student.class.length == 0
+            return student.class?.classId == eachClass.classId || student.class == null
           })
           studentsOption = studentFilterOption.map(student => {
             return {

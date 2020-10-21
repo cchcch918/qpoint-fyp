@@ -29,7 +29,7 @@
       <td>{{ data.behaviourName }}</td>
       <td>{{ data.dateCreated | date:'medium'}}</td>
       <td>{{ data.createdByAdmin.username }}</td>
-      <td>{{ data.behaviourPoint }}</td>
+      <td [style.color]="data.behaviourPoint>=0 ? 'green' :  'red' ">{{ data.behaviourPoint }}</td>
       <td>
         <nz-row nzAlign="middle" nzJustify="center">
           <a (click)="startEdit(data)" class="mr-2" nz-icon nzTheme="outline" nzType="edit"></a>

@@ -30,8 +30,6 @@ export class GroupEntity {
     @JoinColumn({name: 'staff_id'})
     teacher: StaffEntity;
 
-    // @ManyToMany(type => StudentEntity, studentEntity => studentEntity.groups, {onDelete: "CASCADE"})
-    // students: StudentEntity[];
 
     @ManyToMany(type => StudentEntity, studentEntity => studentEntity.groups, {cascade: true, onDelete: "CASCADE"})
     @JoinTable({

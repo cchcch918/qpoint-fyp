@@ -1,0 +1,36 @@
+<nz-modal (nzOnCancel)="cancelEditAction()"
+          [(nzVisible)]="showEditModal"
+          [nzClosable]="false"
+          [nzFooter]="modalFooter"
+          nzTitle="{{selectedNotification?.notificationTitle}}"
+>
+  <form [formGroup]="editNotificationForm" nz-form>
+    <div nz-row nzAlign="middle" nzJustify="space-between">
+      <div nz-col nzSpan="24">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input the notification title">
+            <nz-input-group>
+              <input formControlName="notificationTitle" nz-input placeholder="Title"
+                     required/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please input the notification message">
+            <nz-input-group>
+              <input formControlName="notificationMessage" nz-input placeholder="Message"
+                     required/>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  </form>
+  <ng-template #modalFooter>
+    <button (click)="cancelEditAction()" nz-button nzType="default">Cancel</button>
+    <button (click)="updateNotification()" [disabled]="!editNotificationForm.valid"
+            [nzLoading]="editNotificationLoading" nz-button
+            nzType="primary">Edit
+    </button>
+  </ng-template>
+</nz-modal>

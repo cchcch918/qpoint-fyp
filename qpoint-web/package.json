@@ -29,7 +29,7 @@
     "html2canvas": "^1.0.0-rc.5",
     "jquery": "^3.5.0",
     "jszip": "^3.4.0",
-    "ng-zorro-antd": "^9.0.2",
+    "ng-zorro-antd": "^9.3.0",
     "ng2-search-filter": "^0.5.1",
     "popper.js": "^1.16.1",
     "rxjs": "~6.5.4",

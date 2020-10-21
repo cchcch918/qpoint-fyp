@@ -1,7 +1,8 @@
 export class StaffVoModel {
-  staffId: string;
-  dateCreated: Date;
+  staffId: number;
   username: string;
+  dateCreated: Date;
+  email: string;
   token: string;
   isAdmin?: string;
 }

@@ -1,6 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ClassVoModel} from "../../../class/model/class-vo.model";
-import {StudentVoModel} from "../../../student/model/student-vo.model";
 import {NzMessageService, NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
 import {BehaviourService} from "../../service/behaviour.service";
 import {BehaviourVoModel} from "../../model/behaviour-vo-model";
@@ -35,8 +34,6 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
       name: 'Behaviour Name',
       sortOrder: null,
       sortFn: (a: BehaviourVoModel, b: BehaviourVoModel) => a.behaviourName.localeCompare(b.behaviourName),
-      filterMultiple: true,
-      filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),
       width: "20vh",
 
     },

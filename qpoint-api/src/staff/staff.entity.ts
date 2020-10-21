@@ -40,6 +40,7 @@ export class StaffEntity {
     @OneToMany(type => GroupEntity, group => group.teacher, {cascade: true})
     groups: GroupEntity[];
 
+
     @ManyToOne(type => SchoolEntity, school => school.staffs)
     @JoinColumn({name: 'school_id'})
     school: SchoolEntity;

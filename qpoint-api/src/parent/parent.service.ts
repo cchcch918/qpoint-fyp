@@ -4,6 +4,7 @@ import {Repository} from "typeorm";
 import {ParentEntity} from "./parent.entity";
 import {AuthGuard} from "../utils/auth.guard";
 import {ParentChangePasswordDto, ParentLoginDto} from "./parent.dto";
+import {AppConstant} from "../utils/constant/app.constant";
 
 @Injectable()
 export class ParentService {
@@ -18,7 +19,7 @@ export class ParentService {
     }
 
     async parentLogin(payload: ParentLoginDto) {
-        const {parentEmail, password} = payload;
+        const {parentEmail, password, deviceId, devicePlatform} = payload;
         const parent = await this.parentRepository.findOne({where: {email: parentEmail}, relations: ['children']});
         if (!parent || !(await parent.comparePassword(password))) {
             throw new HttpException(
@@ -26,6 +27,20 @@ export class ParentService {
                 HttpStatus.BAD_REQUEST,
             );
         }
+        //register device for notification
+        if (deviceId != null && devicePlatform != null) {
+            if ((devicePlatform !== AppConstant.DEVICE_ANDROID && devicePlatform !== AppConstant.DEVICE_IOS)) {
+                throw new HttpException(
+                    'Invalid device platform',
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            parent.deviceId = deviceId;
+            parent.devicePlatform = devicePlatform;
+            await this.parentRepository.save(parent);
+        }
+
+
         return parent.toResponseObject();
     }
 
@@ -56,5 +71,6 @@ export class ParentService {
         await this.parentRepository.update(parent.parentId, {password: parent.password});
         return {result: "SUCCESS"};
     }
+
 
 }

@@ -43,9 +43,6 @@ export class StudentListTableComponent implements OnInit, OnChanges {
       name: 'Student Name',
       sortOrder: null,
       sortFn: (a: StudentVoModel, b: StudentVoModel) => a.fullName.localeCompare(b.fullName),
-      filterMultiple: true,
-      filterFn: (list: string[], item: StudentVoModel) => list.some(name => item.fullName.indexOf(name) !== -1),
-
     },
     {
       name: 'Date Created',
@@ -58,6 +55,8 @@ export class StudentListTableComponent implements OnInit, OnChanges {
     {
       name: 'Parent Email',
       sortOrder: null,
+      sortFn: (a: StudentVoModel, b: StudentVoModel) => a.parent?.email.localeCompare(b.parent?.email),
+
     },
     {
       name: 'Total Points',
@@ -68,19 +67,16 @@ export class StudentListTableComponent implements OnInit, OnChanges {
     },
     {
       name: 'Class',
-      sortOrder: null,
       width: "10vh",
 
     },
     {
       name: 'Groups',
-      sortOrder: null,
       width: "10vh",
 
     },
     {
       name: 'Action',
-      sortOrder: null,
       width: "10vh",
 
     },

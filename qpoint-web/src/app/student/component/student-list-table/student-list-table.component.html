@@ -27,13 +27,14 @@
     <td>{{ data.fullName }}</td>
     <td>{{ data.dateCreated | date:'medium'}}</td>
     <td>{{ data.parent.email}}</td>
-    <td>{{ data.totalBehaviourPoint}}</td>
+    <td [style.color]="data.totalBehaviourPoint>=0 ? 'green' :  'red'">{{data.totalBehaviourPoint}}</td>
     <td>{{ data.class ? data.class.className : "-" }}</td>
     <td>
       <nz-tag *ngFor="let group of data.groups"
               class="my-1"> {{group.groupName}}</nz-tag>
       <div *ngIf="data.groups.length == 0">-</div>
     </td>
+
     <td>
       <nz-row nzAlign="middle" nzJustify="center">
 
@@ -53,7 +54,7 @@
 
         <div class="ml-2">
           <a (nzOnConfirm)="deleteStudent(data)" [nzIcon]="deleteIconTpl" nz-icon nz-popconfirm
-             nzPopconfirmTitle="Are you sure delete this {{data.fullName}} ?" nzTheme="outline"
+             nzPopconfirmTitle="Are you sure delete student {{data.fullName}} ?" nzTheme="outline"
              nzType="delete"></a>
           <ng-template #deleteIconTpl>
             <i nz-icon nzType="question-circle-o" style="color: red;"></i>

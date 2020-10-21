@@ -50,7 +50,7 @@ password: <b>${parent.password}</b>
     const info = await transporter.sendMail({
         from: '"qpoint 👻 " <' + `${process.env.EMAIL_USERNAME}` + ">", // sender address
         to: parent.email, // list of receivers
-        subject: 'Qpoint Parents Login ', // Subject line
+        subject: 'Qpoint Parent Login ', // Subject line
         html: content
 
         ,

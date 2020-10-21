@@ -1,7 +1,7 @@
 import {Body, Controller, Get, Param, Post, UsePipes} from "@nestjs/common";
 import {ValidationPipe} from "../utils/validation.pipe";
 import {StaffService} from "./staff.service";
-import {StaffLoginDto, StaffRegisterDto, ShowClassWithStaffIdDto} from "./staff.dto";
+import {AdminRegisterDto, DeleteStaffDto, ShowClassWithStaffIdDto, StaffLoginDto, StaffRegisterDto} from "./staff.dto";
 
 
 @Controller('staff')
@@ -38,7 +38,20 @@ export class StaffController {
     @Post('auth/login')
     @UsePipes(new ValidationPipe())
     login(@Body() data: StaffLoginDto) {
-        return this.staffService.login(data);
+        return this.staffService.staffLogin(data);
+    }
+
+
+    @Post('staff-register')
+    @UsePipes(new ValidationPipe())
+    staffRegister(@Body() data: StaffRegisterDto) {
+        return this.staffService.staffRegister(data);
+    }
+
+    @Post('delete-staff')
+    @UsePipes(new ValidationPipe())
+    deleteStaff(@Body() deleteStaffDto: DeleteStaffDto) {
+        return this.staffService.deleteStaff(deleteStaffDto);
     }
 
     @Post('admin-login')
@@ -49,7 +62,7 @@ export class StaffController {
 
     @Post('auth/register')
     @UsePipes(new ValidationPipe())
-    adminRegister(@Body() data: StaffRegisterDto) {
+    adminRegister(@Body() data: AdminRegisterDto) {
         return this.staffService.adminRegister(data);
     }
 

@@ -8,7 +8,6 @@ import {ManageBehaviourPageComponent} from './component/manage-behaviour-page/ma
 
 @NgModule({
   declarations: [
-
     BehaviourListTableComponent,
     CreateBehaviourFormComponent,
     ManageBehaviourPageComponent],

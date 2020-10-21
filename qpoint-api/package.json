@@ -31,6 +31,7 @@
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
+    "node-gcm": "^1.0.3",
     "nodemailer": "^6.4.6",
     "qrcode": "^1.4.4",
     "reflect-metadata": "^0.1.13",

@@ -9,7 +9,7 @@ export class StaffLoginDto {
     password: string;
 }
 
-export class StaffRegisterDto {
+export class AdminRegisterDto {
     @IsNotEmpty()
     username: string;
 
@@ -18,6 +18,20 @@ export class StaffRegisterDto {
 
     @IsNotEmpty()
     email: string;
+}
+
+export class StaffRegisterDto {
+    @IsNotEmpty()
+    username: string;
+
+    @IsNotEmpty()
+    email: string;
+}
+
+export class DeleteStaffDto {
+    @IsNotEmpty()
+    staffId: number;
+
 }
 
 export class ShowClassWithStaffIdDto {

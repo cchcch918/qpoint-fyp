@@ -2,10 +2,11 @@ import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {StaffEntity} from "./staff.entity";
-import {StaffLoginDto, StaffRegisterDto, ShowClassWithStaffIdDto} from "./staff.dto";
+import {AdminRegisterDto, DeleteStaffDto, ShowClassWithStaffIdDto, StaffLoginDto, StaffRegisterDto} from "./staff.dto";
 import {sendEmail} from "../utils/send-forget-password-email";
 import {AuthGuard} from "../utils/auth.guard";
 import {AppConstant} from "../utils/constant/app.constant";
+import {sendStaffLoginEmail} from "../utils/send-staff-account-login-email";
 
 @Injectable()
 export class StaffService {
@@ -40,7 +41,7 @@ export class StaffService {
         return await this.authGuard.validateToken(token);
     }
 
-    async login(data: StaffLoginDto) {
+    async staffLogin(data: StaffLoginDto) {
         const {username, password} = data;
         const staff = await this.staffRepository.findOne({where: {username: username}});
         if (!staff) {
@@ -83,16 +84,48 @@ export class StaffService {
     }
 
 
-    async adminRegister(data: StaffRegisterDto) {
+    async adminRegister(data: AdminRegisterDto) {
         const {username} = data;
         let admin = await this.staffRepository.findOne({where: {username}});
         if (admin) {
-            throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Admin already exists', HttpStatus.BAD_REQUEST);
         }
         admin = await this.staffRepository.create(data);
         admin.isAdmin = AppConstant.IS_ADMIN
         await this.staffRepository.save(admin);
         return admin.toResponseObject();
+    }
+
+    async staffRegister(payload: StaffRegisterDto) {
+        const {username, email} = payload;
+        const admin = await this.staffRepository.findOne({where: {username}});
+        if (admin) {
+            throw new HttpException('Staff already exists', HttpStatus.BAD_REQUEST);
+        }
+        const newStaff = await this.staffRepository.create({"username": username});
+        newStaff.email = email;
+        newStaff.password = this.generateRandomPasswordForStaff(10);
+        await sendStaffLoginEmail(newStaff);
+        await this.staffRepository.save(newStaff);
+        return newStaff.toResponseObject();
+    }
+
+    async deleteStaff(payload: DeleteStaffDto) {
+        const {staffId} = payload;
+        const thisStaff = await this.staffRepository.findOne({where: {staffId: staffId}, relations: ['groups']});
+        console.log(thisStaff);
+        if (!thisStaff) throw new HttpException(
+            `Staff ${staffId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        if (thisStaff.isAdmin === AppConstant.IS_ADMIN) throw new HttpException(
+            `Admin cant be deleted`,
+            HttpStatus.BAD_REQUEST,
+        );
+        thisStaff.groups = null;
+        await this.staffRepository.save(thisStaff);
+        await this.staffRepository.delete({staffId: staffId});
+        return {deletedStaff: staffId};
     }
 
 
@@ -154,11 +187,22 @@ export class StaffService {
             where: {staffId: staffId},
             relations: ['classes']
         })
-        if(!classes) throw new HttpException(
+        if (!classes) throw new HttpException(
             `Staff with ID ${staffId} does not exist`,
             HttpStatus.BAD_REQUEST,
         )
         return classes
     }
+
+    generateRandomPasswordForStaff(length: number) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
 
 }
