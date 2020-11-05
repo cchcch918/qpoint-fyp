@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1074405687270",
+    "firebase_url": "https://qpoint-mobile.firebaseio.com",
+    "project_id": "qpoint-mobile",
+    "storage_bucket": "qpoint-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074405687270:android:5567b2374fb18cda59a027",
+        "android_client_info": {
+          "package_name": "com.qpoint_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074405687270-s1enmpvbf7qavmb0676d2sq7be7tdv3d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBnyY30UVwj5jSryqOURQtWCDRj4r2Kz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074405687270-s1enmpvbf7qavmb0676d2sq7be7tdv3d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
