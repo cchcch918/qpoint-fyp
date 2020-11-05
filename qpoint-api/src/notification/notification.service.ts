@@ -3,7 +3,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {NotificationEntity} from "./notification.entity";
 import * as gcm from 'node-gcm';
-import {CreateNotificationDto} from "./notification.dto";
+import {CreateNotificationDto, deleteNotificationsDto} from "./notification.dto";
 import {ParentEntity} from "../parent/parent.entity";
 import {AppConstant} from "../utils/constant/app.constant";
 import {StaffEntity} from "../staff/staff.entity";
@@ -53,6 +53,21 @@ export class NotificationService {
             promises.push(await this.parentRepository.save(parent));
         }
         return await Promise.all(promises);
+    }
+
+    async deleteNotifications(payload: deleteNotificationsDto) {
+        const {notificationsList} = payload;
+        for(const notificationId of notificationsList){
+            const notification  = await this.notificationRepository.findOne({
+                where: {notificationId: notificationId}
+            })
+            if (!notification) throw new HttpException(
+                `Notification with ID ${notificationId} does not exist`,
+                HttpStatus.BAD_REQUEST,
+            )
+            await this.notificationRepository.delete({notificationId: notificationId})
+        }
+        return {deletedNotification: notificationsList}
     }
 
     async showAllNotifications() {

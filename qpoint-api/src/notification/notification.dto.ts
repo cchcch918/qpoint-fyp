@@ -1,4 +1,4 @@
-import {IsNotEmpty} from "class-validator";
+import {IsNotEmpty,IsArray,ArrayNotEmpty} from "class-validator";
 
 export class NotificationDto {
 
@@ -13,4 +13,10 @@ export class CreateNotificationDto {
 
     @IsNotEmpty()
     notificationMessage: string;
+}
+
+export class deleteNotificationsDto {
+    @IsArray()
+    @ArrayNotEmpty()
+    notificationsList: number[];
 }
