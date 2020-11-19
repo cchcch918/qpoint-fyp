@@ -3,9 +3,11 @@
             nzCollapsible>
     <div class="p-2"><img alt="Qpoint logo" class="logo" src="../../../../assets/qpoint-logo.png"></div>
     <ul nz-menu nzMode="inline" nzTheme="light">
-      <li [routerLink]="" nz-menu-item>
-        <i nz-icon nzType="bar-chart"></i>
-        <span>Dashboard</span>
+      <li nz-menu-item nzMatchRouter>
+        <div [routerLink]="['/', 'dashboard', 'main-dashboard-page']">
+          <i nz-icon nzType="bar-chart"></i>
+          <span>Dashboard</span>
+        </div>
       </li>
       <li [nzOpen]="checkSubMenuOpen('student')" nz-submenu nzIcon="user" nzTitle="Student">
         <ul>

@@ -39,7 +39,7 @@ export class LoginFormComponent implements OnInit {
     this.loginService.adminLogin(staffLoginVo).subscribe(
       (res) => {
         this.loginService.token = res.token;
-        this.router.navigate(['/student/student-qrcode-list']);
+        this.router.navigate(['/dashboard/main-dashboard']);
         this.loginLoading = false
       },
       (error) => {

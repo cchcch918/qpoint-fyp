@@ -1,0 +1,37 @@
+<div class="bg-light p-4">
+  <h3>Today Records</h3>
+  <div [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" nz-row nzAlign="middle">
+    <div [nzSpan]="6" class="gutter-row" nz-col>
+      <app-shared-small-card
+        [colorCode]="'#DCC7AA'"
+        [iconName]="'book'"
+        [stats]="todayRecordsCount"
+        [title]="'Total Records'">
+      </app-shared-small-card>
+    </div>
+    <div [nzSpan]="6" class="gutter-row" nz-col>
+      <app-shared-small-card
+        [colorCode]="'#F7882F'"
+        [iconName]="'rise'"
+        [stats]="positivePoints"
+        [title]="'Positive Points'">
+      </app-shared-small-card>
+    </div>
+    <div [nzSpan]="6" class="gutter-row" nz-col>
+      <app-shared-small-card
+        [colorCode]="'#F7C331'"
+        [iconName]="'fall'"
+        [stats]="negativePoints"
+        [title]="'Negative Points'">
+      </app-shared-small-card>
+    </div>
+    <div [nzSpan]="6" class="gutter-row" nz-col>
+      <app-shared-small-card
+        [colorCode]="'#6B7A8F'"
+        [iconName]="'percentage'"
+        [stats]="'123'"
+        [title]="'Percentage'">
+      </app-shared-small-card>
+    </div>
+  </div>
+</div>

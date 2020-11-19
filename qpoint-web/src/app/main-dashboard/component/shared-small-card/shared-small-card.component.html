@@ -1,0 +1,11 @@
+<nz-card>
+  <div nz-row nzAlign="middle" nzJustify="space-around">
+    <div [nzSpan]="6" nz-col>
+      <i [ngStyle]="{ 'color': colorCode }" [nzTheme]="'outline'" nz-icon nzType="{{iconName}}"></i>
+    </div>
+    <div [nzSpan]="15" nz-col>
+      <span class="font-weight-bold">{{stats}}</span><br>
+      <span>{{title}}</span>
+    </div>
+  </div>
+</nz-card>

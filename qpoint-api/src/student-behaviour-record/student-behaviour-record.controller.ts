@@ -55,6 +55,24 @@ export class StudentBehaviourRecordController {
         return this.studentBehaviourRecordService.deleteStudentBehaviourRecords(payload)
     }
 
+    @Post('get-today-record-details')
+    @UsePipes(new ValidationPipe())
+    getTodayRecordDetails() {
+        return this.studentBehaviourRecordService.getTodayRecordDetails();
+    }
+
+    @Post('get-overall-student-behaviour-records')
+    @UsePipes(new ValidationPipe())
+    getOverallStudentBehaviourRecords() {
+        return this.studentBehaviourRecordService.getOverallStudentBehaviourRecords();
+    }
+
+    @Post('get-overall-ranking')
+    @UsePipes(new ValidationPipe())
+    getOverallRanking() {
+        return this.studentBehaviourRecordService.getOverallRanking();
+    }
+
     @Post('get-student-behaviour-records-by-class')
     @UsePipes(new ValidationPipe())
     getStudentBehaviouralRecordsByClass(@Body() payload: GetStudentBehaviourRecordsByClassDto) {
