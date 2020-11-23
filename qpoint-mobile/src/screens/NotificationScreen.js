@@ -28,7 +28,8 @@ const NotificationScreen = ({navigation}) => {
 
     const deleteAllNotifications = async () => {
         const response = await qpointApi.post('/notification/delete-notifications',{notificationsList:allNotificationID})
-        console.log(response.data)
+        // console.log(response.data)
+        setNotifications(null)
     }
 
     return(
@@ -81,6 +82,9 @@ const NotificationScreen = ({navigation}) => {
                     return(
                         <ListItem
                             title = {item.notificationTitle}
+                            subtitle = {item.notificationMessage}
+                            containerStyle = {{margin:10,borderRadius:20,shadowColor: "#000", elevation: 2, }}
+                            onPress = {()=>navigation.navigate('NotificationDetails',{notification:item})}
                         />
                     )
                 }}

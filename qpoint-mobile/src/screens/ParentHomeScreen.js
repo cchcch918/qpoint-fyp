@@ -21,11 +21,11 @@ const ParentHomeScreen = ({navigation}) => {
       const response = await qpointApi.post('/parent/show-parent-details',{parentEmail:email})
       setAllChildren(response.data.children)
     }
-    const getProfileImage = async () => {
-      const response = await qpointApi.get('/student/get-student-profile-image/1-StudentA-20200928.jpg')
-      // console.log(response)
-    }
-    getProfileImage()
+    // const getProfileImage = async () => {
+    //   const response = await qpointApi.get('/student/get-student-profile-image/1-StudentA-20200928.jpg')
+    //   // console.log(response)
+    // }
+    // getProfileImage()
     getChildren()
   },[])
 

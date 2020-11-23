@@ -21,6 +21,7 @@ import ChangePhotoScreen from './src/screens/ChangePhotoScreen'
 import ParentBottomTab from './src/screens/ParentBottomTab'
 import ParentActivitiesScreen from './src/screens/ParentActivitiesScreen'
 import LeaderboardScreen from './src/screens/LeaderboardScreen'
+import NotificationDetailsScreen from './src/screens/NotificationDetailsScreen'
 import messaging from '@react-native-firebase/messaging';
 
 const staffStack = createStackNavigator();
@@ -188,7 +189,13 @@ const App = () => {
               headerShown: false
             })} 
           />
-
+           <parentStack.Screen 
+            name = "NotificationDetails" 
+            component = {NotificationDetailsScreen}
+            options={({ route }) => ({
+              headerShown: false
+            })} 
+          />
         </parentStack.Navigator>
        )
       }
