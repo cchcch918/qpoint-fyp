@@ -80,7 +80,7 @@ export class StudentBehaviourRecordService {
         const {studentList} = payload;
         const students: StudentEntity[] = []
         for (const studentId of studentList) {
-            const student = await this.studentRepository.findOne({where: {studentId: studentId}});
+            const student = await this.studentRepository.findOne({where: {studentId: studentId}, relations: ['class']});
             if (!student) throw new HttpException(
                 `Student with ID ${studentId} does not exists`,
                 HttpStatus.BAD_REQUEST,
