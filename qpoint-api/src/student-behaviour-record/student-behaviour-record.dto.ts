@@ -27,9 +27,11 @@ export class GetStudentBehaviourRecordsDto {
     studentId: number;
 }
 
-export class GetStudentBehaviourRecordsbyStaffDto {
+export class GetStudentBehaviourRecordsByStaffDto {
     @IsNotEmpty()
-    staffId:number
+    staffId: number
+
+    dateFilter: string
 }
 
 export class UpdateStudentBehaviouralRecordsDto {

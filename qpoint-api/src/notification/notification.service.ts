@@ -3,7 +3,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {NotificationEntity} from "./notification.entity";
 import * as gcm from 'node-gcm';
-import {CreateNotificationDto, deleteNotificationsDto} from "./notification.dto";
+import {CreateNotificationDto, DeleteNotificationsDto} from "./notification.dto";
 import {ParentEntity} from "../parent/parent.entity";
 import {AppConstant} from "../utils/constant/app.constant";
 import {StaffEntity} from "../staff/staff.entity";
@@ -55,10 +55,10 @@ export class NotificationService {
         return await Promise.all(promises);
     }
 
-    async deleteNotifications(payload: deleteNotificationsDto) {
+    async deleteNotifications(payload: DeleteNotificationsDto) {
         const {notificationsList} = payload;
-        for(const notificationId of notificationsList){
-            const notification  = await this.notificationRepository.findOne({
+        for (const notificationId of notificationsList) {
+            const notification = await this.notificationRepository.findOne({
                 where: {notificationId: notificationId}
             })
             if (!notification) throw new HttpException(

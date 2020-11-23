@@ -15,6 +15,7 @@ import * as crypto from "crypto";
 import {GroupEntity} from "../group/group.entity";
 import {ClassEntity} from "../class/class.entity";
 import {SchoolEntity} from "../school/school.entity";
+import {StudentBehaviourRecordEntity} from "../student-behaviour-record/student-behaviour-record.entity";
 
 
 @Entity('staff')
@@ -47,6 +48,9 @@ export class StaffEntity {
 
     @Column({name: 'is_admin', nullable: true})
     isAdmin: string;
+
+    @OneToMany(type => StudentBehaviourRecordEntity, studentBehaviourRecordEntity => studentBehaviourRecordEntity.givenByTeacher)
+    records: StudentBehaviourRecordEntity[];
 
     @Column({name: 'reset_password_token', nullable: true})
     resetPasswordToken: string;

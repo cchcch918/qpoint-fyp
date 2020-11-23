@@ -9,7 +9,7 @@ export class SharedSmallCardComponent implements OnInit {
   @Input() iconName: string;
   @Input() colorCode: string;
   @Input() title: string;
-  @Input() stats: number;
+  @Input() stats: string;
 
   constructor() {
   }

@@ -5,12 +5,18 @@ import {StaffRoutingModule} from "./staff.routing.module";
 import {ManageStaffPageComponent} from './component/manage-staff-page/manage-staff-page.component';
 import {CreateStaffFormComponent} from "./component/create-staff-form/create-staff-form.component";
 import {StaffListTableComponent} from './component/staff-list-table/staff-list-table.component';
+import {TeachersActivitiesPageComponent} from './component/teachers-activities-page/teachers-activities-page.component';
+import {ActivityDetailsModalComponent} from './component/activity-details-modal/activity-details-modal.component';
+import {TeacherCardListComponent} from './component/teacher-card-list/teacher-card-list.component';
 
 @NgModule({
   declarations: [
     CreateStaffFormComponent,
     ManageStaffPageComponent,
-    StaffListTableComponent
+    StaffListTableComponent,
+    TeachersActivitiesPageComponent,
+    ActivityDetailsModalComponent,
+    TeacherCardListComponent
   ],
   imports: [
     CoreModule,

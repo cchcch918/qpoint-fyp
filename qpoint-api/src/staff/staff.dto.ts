@@ -38,3 +38,11 @@ export class ShowClassWithStaffIdDto {
     @IsNotEmpty()
     staffId: number
 }
+
+export class DateFilterDto {
+    @IsNotEmpty()
+    dateFilter: string
+
+    @IsNotEmpty()
+    sortBy: string
+}

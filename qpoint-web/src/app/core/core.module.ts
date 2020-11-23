@@ -26,6 +26,7 @@ let CoreComponent = [
     NgZorroAntdModule,
     RouterModule,
     NgxChartsModule,
+
   ],
   exports: [
     CommonModule,

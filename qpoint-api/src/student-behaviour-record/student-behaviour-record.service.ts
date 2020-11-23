@@ -9,7 +9,7 @@ import {
     DeleteStudentBehaviourRecordsDto,
     GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsByGroupDto,
-    GetStudentBehaviourRecordsbyStaffDto,
+    GetStudentBehaviourRecordsByStaffDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
     GetStudentRankingByClassDto,
@@ -19,10 +19,6 @@ import {
 import {StaffEntity} from "../staff/staff.entity";
 import {ClassEntity} from "../class/class.entity";
 import {GroupEntity} from "../group/group.entity";
-// import { addYears, subYears } from 'date-fns';
-//
-//
-// export const BeforeDate = (date: Date) => Between(subYears(date, 100), date);
 
 
 @Injectable()
@@ -155,18 +151,53 @@ export class StudentBehaviourRecordService {
         return {deletedRecord: recordList}
     }
 
-    async getStudentBehaviouralRecordsByStaff(payload: GetStudentBehaviourRecordsbyStaffDto) {
-        const {staffId} = payload;
+    async getStudentBehaviouralRecordsByStaff(payload: GetStudentBehaviourRecordsByStaffDto) {
+        const {staffId, dateFilter} = payload;
         const selectedStaff = await this.staffRepository.findOne({where: {staffId: staffId}});
         if (!selectedStaff) throw new HttpException(
             `Staff with ID ${staffId} does not exists`,
             HttpStatus.BAD_REQUEST,
         );
+
+        const date = new Date();
+        let startDate;
+        switch (dateFilter) {
+            case "1Y":
+                startDate = new Date(date.getFullYear(), 0, 1)
+                break;
+
+            case "1D":
+                startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0)
+                break;
+
+            case "7D":
+                startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                break;
+
+            case "1M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+                break;
+
+            case "2M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 2, date.getDate())
+                break;
+
+            case "3M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 3, date.getDate())
+                break;
+
+            default:
+                startDate = new Date(2020, 0, 1)
+        }
+        const startDateISO = startDate.toISOString();
+
         const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
             .leftJoinAndSelect("StudentEntity.class", "ClassEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
-            .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId}).getMany();
+            .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId})
+            .andWhere("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .getMany();
         return behaviourRecords;
 
     }
@@ -175,7 +206,7 @@ export class StudentBehaviourRecordService {
         const date = new Date();
 
         //today date
-        const startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+        const startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0)
         const startDateISO = startDate.toISOString();
 
         const todayRecords: any[] = await createQueryBuilder("StudentBehaviourRecordEntity")
@@ -183,6 +214,15 @@ export class StudentBehaviourRecordService {
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
             .where("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
             .getMany();
+
+
+        const result: any = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .addSelect("BehaviourEntity.behaviourName", "BehaviourName")
+            .addSelect("COUNT(BehaviourEntity.behaviourId)", "BehaviourCount")
+            .groupBy("BehaviourEntity.behaviourId")
+            .where("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .getRawOne();
 
         const positivePoints = todayRecords.filter(record => {
             return record.behaviour.behaviourPoint > 0;
@@ -196,10 +236,12 @@ export class StudentBehaviourRecordService {
             return record.behaviour.behaviourPoint + currentTotal
         }, 0);
 
+
         return {
             todayRecordsCount: todayRecords.length,
             positivePoints: positivePoints,
             negativePoints: negativePoints,
+            highlightedBehaviour: result.BehaviourName
         }
     }
 
@@ -207,7 +249,8 @@ export class StudentBehaviourRecordService {
         const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
-            .limit(20)
+            .limit(50)
+            .orderBy("StudentBehaviourRecordEntity.dateGiven", 'DESC')
             .getMany();
         return behaviourRecords;
     }

@@ -67,7 +67,7 @@ export class BehaviourListTableComponent implements OnInit, OnChanges {
   searchVisible: boolean = false;
   searchValue = '';
 
-  constructor(private behaviourService: BehaviourService, private msg: NzMessageService,) {
+  constructor(private behaviourService: BehaviourService, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {

@@ -51,7 +51,6 @@ export class GroupListTableComponent implements OnInit {
     },
     {
       name: 'Teacher',
-
     },
     {
       name: 'Action',

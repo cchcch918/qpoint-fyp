@@ -6,7 +6,7 @@ import {
     DeleteStudentBehaviourRecordsDto,
     GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsByGroupDto,
-    GetStudentBehaviourRecordsbyStaffDto,
+    GetStudentBehaviourRecordsByStaffDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
     GetStudentRankingByClassDto,
@@ -39,7 +39,7 @@ export class StudentBehaviourRecordController {
 
     @Post('get-student-behaviour-records-by-staff')
     @UsePipes(new ValidationPipe())
-    getStudentBehaviouralRecordsByStaff(@Body() payload: GetStudentBehaviourRecordsbyStaffDto) {
+    getStudentBehaviouralRecordsByStaff(@Body() payload: GetStudentBehaviourRecordsByStaffDto) {
         return this.studentBehaviourRecordService.getStudentBehaviouralRecordsByStaff(payload);
     }
 
@@ -96,4 +96,6 @@ export class StudentBehaviourRecordController {
     getStudentRankingByGroup(@Body() payload: GetStudentRankingByGroupDto) {
         return this.studentBehaviourRecordService.getStudentRankingByGroup(payload);
     }
+
+
 }

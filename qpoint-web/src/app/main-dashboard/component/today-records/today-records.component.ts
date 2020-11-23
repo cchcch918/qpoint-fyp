@@ -11,6 +11,7 @@ export class TodayRecordsComponent implements OnInit {
   todayRecordsCount: number;
   positivePoints: number;
   negativePoints: number;
+  highlightedBehaviour: string = "-";
 
   constructor(private mainDashboardService: MainDashboardService) {
   }
@@ -20,6 +21,7 @@ export class TodayRecordsComponent implements OnInit {
       this.todayRecordsCount = res.todayRecordsCount;
       this.positivePoints = res.positivePoints;
       this.negativePoints = res.negativePoints;
+      this.highlightedBehaviour = res?.highlightedBehaviour;
     })
   }
 

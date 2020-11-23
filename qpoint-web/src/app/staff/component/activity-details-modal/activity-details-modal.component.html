@@ -1,0 +1,53 @@
+<nz-modal (nzOnCancel)="closeModal()"
+          [(nzVisible)]="showActivityDetailsModal"
+          [nzClosable]="false"
+          [nzFooter]="modalFooter"
+          nzTitle="Activity Details ({{dateFilterString}})"
+>
+  <div class="mb-4">
+    <span class="font-weight-bolder">{{selectedTeacher?.username}}
+      <nz-tag *ngIf="selectedTeacher?.isAdmin === 'Y' " [nzColor]="'#F7C331'" class="small">Admin</nz-tag>
+    </span><br>
+    <span class="font-weight-lighter">Class: </span>
+    <span *ngIf="selectedTeacher?.classes?.length != 0 else emptyClasses" class="font-weight-bold small">
+                    <span
+                      *ngFor="let class of selectedTeacher?.classes; index as i; last as isLast;"> {{class.className}}
+                      <span *ngIf="!isLast">, </span>
+                    </span>
+                  </span>
+    <ng-template #emptyClasses>
+      <span>-</span>
+    </ng-template>
+    <br>
+    <span class="font-weight-lighter"> Group: </span>
+    <span *ngIf="selectedTeacher?.groups?.length != 0 else emptyGroup" class="font-weight-bold small">
+                    <span
+                      *ngFor="let group of selectedTeacher?.groups; index as i; last as isLast;"> {{group.groupName}}
+                      <span *ngIf="!isLast">, </span>
+                    </span>
+                  </span>
+    <ng-template #emptyGroup>
+      <span>-</span>
+    </ng-template>
+  </div>
+
+  <nz-divider nzOrientation="left" nzText="Timeline"></nz-divider>
+
+  <nz-spin [nzSpinning]="timelineLoading">
+    <nz-timeline [nzReverse]="true">
+      <nz-timeline-item *ngFor="let record of behaviourRecordsByTeacher"
+                        [nzColor]="record?.behaviour.behaviourPoint>= 0 ? 'green' : 'red'">
+        <span class="font-weight-bold small"> {{record.dateGiven  | date:'medium'}}: </span>
+        <span class="font-weight-lighter small">{{record.behaviour.behaviourPoint}}
+          points({{ record.behaviour.behaviourName }})
+          {{record?.behaviour.behaviourPoint >= 0 ? 'awarded to' : 'deducted from'}} {{ record.student.fullName }}.
+      </span>
+      </nz-timeline-item>
+    </nz-timeline>
+  </nz-spin>
+
+
+  <ng-template #modalFooter>
+    <button (click)="closeModal()" nz-button nzType="default">Close</button>
+  </ng-template>
+</nz-modal>
