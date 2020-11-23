@@ -9,7 +9,7 @@ import {
     DeleteStudentBehaviourRecordsDto,
     GetStudentBehaviourRecordsByClassDto,
     GetStudentBehaviourRecordsByGroupDto,
-    GetStudentBehaviourRecordsbyStaffDto,
+    GetStudentBehaviourRecordsByStaffDto,
     GetStudentBehaviourRecordsDto,
     GetStudentPointDto,
     GetStudentRankingByClassDto,
@@ -19,6 +19,7 @@ import {
 import {StaffEntity} from "../staff/staff.entity";
 import {ClassEntity} from "../class/class.entity";
 import {GroupEntity} from "../group/group.entity";
+
 
 @Injectable()
 export class StudentBehaviourRecordService {
@@ -32,8 +33,8 @@ export class StudentBehaviourRecordService {
     ) {
     }
 
-    async addBehavioursToStudents(payload: AddBehavioursToStudentsDto){
-        const {behaviourId,studentId,staffId,imageUri} = payload
+    async addBehavioursToStudents(payload: AddBehavioursToStudentsDto) {
+        const {behaviourId, studentId, staffId, imageUri} = payload
 
         const teacher = await this.staffRepository.findOne({where: {staffId: staffId}});
         if (!teacher) throw new HttpException(
@@ -42,29 +43,28 @@ export class StudentBehaviourRecordService {
         );
 
         const behaviour = await this.behaviourRepository.findOne({where: {behaviourId: behaviourId}});
-        if(!behaviour) throw new HttpException(
+        if (!behaviour) throw new HttpException(
             `Behaviour with ID ${behaviourId} does not exists`,
             HttpStatus.BAD_REQUEST
         )
 
         const student = await this.studentRepository.findOne({where: {studentId: studentId}});
-        if(!student) throw new HttpException(
+        if (!student) throw new HttpException(
             `Student with ID ${studentId} does not exists`,
             HttpStatus.BAD_REQUEST
         )
-        
+
         let newRecord = null
 
-        if(imageUri){
-             newRecord = await this.studentBehaviourRecordRepository.create({
+        if (imageUri) {
+            newRecord = await this.studentBehaviourRecordRepository.create({
                 "student": student,
                 "behaviour": behaviour,
                 "givenByTeacher": teacher,
                 "imageUri": imageUri
             })
             this.studentBehaviourRecordRepository.save(newRecord)
-        }
-        else{
+        } else {
             newRecord = await this.studentBehaviourRecordRepository.create({
                 "student": student,
                 "behaviour": behaviour,
@@ -121,7 +121,7 @@ export class StudentBehaviourRecordService {
             `Record with ID ${recordId} does not exist`,
             HttpStatus.BAD_REQUEST,
         );
-        if(behaviourId){
+        if (behaviourId) {
             const newBehaviour = await this.behaviourRepository.findOne({
                 where: {behaviourId: behaviourId}
             })
@@ -143,7 +143,7 @@ export class StudentBehaviourRecordService {
                 where: {recordId: recordId}
             })
             if (!record) throw new HttpException(
-                `Record with ID ${recordId} does     not exist`,
+                `Record with ID ${recordId} does not exist`,
                 HttpStatus.BAD_REQUEST,
             );
             await this.studentBehaviourRecordRepository.delete({recordId: recordId});
@@ -151,20 +151,155 @@ export class StudentBehaviourRecordService {
         return {deletedRecord: recordList}
     }
 
-    async getStudentBehaviouralRecordsByStaff(payload: GetStudentBehaviourRecordsbyStaffDto) {
-        const {staffId} = payload;
+    async getStudentBehaviouralRecordsByStaff(payload: GetStudentBehaviourRecordsByStaffDto) {
+        const {staffId, dateFilter} = payload;
         const selectedStaff = await this.staffRepository.findOne({where: {staffId: staffId}});
         if (!selectedStaff) throw new HttpException(
             `Staff with ID ${staffId} does not exists`,
             HttpStatus.BAD_REQUEST,
         );
+
+        const date = new Date();
+        let startDate;
+        switch (dateFilter) {
+            case "1Y":
+                startDate = new Date(date.getFullYear(), 0, 1)
+                break;
+
+            case "1D":
+                startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0)
+                break;
+
+            case "7D":
+                startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                break;
+
+            case "1M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+                break;
+
+            case "2M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 2, date.getDate())
+                break;
+
+            case "3M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 3, date.getDate())
+                break;
+
+            default:
+                startDate = new Date(2020, 0, 1)
+        }
+        const startDateISO = startDate.toISOString();
+
         const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
             .leftJoinAndSelect("StudentEntity.class", "ClassEntity")
             .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
-            .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId}).getMany();
+            .where("StudentBehaviourRecordEntity.givenByTeacher = :givenByTeacher", {givenByTeacher: staffId})
+            .andWhere("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .getMany();
         return behaviourRecords;
 
+    }
+
+    async getTodayRecordDetails() {
+        const date = new Date();
+
+        //today date
+        const startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0)
+        const startDateISO = startDate.toISOString();
+
+        const todayRecords: any[] = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .select("StudentBehaviourRecordEntity", "todayRecords")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .where("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .getMany();
+
+
+        const result: any = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .addSelect("BehaviourEntity.behaviourName", "BehaviourName")
+            .addSelect("COUNT(BehaviourEntity.behaviourId)", "BehaviourCount")
+            .groupBy("BehaviourEntity.behaviourId")
+            .where("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .getRawOne();
+
+        const positivePoints = todayRecords.filter(record => {
+            return record.behaviour.behaviourPoint > 0;
+        }).reduce((currentTotal, record) => {
+            return record.behaviour.behaviourPoint + currentTotal
+        }, 0);
+
+        const negativePoints = todayRecords.filter(record => {
+            return record.behaviour.behaviourPoint < 0;
+        }).reduce((currentTotal, record) => {
+            return record.behaviour.behaviourPoint + currentTotal
+        }, 0);
+
+
+        return {
+            todayRecordsCount: todayRecords.length,
+            positivePoints: positivePoints,
+            negativePoints: negativePoints,
+            highlightedBehaviour: result.BehaviourName
+        }
+    }
+
+    async getOverallStudentBehaviourRecords() {
+        const behaviourRecords = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoinAndSelect("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .limit(50)
+            .orderBy("StudentBehaviourRecordEntity.dateGiven", 'DESC')
+            .getMany();
+        return behaviourRecords;
+    }
+
+    async getOverallRanking() {
+        const studentRanking = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .select("SUM(BehaviourEntity.behaviourPoint)", "totalBehaviourPoint")
+            .addSelect("StudentEntity.studentId", "studentId")
+            .addSelect("StudentEntity.fullName", "name")
+            .leftJoin("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .groupBy("StudentEntity.studentId")
+            .orderBy("totalBehaviourPoint", "DESC")
+            .having("totalBehaviourPoint > 0")
+            .limit(5)
+            .getRawMany();
+
+        const groupRanking = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .select("SUM(BehaviourEntity.behaviourPoint)", "totalBehaviourPoint")
+            .addSelect("GroupEntity.groupId", "groupId")
+            .addSelect("GroupEntity.groupName", "name")
+            .leftJoin("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .innerJoin("StudentEntity.groups", "GroupEntity")
+            .groupBy("GroupEntity.groupId")
+            .orderBy("totalBehaviourPoint", "DESC")
+            .having("totalBehaviourPoint > 0")
+            .limit(5)
+            .getRawMany();
+
+        const classRanking = await createQueryBuilder("StudentBehaviourRecordEntity")
+            .select("SUM(BehaviourEntity.behaviourPoint)", "totalBehaviourPoint")
+            .addSelect("ClassEntity.classId", "classId")
+            .addSelect("ClassEntity.className", "name")
+            .leftJoin("StudentBehaviourRecordEntity.student", "StudentEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .innerJoin("StudentEntity.class", "ClassEntity")
+            .groupBy("ClassEntity.classId")
+            .orderBy("totalBehaviourPoint", "DESC")
+            .having("totalBehaviourPoint > 0")
+            .limit(5)
+            .getRawMany();
+
+
+        return {
+            studentRanking: studentRanking,
+            groupRanking: groupRanking,
+            classRanking: classRanking,
+        };
     }
 
     async getStudentBehaviouralRecordsByClass(payload: GetStudentBehaviourRecordsByClassDto) {

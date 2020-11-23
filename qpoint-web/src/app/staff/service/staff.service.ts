@@ -18,8 +18,18 @@ export class StaffService {
   };
 
   private subject = new Subject<any>();
+  private openModalSubject = new Subject<any>();
+
 
   constructor(public http: HttpClient, public router: Router) {
+  }
+
+  sendOpenActivityDetailsModalEvent(payload: { staffId: number, dateFilter: string }) {
+    this.openModalSubject.next(payload);
+  }
+
+  getOpenActivityDetailsModalEvent(): Observable<any> {
+    return this.openModalSubject.asObservable();
   }
 
   showAllStaffs(): Observable<any[]> {
@@ -41,5 +51,19 @@ export class StaffService {
   deleteStaff(payload): Observable<any> {
     return this.http.post<any>(this.baseUrl + '/staff/delete-staff', payload, this.httpOptions);
   }
+
+  getTeachersActivitiesList(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/staff/get-teachers-activities-list', payload, this.httpOptions);
+  }
+
+  getStudentBehaviourRecordsByStaff(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/student-behaviour-record/get-student-behaviour-records-by-staff', payload, this.httpOptions);
+  }
+
+
+  getStaffDetailsByStaffId(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/staff/get-staff-details-by-staff-id', payload, this.httpOptions);
+  }
+
 
 }

@@ -1,0 +1,19 @@
+<app-side-navigation-bar>
+  <div class="container">
+    <app-today-records></app-today-records>
+    <app-overall-latest-record></app-overall-latest-record>
+
+    <div [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" [nzJustify]="'space-between'" nz-row>
+      <div [nzSpan]="8" class="gutter-row" nz-col>
+        <app-leaderboard [ranking]="studentRanking" [title]="'Student Ranking'"></app-leaderboard>
+      </div>
+      <div [nzSpan]="8" class="gutter-row" nz-col>
+        <app-leaderboard [ranking]="classRanking" [title]="'Class Ranking'"></app-leaderboard>
+      </div>
+      <div [nzSpan]="8" class="gutter-row" nz-col>
+        <app-leaderboard [ranking]="groupRanking" [title]="'Group Ranking'"></app-leaderboard>
+      </div>
+    </div>
+
+  </div>
+</app-side-navigation-bar>

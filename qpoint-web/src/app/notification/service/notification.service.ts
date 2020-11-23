@@ -38,6 +38,10 @@ export class NotificationService {
     return this.http.post<any>(this.baseUrl + '/notification/create-notification', payload, this.httpOptions);
   }
 
+  deleteNotifications(payload): Observable<any> {
+    return this.http.post<any>(this.baseUrl + '/notification/delete-notifications', payload, this.httpOptions);
+  }
+
   sendCreateNotificationEvent() {
     this.createSubject.next(true);
   }

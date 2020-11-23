@@ -1,0 +1,48 @@
+<div class="mb-4" nz-row nzJustify="space-around">
+  <div nz-col nzSpan="8">
+    <nz-tree-select
+      (ngModelChange)="selectOnChange($event)"
+      [(ngModel)]="dateFilter"
+      [nzAllowClear]="false"
+      [nzNodes]="dateFilterNodes"
+      nzShowSearch
+      style="width: 100%"
+    ></nz-tree-select>
+  </div>
+  <div nz-col nzSpan="8">
+    <nz-tree-select
+      (ngModelChange)="selectOnChange($event)"
+      [(ngModel)]="sortFilter"
+      [nzAllowClear]="false"
+      [nzNodes]="sortByNodes"
+      nzShowSearch
+      style="width: 100%"
+    ></nz-tree-select>
+  </div>
+</div>
+
+<nz-spin [nzSpinning]="teachersActivitiesLoading">
+
+  <div nz-row nzJustify="center" nzType="flex">
+
+    <div *ngFor="let teacherActivity of teacherActivityList"
+         nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
+
+      <nz-card (click)="showActivityDetails(teacherActivity.staffId)" [nzHoverable]="true" class="m-2">
+        <nz-card-meta [nzDescription]="cardDescription"
+                      [nzTitle]="cardTitle">
+        </nz-card-meta>
+        <ng-template #cardTitle>
+          <span>{{teacherActivity.username}}  </span>
+          <nz-tag *ngIf="teacherActivity.isAdmin === 'Y' " [nzColor]="'#F7C331'" class="small">Admin</nz-tag>
+        </ng-template>
+        <ng-template #cardDescription>
+          <span>Scan Count: {{teacherActivity?.scanCount}}</span><br>
+          <span>Points Awarded: {{teacherActivity.pointsAwarded ? teacherActivity.pointsAwarded : 0}}</span>
+        </ng-template>
+
+      </nz-card>
+    </div>
+  </div>
+</nz-spin>
+<app-activity-details-modal></app-activity-details-modal>

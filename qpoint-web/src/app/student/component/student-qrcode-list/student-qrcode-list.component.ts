@@ -5,6 +5,7 @@ import {NzMessageService} from "ng-zorro-antd";
 import html2canvas from "html2canvas";
 import * as JSZip from "jszip";
 import {saveAs} from '@progress/kendo-file-saver';
+import {GroupVoModel} from "../../../group/model/GroupVoModel";
 
 
 @Component({
@@ -14,9 +15,11 @@ import {saveAs} from '@progress/kendo-file-saver';
 })
 export class StudentQrcodeListComponent implements OnInit {
   studentQrList: StudentQrVoModel[];
-  searchStudentName: string;
+  searchInput: string;
   qrCodeIsLoading: boolean;
   downloadIsLoading: boolean
+
+  filter: any;
 
 
   @ViewChild('downloadContent', {static: false}) downloadContent: ElementRef;
@@ -29,6 +32,7 @@ export class StudentQrcodeListComponent implements OnInit {
     this.studentService.showAllStudentsQrCode().subscribe(res => {
       if (res) {
         this.studentQrList = res;
+
         this.qrCodeIsLoading = false
         this.studentQrList.forEach(studentQr => {
           if (studentQr.student.profileImagePath) {
@@ -93,4 +97,11 @@ export class StudentQrcodeListComponent implements OnInit {
     this.downloadIsLoading = false;
   }
 
+  showGroupList(groups: GroupVoModel[]) {
+    console.log("group");
+    let groupNameList = groups.map(group => {
+      return group.groupName;
+    })
+    return groupNameList.join(", ");
+  }
 }

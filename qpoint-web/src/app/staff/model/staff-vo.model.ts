@@ -1,7 +1,7 @@
 import {GroupVoModel} from "../../group/model/GroupVoModel";
 import {ClassVoModel} from "../../class/model/class-vo.model";
 
-export interface StudentVoModel {
+export interface StaffVoModel {
   staffId: number;
   dateCreated: Date;
   username: string;
@@ -9,5 +9,6 @@ export interface StudentVoModel {
   groups: GroupVoModel[];
   classes: ClassVoModel[];
   isAdmin: string;
+  token: string;
 
 }

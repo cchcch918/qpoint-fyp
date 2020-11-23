@@ -1,23 +1,40 @@
 import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
-import {Repository} from "typeorm";
+import {createQueryBuilder, Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {StaffEntity} from "./staff.entity";
-import {AdminRegisterDto, DeleteStaffDto, ShowClassWithStaffIdDto, StaffLoginDto, StaffRegisterDto} from "./staff.dto";
+import {
+    AdminRegisterDto,
+    DateFilterDto,
+    DeleteStaffDto,
+    ShowClassWithStaffIdDto,
+    StaffLoginDto,
+    StaffRegisterDto
+} from "./staff.dto";
 import {sendEmail} from "../utils/send-forget-password-email";
 import {AuthGuard} from "../utils/auth.guard";
 import {AppConstant} from "../utils/constant/app.constant";
 import {sendStaffLoginEmail} from "../utils/send-staff-account-login-email";
+import {StudentBehaviourRecordEntity} from "../student-behaviour-record/student-behaviour-record.entity";
+import {BehaviourEntity} from "../behaviour/behaviour.entity";
 
 @Injectable()
 export class StaffService {
     constructor(
         @InjectRepository(StaffEntity) private staffRepository: Repository<StaffEntity>,
+        @InjectRepository(StudentBehaviourRecordEntity) private studentBehaviourRecordRepository: Repository<StudentBehaviourRecordEntity>,
+        @InjectRepository(BehaviourEntity) private behaviourEntity: Repository<BehaviourEntity>,
         private authGuard: AuthGuard) {
     }
 
     async showAllStaffs() {
-        const users = await this.staffRepository.find();
-        return users;
+        const staffs = await this.staffRepository.find({relations: ['classes', 'groups']});
+        if (!staffs) {
+            throw new HttpException(
+                'Staff does not exists',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        return staffs;
     }
 
     async checkStaffExists(username: string) {
@@ -28,13 +45,20 @@ export class StaffService {
         return exists != null ? {"result": true} : {"result": false};
     }
 
-    // async read(username: string) {
-    //     const user = await this.staffRepository.findOne({
-    //         where: {username},
-    //         relations: ['ideas', 'bookmarks'],
-    //     });
-    //     return user.toResponseObject();
-    // }
+    async getStaffDetailsByStaffId(payload) {
+        const {staffId} = payload;
+        const staff = await this.staffRepository.findOne({
+            where: {staffId: staffId},
+            relations: ['classes', 'groups'],
+        });
+        if (!staff) {
+            throw new HttpException(
+                'Staff does not exists',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        return staff;
+    }
 
     async getAdminAccountDetails(payload: any) {
         const {token} = payload;
@@ -192,6 +216,83 @@ export class StaffService {
             HttpStatus.BAD_REQUEST,
         )
         return classes
+    }
+
+    async getTeachersActivitiesList(payload: DateFilterDto) {
+        const {dateFilter, sortBy} = payload
+
+
+        const date = new Date();
+        let startDate;
+
+        switch (dateFilter) {
+            case "1Y":
+                startDate = new Date(date.getFullYear(), 0, 1)
+                break;
+
+            case "1D":
+                startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0, 0)
+                break;
+
+            case "7D":
+                startDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+                break;
+
+            case "1M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate())
+                break;
+
+            case "2M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 2, date.getDate())
+                break;
+
+            case "3M":
+                startDate = new Date(date.getFullYear(), date.getMonth() - 3, date.getDate())
+                break;
+
+            default:
+                startDate = new Date(date.getFullYear(), 0, 1)
+        }
+        const startDateISO = startDate.toISOString();
+        let orderByCondition, order;
+        switch (sortBy) {
+            case "id":
+                orderByCondition = "StaffEntity.staffId";
+                order = "ASC"
+                break;
+
+            case "name":
+                orderByCondition = "StaffEntity.username";
+                order = "ASC"
+                break;
+
+            case "scanCount":
+                orderByCondition = "scanCount";
+                order = "DESC"
+                break;
+
+            case "pointsAwarded":
+                orderByCondition = "pointsAwarded";
+                order = "DESC"
+                break;
+
+            default:
+        }
+
+
+        const teachersActivities: any[] = await createQueryBuilder("StaffEntity")
+            .select("StaffEntity.staffId", "staffId")
+            .addSelect("StaffEntity.username", "username")
+            .addSelect("StaffEntity.isAdmin", "isAdmin")
+            .addSelect("COUNT(StudentBehaviourRecordEntity.recordId)", "scanCount")
+            .addSelect("SUM(BehaviourEntity.behaviourPoint)", "pointsAwarded")
+            .leftJoin("StaffEntity.records", "StudentBehaviourRecordEntity")
+            .leftJoin("StudentBehaviourRecordEntity.behaviour", "BehaviourEntity")
+            .groupBy("StaffEntity.staffId")
+            .where("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .orderBy(orderByCondition, order)
+            .getRawMany();
+        return teachersActivities;
     }
 
     generateRandomPasswordForStaff(length: number) {

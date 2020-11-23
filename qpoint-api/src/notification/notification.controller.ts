@@ -1,7 +1,7 @@
 import {Body, Controller, Post, UsePipes} from "@nestjs/common";
 import {NotificationService} from "./notification.service";
 import {ValidationPipe} from "../utils/validation.pipe";
-import {CreateNotificationDto, deleteNotificationsDto} from "./notification.dto";
+import {CreateNotificationDto, DeleteNotificationsDto} from "./notification.dto";
 
 
 @Controller('notification')
@@ -23,7 +23,7 @@ export class NotificationController {
 
     @Post('delete-notifications')
     @UsePipes(new ValidationPipe())
-    deleteNotifications(@Body() payload: deleteNotificationsDto) {
+    deleteNotifications(@Body() payload: DeleteNotificationsDto) {
         return this.notificationService.deleteNotifications(payload);
     }
 }

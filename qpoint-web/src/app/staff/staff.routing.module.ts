@@ -2,6 +2,7 @@ import {RouterModule, Routes} from "@angular/router";
 import {AuthGuard} from "../core/service/auth-guard.service";
 import {NgModule} from "@angular/core";
 import {ManageStaffPageComponent} from "./component/manage-staff-page/manage-staff-page.component";
+import {TeachersActivitiesPageComponent} from "./component/teachers-activities-page/teachers-activities-page.component";
 
 const routes: Routes = [
   {
@@ -15,11 +16,11 @@ const routes: Routes = [
     component: ManageStaffPageComponent,
     canActivate: [AuthGuard]
   },
-  // {
-  //   path: 'group-dashboard',
-  //   component: GroupDashboardPageComponent,
-  //   canActivate: [AuthGuard]
-  // },
+  {
+    path: 'teachers-activities',
+    component: TeachersActivitiesPageComponent,
+    canActivate: [AuthGuard]
+  },
   {
     path: '**',
     redirectTo: 'manage-staff'

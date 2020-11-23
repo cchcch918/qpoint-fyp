@@ -14,10 +14,10 @@
     >
       {{ column.name }}
 
-      <!--      <nz-filter-trigger *ngIf="column.name == 'Student Name'" [(nzVisible)]="searchVisible"-->
-      <!--                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">-->
-      <!--        <i nz-icon nzType="search"></i>-->
-      <!--      </nz-filter-trigger>-->
+      <nz-filter-trigger *ngIf="column.name == 'Staff Name'" [(nzVisible)]="searchVisible"
+                         [nzActive]="searchValue.length > 0" [nzDropdownMenu]="menu">
+        <i nz-icon nzType="search"></i>
+      </nz-filter-trigger>
     </th>
   </tr>
   </thead>
@@ -28,6 +28,16 @@
     <td>{{ data.dateCreated | date:'medium'}}</td>
     <td>{{ data.email}}</td>
     <td>{{ data.isAdmin ? "Admin" : "Teacher"}}</td>
+    <td>
+      <nz-tag *ngFor="let class of data.classes"
+              class="my-1"> {{class.className}}</nz-tag>
+      <div *ngIf="data.classes.length == 0">-</div>
+    </td>
+    <td>
+      <nz-tag *ngFor="let group of data.groups"
+              class="my-1"> {{group.groupName}}</nz-tag>
+      <div *ngIf="data.groups.length == 0">-</div>
+    </td>
     <td>
       <div class="ml-2">
         <a (nzOnConfirm)="deleteStaff(data)" [nzIcon]="deleteIconTpl" nz-icon nz-popconfirm
@@ -42,4 +52,14 @@
   </tbody>
 </nz-table>
 
-
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="ant-table-filter-dropdown">
+    <div class="search-box">
+      <input [(ngModel)]="searchValue" nz-input placeholder="Search staff name" type="text"/>
+      <button (click)="search()" class="search-button" nz-button nzSize="small" nzType="primary">
+        Search
+      </button>
+      <button (click)="reset()" nz-button nzSize="small">Reset</button>
+    </div>
+  </div>
+</nz-dropdown-menu>

@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {NzMessageService, NzTableFilterFn, NzTableFilterList, NzTableSortFn, NzTableSortOrder} from "ng-zorro-antd";
 import {StudentVoModel} from "../../../student/model/student-vo.model";
-import {StaffVoModel} from "../../../pre-login/model/staff-vo.model";
 import {StaffService} from "../../service/staff.service";
 import {Subscription} from "rxjs";
+import {StaffVoModel} from "../../model/staff-vo.model";
 
 interface ColumnItem {
   name: string;
@@ -32,7 +32,7 @@ export class StaffListTableComponent implements OnInit {
       width: "10vh",
     },
     {
-      name: 'Username',
+      name: 'Staff Name',
       sortOrder: null,
       sortFn: (a: StaffVoModel, b: StaffVoModel) => a.username.localeCompare(b.username),
       filterMultiple: true,
@@ -55,7 +55,16 @@ export class StaffListTableComponent implements OnInit {
     },
     {
       name: 'Role',
+      width: "10vh",
       sortFn: (a: StaffVoModel, b: StaffVoModel) => a.isAdmin?.localeCompare(b.isAdmin),
+    }
+    ,
+    {
+      name: 'Classes',
+    }
+    ,
+    {
+      name: 'Groups',
     }
     ,
     {
@@ -69,6 +78,9 @@ export class StaffListTableComponent implements OnInit {
   staffs: StaffVoModel[];
   staffsDisplay: StaffVoModel[];
   tableLoading: boolean;
+
+  searchVisible: boolean = false;
+  searchValue = '';
 
   constructor(private staffService: StaffService, private msg: NzMessageService) {
   }
@@ -111,4 +123,15 @@ export class StaffListTableComponent implements OnInit {
       this.msg.error(`Failed please try again`)
     })
   }
+
+  reset(): void {
+    this.searchValue = '';
+    this.search();
+  }
+
+  search(): void {
+    this.searchVisible = false;
+    this.staffsDisplay = this.staffs.filter((staff) => staff.username.toLocaleLowerCase().indexOf(this.searchValue.toLocaleLowerCase()) !== -1);
+  }
+
 }

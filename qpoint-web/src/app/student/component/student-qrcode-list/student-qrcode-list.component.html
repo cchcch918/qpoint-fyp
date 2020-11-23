@@ -1,6 +1,16 @@
 <app-side-navigation-bar>
   <div class="py-5" class="container justify-content-center">
-    <input [(ngModel)]="searchStudentName" nz-input placeholder="Search student's name"/>
+    <nz-input-group [nzPrefix]="prefixTemplateUser" [nzSuffix]="suffixTemplateInfo">
+      <input [(ngModel)]="searchInput" nz-input placeholder="Search" type="text"/>
+    </nz-input-group>
+    <ng-template #prefixTemplateUser>
+      <nz-badge [nzCount]="(studentQrList | filter: searchInput)?.length" [nzShowZero]="true"
+                [nzStyle]="{ backgroundColor: '#F7882F' }" style="margin-right: 24px;">
+        <nz-avatar [nzShape]="'square'" nzIcon="user" nzSize="small"></nz-avatar>
+      </nz-badge>
+    </ng-template>
+    <ng-template #suffixTemplateInfo><i nz-icon nzType="search"></i></ng-template>
+
     <div class="m-4" nz-row nzJustify="center" nzType="flex">
       <button (nzOnConfirm)="downloadStudent()" [nzLoading]="downloadIsLoading"
               [nzSize]="'large'"
@@ -10,14 +20,18 @@
         <i nz-icon nzType="download"></i>Download
       </button>
     </div>
+
     <ng-template #indicatorTemplate><i class="mt-5" nz-icon nzType="loading" style="font-size: 50px;"></i></ng-template>
     <nz-spin [nzIndicator]="indicatorTemplate" [nzSpinning]="qrCodeIsLoading">
       <div nz-row nzJustify="center" nzType="flex">
-        <div *ngFor="let studentQr of studentQrList | filter:searchStudentName ; let i = index"
+        <div *ngFor="let studentQr of studentQrList | filter: searchInput ; let i = index"
              nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
+
           <nz-card (click)="createCopySuccessMessage(studentQr.student.fullName)" id="{{ 'downloadContent' + i }}"
                    [cdkCopyToClipboard]="studentQr.qrCode"
-                   [nzCover]="coverTemplate" [nzHoverable]="true" class="m-2">
+                   [nzCover]="coverTemplate"
+                   [nzHoverable]="true"
+                   class="m-2">
             <nz-card-meta [nzAvatar]="avatarTemplate" [nzDescription]="cardDescription" class="studentName"
                           nzTitle="{{studentQr.student.fullName}}"></nz-card-meta>
             <ng-template #coverTemplate>
@@ -25,19 +39,29 @@
             </ng-template>
             <ng-template #avatarTemplate>
               <div *ngIf="studentQr?.image ; else noProfilePicTemplate">
-                <nz-avatar [nzSize]="'large'" nzSrc="{{studentQr.image}}"></nz-avatar>
+                <nz-avatar [nzSize]="'medium'" nzSrc="{{studentQr.image}}"></nz-avatar>
               </div>
               <ng-template #noProfilePicTemplate>
-                <nz-avatar [nzIcon]="'user'" [nzSize]="'large'"></nz-avatar>
+                <nz-avatar [nzIcon]="'user'" [nzSize]="'medium'" style="background-color:#687A8F;"></nz-avatar>
               </ng-template>
             </ng-template>
             <ng-template #cardDescription>
-              <div nz-row>
-                <div *ngIf="studentQr.student.parent" nz-col nzSpan="24">{{studentQr.student.parent?.email }}</div>
-              </div>
-              <div nz-row>
-                <div *ngIf="studentQr.student.class" nz-col nzSpan="24">
-                  Class: {{studentQr.student.class?.className }}</div>
+              <div class="small">
+                <span *ngIf="studentQr.student.parent"
+                      class="font-weight-bold">{{studentQr.student.parent?.email }}</span><br>
+                <span> Class: {{studentQr.student.class ? studentQr.student.class?.className : "-"}}</span>
+                <div>
+                  <span>Group: </span>
+                  <span *ngIf="studentQr.student.groups.length != 0 else emptyGroup">
+                    <span
+                      *ngFor="let group of studentQr.student.groups; index as i; last as isLast; first as isFirst"> {{group.groupName}}
+                      <span *ngIf="!isLast">, </span>
+                    </span>
+                  </span>
+                  <ng-template #emptyGroup>
+                    <span>-</span>
+                  </ng-template>
+                </div>
               </div>
             </ng-template>
           </nz-card>

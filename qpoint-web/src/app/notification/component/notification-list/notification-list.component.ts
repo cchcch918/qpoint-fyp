@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NotificationVoModel} from "../../model/notification-vo-model";
 import {NotificationService} from "../../service/notification.service";
 import {Subscription} from "rxjs";
+import {NzMessageService} from "ng-zorro-antd";
 
 @Component({
   selector: 'app-notification-list',
@@ -14,7 +15,7 @@ export class NotificationListComponent implements OnInit {
   notifications: NotificationVoModel[];
   subscription: Subscription;
 
-  constructor(private notificationService: NotificationService) {
+  constructor(private notificationService: NotificationService, private msg: NzMessageService) {
   }
 
   ngOnInit(): void {
@@ -27,6 +28,7 @@ export class NotificationListComponent implements OnInit {
   }
 
   updateNotificationList() {
+    this.notificationLoading = true;
     this.notificationService.showAllNotifications().subscribe(res => {
       this.notifications = res
       this.notificationLoading = false;
@@ -34,11 +36,19 @@ export class NotificationListComponent implements OnInit {
   }
 
   deleteNotification(notification: NotificationVoModel) {
-
+    let payload = {notificationsList: [notification.notificationId]};
+    this.notificationService.deleteNotifications(payload).subscribe(res => {
+        if (res) {
+          this.msg.success(`Notification ${notification.notificationTitle} deleted`);
+          this.updateNotificationList();
+        }
+      },
+      error => {
+        this.msg.error('Please try again later' + error?.errorMessage);
+      });
   }
 
   editNotification(notification: NotificationVoModel) {
-    console.log("editNotification");
     this.notificationService.sendOpenEditNotificationModalEvent(notification);
   }
 

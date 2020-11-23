@@ -1,7 +1,14 @@
 import {Body, Controller, Get, Param, Post, UsePipes} from "@nestjs/common";
 import {ValidationPipe} from "../utils/validation.pipe";
 import {StaffService} from "./staff.service";
-import {AdminRegisterDto, DeleteStaffDto, ShowClassWithStaffIdDto, StaffLoginDto, StaffRegisterDto} from "./staff.dto";
+import {
+    AdminRegisterDto,
+    DateFilterDto,
+    DeleteStaffDto,
+    ShowClassWithStaffIdDto,
+    StaffLoginDto,
+    StaffRegisterDto
+} from "./staff.dto";
 
 
 @Controller('staff')
@@ -15,15 +22,11 @@ export class StaffController {
         return this.staffService.showAllStaffs();
     }
 
-    // @Get('api/users/:username')
-    // showOneUser(@Param('username') username: string) {
-    //     return this.staffService.read(username);
-    // }
-
-    // @Get('auth/whoami')
-    // showMe(@User('username') username: string) {
-    //     return this.staffService.read(username);
-    // }
+    @Post('get-staff-details-by-staff-id')
+    @UsePipes(new ValidationPipe())
+    getStaffDetailsByStaffId(@Body() payload: any) {
+        return this.staffService.getStaffDetailsByStaffId(payload);
+    }
 
     @Post('get-admin-account-details')
     getAdminAccountDetails(@Body() payload: any) {
@@ -93,6 +96,12 @@ export class StaffController {
     @UsePipes(new ValidationPipe())
     showClassWithStaffId(@Body() payload: ShowClassWithStaffIdDto) {
         return this.staffService.showClassWithStaffId(payload)
+    }
+
+    @Post('get-teachers-activities-list')
+    @UsePipes(new ValidationPipe())
+    getTeachersActivitiesList(@Body() payload: DateFilterDto) {
+        return this.staffService.getTeachersActivitiesList(payload);
     }
 
 }

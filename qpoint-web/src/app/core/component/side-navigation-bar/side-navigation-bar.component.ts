@@ -1,6 +1,7 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {LoginService} from "../../service/login.service";
+import {StaffVoModel} from "../../../staff/model/staff-vo.model";
 
 @Component({
   selector: 'app-side-navigation-bar',
@@ -15,6 +16,9 @@ export class SideNavigationBarComponent implements OnInit {
   foldIcon: string = 'menu-fold'
   private WIDTH_BREAKPOINT = 500;
 
+  loginAdmin: StaffVoModel;
+
+
   constructor(private router: Router, private loginService: LoginService) {
   }
 
@@ -25,6 +29,13 @@ export class SideNavigationBarComponent implements OnInit {
     this.routes.shift();
     this.routes = this.routes.map(route => {
       return route.replace(/-/g, ' ');
+    })
+
+    let token = `Bearer ${this.loginService.token}`;
+    this.loginService.getAdminAccountDetails({token: token}).subscribe(res => {
+      if (res) {
+        this.loginAdmin = res;
+      }
     })
   }
 
