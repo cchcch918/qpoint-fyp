@@ -8,6 +8,7 @@ import {
     RemoveTeachersDto,
     UpdateStudentsDto,
     UpdateTeachersDto,
+    ShowClassStudentsDto
 } from "./class.dto";
 
 @Controller('class')
@@ -27,6 +28,12 @@ export class ClassController {
         return this.classService.showOnlyAllClasses();
     }
 
+    @Post('show-class-students')
+    @UsePipes(new ValidationPipe())
+    showClassStudents(@Body() payload: ShowClassStudentsDto) {
+        return this.classService.showClassStudents(payload);
+    }
+    
     @Post('create-new-class')
     @UsePipes(new ValidationPipe())
     createNewClass(@Body() newClass: CreateClassDto) {

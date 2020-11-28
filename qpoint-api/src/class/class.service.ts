@@ -9,6 +9,7 @@ import {
     RemoveTeachersDto,
     UpdateStudentsDto,
     UpdateTeachersDto,
+    ShowClassStudentsDto,
 } from "./class.dto";
 import {StudentEntity} from "../student/student.entity";
 import {StaffEntity} from "../staff/staff.entity";
@@ -31,6 +32,16 @@ export class ClassService {
     async showOnlyAllClasses() {
         const classes = await this.classRepository.find();
         return classes;
+    }
+
+    async showClassStudents(payload: ShowClassStudentsDto) {
+        const {classId} = payload;
+        const thisClass = await this.classRepository.findOne({where: {classId: classId}, relations: ['students']});
+        if (!thisClass) throw new HttpException(
+            `Class ${classId} does not exists`,
+            HttpStatus.BAD_REQUEST,
+        );
+        return thisClass;
     }
 
     async createNewClass(payload: CreateClassDto) {

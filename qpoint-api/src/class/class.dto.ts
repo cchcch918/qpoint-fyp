@@ -18,6 +18,11 @@ export class DeleteClassDto {
 
 }
 
+export class ShowClassStudentsDto {
+    @IsNotEmpty()
+    classId: number;
+}
+
 export class UpdateStudentsDto {
     @IsNotEmpty()
     classId: number;
