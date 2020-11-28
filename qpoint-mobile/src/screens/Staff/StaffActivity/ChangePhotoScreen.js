@@ -1,8 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import {View,StyleSheet,TouchableOpacity,Linking, Dimensions,Image} from 'react-native'
-import qpointApi from '../api/qpointApi'
 import { Card, ListItem, Icon, Header,Text,SearchBar } from 'react-native-elements'
-import {theme} from '../core/theme'
+import {theme} from '../../../core/theme'
 import { RNCamera } from 'react-native-camera';
 
 const ChangePhotoScreen = ({navigation,route}) => {

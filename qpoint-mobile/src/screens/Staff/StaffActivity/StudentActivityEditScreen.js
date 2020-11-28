@@ -1,10 +1,9 @@
 import React,{useLayoutEffect,useState, useEffect} from 'react'
 import {View,Text,StyleSheet,Image,TouchableOpacity, Platform, } from 'react-native'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../../api/qpointApi'
 import { ListItem,Header,Icon,SearchBar, Button, Tooltip } from 'react-native-elements'
-import {theme} from '../core/theme'
-import DropDownPicker from 'react-native-dropdown-picker';
+import {theme} from '../../../core/theme'
 import Modal from 'react-native-modal';
 import RNPickerSelect from 'react-native-picker-select';
 

@@ -1,15 +1,15 @@
 import React, { memo, useState, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
-import Background from '../components/Background';
-import Header from '../components/Header';
-import TextInput from '../components/TextInput';
-import { theme } from '../core/theme';
-import { emailValidator, passwordValidator } from '../core/utils';
+import Background from '../../components/Background';
+import Header from '../../components/Header';
+import TextInput from '../../components/TextInput';
+import { theme } from '../../core/theme';
+import { emailValidator, passwordValidator } from '../../core/utils';
 import DropDownPicker from 'react-native-dropdown-picker';
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../api/qpointApi'
 import AsyncStorage from '@react-native-community/async-storage';
 import { useDispatch } from 'react-redux';
-import {signIn} from '../actions/auth'
+import {signIn} from '../../actions/auth'
 import { Button } from 'react-native-elements';
 import messaging from '@react-native-firebase/messaging';
 

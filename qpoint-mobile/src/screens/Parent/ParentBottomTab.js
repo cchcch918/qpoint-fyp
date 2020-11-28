@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
-import StaffProfileScreen from './StaffProfileScreen'
+import StaffProfileScreen from '../StaffProfileScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ParentHomeScreen from './ParentHomeScreen'
-import NotificationScreen from './NotificationScreen'
+import NotificationScreen from '../Notification/NotificationScreen'
 
 const ParentTab = createBottomTabNavigator();
 

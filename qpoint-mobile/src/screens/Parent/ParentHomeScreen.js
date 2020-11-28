@@ -1,8 +1,8 @@
 import React, {useState,useEffect  } from 'react';
-import {View,FlatList,StyleSheet,TouchableOpacity,Dimensions} from 'react-native'
-import { Card, ListItem, Icon, Header,Text,SearchBar,Button,Avatar,Image } from 'react-native-elements'
-import {theme} from '../core/theme'
-import qpointApi from '../api/qpointApi'
+import {View,FlatList,StyleSheet,TouchableOpacity,Dimensions,Image} from 'react-native'
+import { Card, ListItem, Icon, Header,Text,SearchBar,Button,Avatar } from 'react-native-elements'
+import {theme} from '../../core/theme'
+import qpointApi from '../../api/qpointApi'
 import { useDispatch, useSelector } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -23,7 +23,7 @@ const ParentHomeScreen = ({navigation}) => {
     }
     // const getProfileImage = async () => {
     //   const response = await qpointApi.get('/student/get-student-profile-image/1-StudentA-20200928.jpg')
-    //   // console.log(response)
+    //   console.log(response)  
     // }
     // getProfileImage()
     getChildren()
@@ -31,18 +31,13 @@ const ParentHomeScreen = ({navigation}) => {
 
   // console.log(selectedChild)
   // console.log(allChildren)
-  // console.log('object',childObject[0])
+  // console.log(childObject)
 
   const getChild = async (id) => {
     const response = await qpointApi.post('/student-behaviour-record/get-students-point',{studentList:[id]})
     // console.log(response.data)
     setChildObject(response.data)
   }
-
-  
-
-  
-  
 
   let data = []
   for(const item of allChildren){
@@ -94,7 +89,7 @@ const ParentHomeScreen = ({navigation}) => {
                   <Avatar
                     size = 'large'
                     rounded
-                    source={require('../../src/assets/doge.jpg')} 
+                    source={require('../../assets/tracksuit_doge.jpg')} 
                   />
                   {/* <Badge
                     status="success"
@@ -125,20 +120,7 @@ const ParentHomeScreen = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style = {styles.square}
-                >
-                  <Icon
-                    name = 'shield-star'
-                    type = 'material-community'
-                    size = {95}
-                    color = {theme.colors.secondary}
-                  />
-                  <Text style={styles.textStyle2}>Badges</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{flexDirection:'row'}}>
-                <TouchableOpacity
-                  style = {styles.square}
-                  onPress = {()=>navigation.navigate('Leaderboard')}
+                  onPress = {()=>navigation.navigate('Leaderboard',{classId:childObject[0].class.classId})}
                 >
                   <Icon
                     name = 'medal'

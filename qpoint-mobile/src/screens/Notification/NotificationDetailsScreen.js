@@ -1,8 +1,8 @@
 import React , {useState,useEffect} from 'react'
 import {View, StyleSheet} from 'react-native'
 import { ListItem, Icon, Header,Text,SearchBar,Button,Avatar,Image, } from 'react-native-elements'
-import {theme} from '../core/theme'
-import qpointApi from '../api/qpointApi'
+import {theme} from '../../core/theme'
+import qpointApi from '../../api/qpointApi'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import moment from 'moment'
 
@@ -43,7 +43,7 @@ const NotificationDetailsScreen = ({navigation,route}) => {
                     />
                 }
                 
-                containerStyle = {{height:100, backgroundColor:theme.colors.primary}}
+                containerStyle = {{height:90, backgroundColor:theme.colors.primary}}
             />
             <View style={{padding:24,alignItems:'center'}}> 
                 <Text h4 h4Style={{fontWeight:'normal'}}>{notification.notificationTitle}</Text>

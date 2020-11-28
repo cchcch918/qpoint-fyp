@@ -1,14 +1,10 @@
 import React, { memo } from 'react';
-import Background from '../components/Background';
-import Logo from '../components/Logo';
-import Header from '../components/Header';
-import Paragraph from '../components/Paragraph';
-import StaffProfileScreen from './StaffProfileScreen'
-import ScanQrScreen from './ScanQrScreen'
+import StaffProfileScreen from '../StaffProfileScreen'
+import ScanQrScreen from './BehaviourRecognition/ScanQrScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import StaffActivityScreen from './StaffActivityScreen'
-import { View, Text, TouchableOpacity } from 'react-native';
+import StaffActivityScreen from './StaffActivity/StaffActivityScreen'
+
 
 const StaffTab = createBottomTabNavigator();
 

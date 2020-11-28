@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import {View,FlatList,Image} from 'react-native'
 import { Card, ListItem, Button, Icon, Header,Text,SearchBar } from 'react-native-elements'
-import {theme} from '../core/theme'
-import qpointApi from '../api/qpointApi'
+import {theme} from '../../../core/theme'
+import qpointApi from '../../../api/qpointApi'
 import {useSelector} from 'react-redux'
 
 

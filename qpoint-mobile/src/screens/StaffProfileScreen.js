@@ -6,8 +6,8 @@ import {signOut} from '../actions/auth'
 import AsyncStorage from '@react-native-community/async-storage';
 import Button from '../components/Button';
 import { Avatar,Layout,Text } from '@ui-kitten/components';
-import { ListItem } from 'react-native-elements'
-
+import { ListItem, Header } from 'react-native-elements'
+import {theme} from '../core/theme'
 
 const StaffProfileScreen = ({navigation}) => {
     const username = useSelector(state => state.authReducer.username)
@@ -41,6 +41,12 @@ const StaffProfileScreen = ({navigation}) => {
 
     return(
         <View style = {styles.background}>
+            <Header
+                centerComponent = {
+                    <Text style={{fontSize:20,color:'white'}}>Profile</Text>
+                }
+                containerStyle = {{height:90, backgroundColor:theme.colors.primary, borderBottomColor:'transparent'}}
+            />
             <Layout style={styles.container} level='1'>
                 <Avatar size='giant' source={require('../../src/assets/doge.jpg')}/>
                 <View>

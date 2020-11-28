@@ -3,26 +3,27 @@ import React, {useEffect} from 'react';
 import {View,ActivityIndicator,Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import AuthStackScreen from './src/screens/AuthStackScreen'
-import StaffBottomTab from './src/screens/StaffBottomTab'
+import AuthStackScreen from './src/screens/Authentication/AuthStackScreen'
+import StaffBottomTab from './src/screens/Staff/StaffBottomTab'
 import AsyncStorage from '@react-native-community/async-storage';
 import { restoreToken,restoreInfo } from './src/actions/auth';
 import {useSelector} from 'react-redux'
 import { useDispatch } from 'react-redux';
 import qpointApi from './src/api/qpointApi'
-import StaffChangePassword from './src/screens/StaffChangePassword'
-import StudentActivityEditScreen from './src/screens/StudentActivityEditScreen'
+import StaffChangePassword from './src/screens/Authentication/StaffChangePassword'
+import StudentActivityEditScreen from './src/screens/Staff/StaffActivity/StudentActivityEditScreen'
 import {theme} from './src/core/theme'
-import SelectBehaviourScreen from './src/screens/SelectBehaviourScreen'
-import ConfirmBehaviourScreen from './src/screens/ConfirmBehaviourScreen'
-import SelectStudentScreen from './src/screens/SelectStudentsScreen'
-import TakePhotoScreen from './src/screens/TakePhotoScreen'
-import ChangePhotoScreen from './src/screens/ChangePhotoScreen'
-import ParentBottomTab from './src/screens/ParentBottomTab'
-import ParentActivitiesScreen from './src/screens/ParentActivitiesScreen'
-import LeaderboardScreen from './src/screens/LeaderboardScreen'
-import NotificationDetailsScreen from './src/screens/NotificationDetailsScreen'
+import SelectBehaviourScreen from './src/screens/Staff/BehaviourRecognition/SelectBehaviourScreen'
+import ConfirmBehaviourScreen from './src/screens/Staff/BehaviourRecognition/ConfirmBehaviourScreen'
+import SelectStudentScreen from './src/screens/Staff/BehaviourRecognition/SelectStudentsScreen'
+import TakePhotoScreen from './src/screens/Staff/BehaviourRecognition/TakePhotoScreen'
+import ChangePhotoScreen from './src/screens/Staff/StaffActivity/ChangePhotoScreen'
+import ParentBottomTab from './src/screens/Parent/ParentBottomTab'
+import ParentActivitiesScreen from './src/screens/Parent/ParentActivitiesScreen'
+import LeaderboardScreen from './src/screens/Leaderboard/LeaderboardScreen'
+import NotificationDetailsScreen from './src/screens/Notification/NotificationDetailsScreen'
 import messaging from '@react-native-firebase/messaging';
+import LeaderboardTopTap from './src/screens/Leaderboard/LeaderboardTopTab'
 
 const staffStack = createStackNavigator();
 const parentStack = createStackNavigator();
@@ -119,6 +120,9 @@ const App = () => {
           <staffStack.Screen
             name = "StaffChangePassword"
             component = {StaffChangePassword}
+            options={({ route }) => ({
+              headerShown: false
+            })} 
           />
           <staffStack.Screen
             name = "StudentActivityEdit"
@@ -184,9 +188,18 @@ const App = () => {
           />
           <parentStack.Screen 
             name = "Leaderboard" 
-            component = {LeaderboardScreen}
+            component = {LeaderboardTopTap}
             options={({ route }) => ({
-              headerShown: false
+              title: 'Leaderboards',
+              headerStyle: {
+                backgroundColor: theme.colors.primary,
+              },
+              headerTintColor: '#fff',
+              headerTitleAlign: "center",
+              headerTitleStyle: {
+                fontFamily: 'sans-serif-bold',
+              },
+              
             })} 
           />
            <parentStack.Screen 
@@ -196,6 +209,20 @@ const App = () => {
               headerShown: false
             })} 
           />
+          <parentStack.Screen
+            name = "StaffChangePassword"
+            component = {StaffChangePassword}
+            options={({ route }) => ({
+              headerShown: false
+            })} 
+          />
+           {/* <parentStack.Screen 
+            name = "Leaderboard" 
+            component = {LeaderboardScreen}
+            options={({ route }) => ({
+              headerShown: false
+            })} 
+          /> */}
         </parentStack.Navigator>
        )
       }

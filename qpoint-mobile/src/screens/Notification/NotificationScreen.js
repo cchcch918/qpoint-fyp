@@ -1,9 +1,9 @@
 import React, {useState,useEffect} from 'react'
 import {View,FlatList} from 'react-native'
 import { ListItem, Icon, Header,Text,SearchBar,Button,Avatar,Image } from 'react-native-elements'
-import {theme} from '../core/theme'
+import {theme} from '../../core/theme'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../api/qpointApi'
 
 
 const NotificationScreen = ({navigation}) => {
@@ -33,7 +33,7 @@ const NotificationScreen = ({navigation}) => {
     }
 
     return(
-        <View>
+        <View style={{flex:1}}>
             <Header
                 centerComponent = {
                     <Text style={{fontSize:20,color:'white'}}>Notifications</Text>

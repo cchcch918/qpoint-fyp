@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import {View,FlatList,StyleSheet,TouchableOpacity,Dimensions} from 'react-native'
 import { Card, ListItem, Icon, Header,Text,SearchBar,Button,Avatar,Image, } from 'react-native-elements'
-import {theme} from '../core/theme'
-import qpointApi from '../api/qpointApi'
+import {theme} from '../../core/theme'
+import qpointApi from '../../api/qpointApi'
 import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";

@@ -1,14 +1,14 @@
 import React,{useEffect,useState,useLayoutEffect} from 'react'
 import {View,TouchableOpacity,StyleSheet,FlatList,Image,Platform} from 'react-native'
 import {useSelector,useDispatch} from 'react-redux'
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../../api/qpointApi'
 import { ListItem,Header,Icon,SearchBar, Button,Text, colors } from 'react-native-elements'
 import AwesomeAlert from 'react-native-awesome-alerts';
-import {theme} from '../core/theme'
+import {theme} from '../../../core/theme'
 import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import {setInitialFilter} from '../actions/mainflow'
+import {setInitialFilter} from '../../../actions/mainflow'
 
 const StaffActivityScreen = ({route,navigation}) => {
     const dispatch = useDispatch();
@@ -36,7 +36,11 @@ const StaffActivityScreen = ({route,navigation}) => {
         const getStudentRecords = async () => {
             const response = await qpointApi.post('/student-behaviour-record/get-student-behaviour-records-by-staff',{staffId})
             // console.log(response.data)
-            setStudentRecords(response.data)
+            let sortData = response.data
+            sortData.sort(function(a,b){
+                return new Date(b.dateGiven) - Date(a.dateGiven)
+            }).reverse()
+            setStudentRecords(sortData)
         }
         const unsubscribe = navigation.addListener('focus', () => {
             // console.log('focus')
@@ -94,7 +98,7 @@ const StaffActivityScreen = ({route,navigation}) => {
         let newStudentRecords = studentRecords.filter(item => !response.data.deletedRecord.includes(item.recordId))
         setStudentRecords(newStudentRecords)
         setFilteredData(null)
-        setSearch([])
+        setSearch('')
         setSelectAll(false)
         setCheck([])
     }

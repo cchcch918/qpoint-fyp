@@ -1,9 +1,9 @@
 import React,{useState,useEffect} from 'react'
-import {View,StyleSheet,TouchableOpacity,Linking, Dimensions,Vibration} from 'react-native'
+import {View,StyleSheet,Dimensions,Vibration, ToastAndroid} from 'react-native'
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../../api/qpointApi'
 import { Card, ListItem, Icon, Header,Text,SearchBar,Button } from 'react-native-elements'
-import {theme} from '../core/theme'
+import {theme} from '../../../core/theme'
 
 const ScanQrScreen = ({navigation}) => {
 
@@ -22,7 +22,13 @@ const ScanQrScreen = ({navigation}) => {
     return unsubscribe;
   }, [navigation]);
 
+  const showErrorToast = () => {
+    ToastAndroid.show("QR code not found. Please try again", ToastAndroid.LONG);
+  };
 
+  const showQRErrorToast = () => {
+    ToastAndroid.show("Invalid QR code. Please try again", ToastAndroid.LONG);
+  }
  
   
   // console.log(student)
@@ -37,7 +43,7 @@ const ScanQrScreen = ({navigation}) => {
         Vibration.vibrate()
       }
     }catch (err){
-      console.error(err)
+      showQRErrorToast();
     }
   };
 
@@ -47,7 +53,7 @@ const ScanQrScreen = ({navigation}) => {
       navigation.navigate('SelectBehaviour',{student:verify})
     }
     else{
-      console.log('error')
+      showErrorToast();
     }
     
   } 

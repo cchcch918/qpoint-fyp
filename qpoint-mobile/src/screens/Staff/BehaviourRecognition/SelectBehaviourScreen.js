@@ -1,13 +1,13 @@
 import React,{useState,useEffect} from 'react'
 import {View,FlatList,StyleSheet,Dimensions, BackHandler,TouchableOpacity} from 'react-native'
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../../api/qpointApi'
 import {useSelector,useDispatch} from 'react-redux'
 import { Card, ListItem, Button, Icon, Header,Text,SearchBar } from 'react-native-elements'
-import {theme} from '../core/theme'
+import {theme} from '../../../core/theme'
 import { ScrollView } from 'react-native-gesture-handler'
 import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {setInitialFilter} from '../actions/mainflow'
+import {setInitialFilter} from '../../../actions/mainflow'
 
 const SelectBehaviourScreen = ({route,navigation}) => {
     const dispatch = useDispatch();

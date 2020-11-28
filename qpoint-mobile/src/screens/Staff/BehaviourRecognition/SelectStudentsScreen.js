@@ -1,9 +1,9 @@
 import React,{useState,useEffect} from 'react'
 import {View,Switch,FlatList} from 'react-native'
 import { Card, ListItem,Button, Icon, Header,Text,SearchBar } from 'react-native-elements'
-import {theme} from '../core/theme'
+import {theme} from '../../../core/theme'
 import DropDownPicker from 'react-native-dropdown-picker';
-import qpointApi from '../api/qpointApi'
+import qpointApi from '../../../api/qpointApi'
 import {useSelector,useDispatch} from 'react-redux'
 
 
