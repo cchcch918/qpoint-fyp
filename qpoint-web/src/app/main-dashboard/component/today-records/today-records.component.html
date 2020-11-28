@@ -5,7 +5,7 @@
       <app-shared-small-card
         [colorCode]="'#DCC7AA'"
         [iconName]="'book'"
-        [stats]="todayRecordsCount?.toLocaleString()"
+        [stats]="todayRecordsCount ? todayRecordsCount?.toLocaleString(): '0'"
         [title]="'Total Records'">
       </app-shared-small-card>
     </div>
@@ -13,7 +13,7 @@
       <app-shared-small-card
         [colorCode]="'#F7882F'"
         [iconName]="'rise'"
-        [stats]="positivePoints?.toLocaleString()"
+        [stats]="positivePoints ? positivePoints?.toLocaleString() : '0'"
         [title]="'Positive Points'">
       </app-shared-small-card>
     </div>
@@ -21,7 +21,7 @@
       <app-shared-small-card
         [colorCode]="'#F7C331'"
         [iconName]="'fall'"
-        [stats]="negativePoints?.toLocaleString()"
+        [stats]="negativePoints ? negativePoints?.toLocaleString() : '0'"
         [title]="'Negative Points'">
       </app-shared-small-card>
     </div>

@@ -1,20 +1,9 @@
-import {
-    BeforeInsert,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToMany,
-    ManyToOne,
-    OneToMany,
-    PrimaryGeneratedColumn
-} from "typeorm";
+import {BeforeInsert, Column, CreateDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import * as crypto from "crypto";
 import {GroupEntity} from "../group/group.entity";
 import {ClassEntity} from "../class/class.entity";
-import {SchoolEntity} from "../school/school.entity";
 import {StudentBehaviourRecordEntity} from "../student-behaviour-record/student-behaviour-record.entity";
 
 
@@ -41,10 +30,6 @@ export class StaffEntity {
     @OneToMany(type => GroupEntity, group => group.teacher, {cascade: true})
     groups: GroupEntity[];
 
-
-    @ManyToOne(type => SchoolEntity, school => school.staffs)
-    @JoinColumn({name: 'school_id'})
-    school: SchoolEntity;
 
     @Column({name: 'is_admin', nullable: true})
     isAdmin: string;
