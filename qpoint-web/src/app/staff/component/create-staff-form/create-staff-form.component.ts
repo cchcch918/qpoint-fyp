@@ -40,7 +40,7 @@ export class CreateStaffFormComponent implements OnInit {
       },
       error => {
         this.createStaffLoading = false;
-        this.msg.error('Please try again later' + error.errorMessage);
+        this.msg.error('Please try again later ');
       })
   }
 

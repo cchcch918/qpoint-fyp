@@ -222,6 +222,7 @@ export class StudentBehaviourRecordService {
             .addSelect("COUNT(BehaviourEntity.behaviourId)", "BehaviourCount")
             .groupBy("BehaviourEntity.behaviourId")
             .where("StudentBehaviourRecordEntity.dateGiven > :startDate", {startDate: startDateISO})
+            .orderBy("BehaviourCount", 'DESC')
             .getRawOne();
 
         const positivePoints = todayRecords.filter(record => {
@@ -235,7 +236,6 @@ export class StudentBehaviourRecordService {
         }).reduce((currentTotal, record) => {
             return record.behaviour.behaviourPoint + currentTotal
         }, 0);
-
 
         return {
             todayRecordsCount: todayRecords.length,
@@ -252,6 +252,7 @@ export class StudentBehaviourRecordService {
             .limit(50)
             .orderBy("StudentBehaviourRecordEntity.dateGiven", 'DESC')
             .getMany();
+
         return behaviourRecords;
     }
 

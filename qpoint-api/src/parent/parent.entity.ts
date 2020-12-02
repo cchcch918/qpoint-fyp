@@ -22,10 +22,10 @@ export class ParentEntity {
     @ManyToMany(type => NotificationEntity, notificationEntity => notificationEntity.parents, {onDelete: "CASCADE"})
     notifications: NotificationEntity[];
 
-    @Column({name: 'device_id'})
+    @Column({name: 'device_id', nullable: true})
     deviceId: string;
 
-    @Column({name: 'device_platform'})
+    @Column({name: 'device_platform', nullable: true})
     devicePlatform: string;
 
     @BeforeInsert()

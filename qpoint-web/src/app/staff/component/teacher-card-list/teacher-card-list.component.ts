@@ -68,7 +68,8 @@ export class TeacherCardListComponent implements OnInit {
 
   updateTeachersActivitiesList(dateFilter: string, sortBy: string) {
     let payload = {dateFilter: dateFilter, sortBy: sortBy};
-    this.teachersActivitiesLoading = true
+    this.teachersActivitiesLoading = true;
+
     this.staffService.getTeachersActivitiesList(payload).subscribe(res => {
         if (res) {
           this.teacherActivityList = res;
@@ -82,7 +83,13 @@ export class TeacherCardListComponent implements OnInit {
     this.staffService.sendOpenActivityDetailsModalEvent({staffId: staffId, dateFilter: this.dateFilter});
   }
 
-  selectOnChange(event: string): void {
+  dateFilterOnChange(event: string): void {
+    this.dateFilter = event;
+    this.updateTeachersActivitiesList(this.dateFilter, this.sortFilter);
+  }
+
+  sortFilterOnChange(event: string): void {
+    this.sortFilter = event;
     this.updateTeachersActivitiesList(this.dateFilter, this.sortFilter);
   }
 

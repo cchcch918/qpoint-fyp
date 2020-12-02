@@ -1,7 +1,7 @@
 <div class="mb-4" nz-row nzJustify="space-around">
   <div nz-col nzSpan="8">
     <nz-tree-select
-      (ngModelChange)="selectOnChange($event)"
+      (ngModelChange)="dateFilterOnChange($event)"
       [(ngModel)]="dateFilter"
       [nzAllowClear]="false"
       [nzNodes]="dateFilterNodes"
@@ -11,7 +11,7 @@
   </div>
   <div nz-col nzSpan="8">
     <nz-tree-select
-      (ngModelChange)="selectOnChange($event)"
+      (ngModelChange)="sortFilterOnChange($event)"
       [(ngModel)]="sortFilter"
       [nzAllowClear]="false"
       [nzNodes]="sortByNodes"

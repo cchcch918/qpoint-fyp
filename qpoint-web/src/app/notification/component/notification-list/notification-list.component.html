@@ -14,9 +14,6 @@
 
     <ul nz-list-item-actions>
       <nz-list-item-action>
-        <a (click)="editNotification(notification)" class="mr-2" nz-icon nzTheme="outline" nzType="edit"></a>
-      </nz-list-item-action>
-      <nz-list-item-action>
         <a (nzOnConfirm)="deleteNotification(notification)" [nzIcon]="deleteIconTpl" nz-icon nz-popconfirm
            nzPopconfirmTitle="Are you sure delete {{notification.notificationTitle}} notification?"
            nzTheme="outline"

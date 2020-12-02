@@ -48,9 +48,4 @@ export class NotificationListComponent implements OnInit {
       });
   }
 
-  editNotification(notification: NotificationVoModel) {
-    this.notificationService.sendOpenEditNotificationModalEvent(notification);
-  }
-
-
 }
