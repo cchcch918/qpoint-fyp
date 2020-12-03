@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,Switch,FlatList} from 'react-native'
+import {View,Switch,FlatList, ToastAndroid} from 'react-native'
 import { Card, ListItem,Button, Icon, Header,Text,SearchBar } from 'react-native-elements'
 import {theme} from '../../../core/theme'
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -63,6 +63,9 @@ const SelectStudentScreen = ({navigation}) => {
         
     },[]);
     
+    const showErrorToast = () => {
+        ToastAndroid.show("Students not found. Please select at least 1 student", ToastAndroid.LONG);
+      };
     
     const setFilter = (id) => {
         //class
@@ -124,7 +127,7 @@ const SelectStudentScreen = ({navigation}) => {
         }
     }   
 
-    // console.log('check ',check)
+    // console.log('check ',check.length)
 
 
     const searchFilter = (text) => {
@@ -256,7 +259,7 @@ const SelectStudentScreen = ({navigation}) => {
                 title = 'Select Behaviour'
                 buttonStyle = {{backgroundColor:theme.colors.primary}}
                 containerStyle = {{borderRadius:10,margin:5}}
-                onPress = {()=>navigation.navigate('SelectBehaviour',{student:check})}
+                onPress = {()=>{check.length > 0 ? navigation.navigate('SelectBehaviour',{student:check}) : showErrorToast()}}
             />
            </View>
         </View>

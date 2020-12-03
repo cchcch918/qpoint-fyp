@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react'
-import {View,FlatList,StyleSheet,Dimensions, BackHandler,TouchableOpacity} from 'react-native'
+import {View,FlatList,StyleSheet,Dimensions, ToastAndroid,TouchableOpacity} from 'react-native'
 import qpointApi from '../../../api/qpointApi'
 import {useSelector,useDispatch} from 'react-redux'
-import { Card, ListItem, Button, Icon, Header,Text,SearchBar } from 'react-native-elements'
+import { Card, ListItem, Button, Icon, Header,Text,SearchBar, colors } from 'react-native-elements'
 import {theme} from '../../../core/theme'
 import { ScrollView } from 'react-native-gesture-handler'
 import Modal from 'react-native-modal';
@@ -32,6 +32,11 @@ const SelectBehaviourScreen = ({route,navigation}) => {
         }
         getBehaviour()
     },[])
+
+    const showErrorToast = () => {
+        ToastAndroid.show("Please select at least 1 behaviour", ToastAndroid.LONG);
+      };
+    
     
     
     let studentList = []
@@ -60,7 +65,7 @@ const SelectBehaviourScreen = ({route,navigation}) => {
             navigation.navigate('ConfirmBehaviour',{record:recordList,studentList,behaviourList})
         }
         else{
-            console.log('error')
+            showErrorToast()
         }
     }
 
@@ -290,8 +295,7 @@ const Styles = StyleSheet.create({
         alignItems:'center',    
         marginHorizontal:15,
         marginTop:20,
-        
-        backgroundColor: 'red',
+        backgroundColor: theme.colors.secondary,
         borderRadius:12
       },
     list: {
@@ -303,7 +307,7 @@ const Styles = StyleSheet.create({
         alignSelf:'flex-start'
     },
     item: {
-        backgroundColor:'red',
+        backgroundColor: theme.colors.secondary,
         marginVertical:5,
         marginHorizontal:5,
         

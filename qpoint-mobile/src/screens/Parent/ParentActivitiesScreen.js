@@ -6,6 +6,7 @@ import qpointApi from '../../api/qpointApi'
 import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import moment from 'moment'
 
 
 const ParentActitiviesScreen = ({navigation,route}) => {
@@ -215,7 +216,8 @@ const ParentActitiviesScreen = ({navigation,route}) => {
                     return(
                         <ListItem
                             title = {item.behaviour.behaviourName}
-                            subtitle = {item.behaviour.behaviourPoint.toString()}
+                            subtitle = {moment(item.dateGiven).format("dddd, MMM DD HH:mm a")}
+                            rightTitle = {`${item.behaviour.behaviourPoint.toString()} points`}
                             containerStyle = {{margin:10,elevation:2,borderRadius:10,}}
                             
                         />

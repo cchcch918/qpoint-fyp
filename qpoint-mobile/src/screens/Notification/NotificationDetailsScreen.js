@@ -8,7 +8,6 @@ import moment from 'moment'
 
 const NotificationDetailsScreen = ({navigation,route}) => {
     const {notification} = route.params;
-    console.log(notification.dateCreated)
     const [showAlert,setAlert] = useState(false)
 
     const deleteNotifications = async () => {

@@ -9,16 +9,25 @@ const ScanQrScreen = ({navigation}) => {
 
   const [student,setStudent] = useState([])
   const [allStudents,setAllStudents] = useState([])
-
+  const [viewFocus, setViewFocus] = useState(false)
   useEffect(() => {
     const getStudents = async () => {
       const response = await qpointApi.post('/student/show-all-students')
       setAllStudents(response.data)
     }
     const unsubscribe = navigation.addListener('blur', () => {
+      setViewFocus(false)
       setStudent([])
     });
     getStudents()
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setViewFocus(true)
+    });
+    
     return unsubscribe;
   }, [navigation]);
 
@@ -28,6 +37,10 @@ const ScanQrScreen = ({navigation}) => {
 
   const showQRErrorToast = () => {
     ToastAndroid.show("Invalid QR code. Please try again", ToastAndroid.LONG);
+  }
+
+  const showQRAddedToast = (name) => {
+    ToastAndroid.show(`${name} has been added`, ToastAndroid.SHORT)
   }
  
   
@@ -40,6 +53,7 @@ const ScanQrScreen = ({navigation}) => {
         
       }else{
         setStudent([...student,JSON.parse(e.data)])
+        showQRAddedToast(JSON.parse(e.data).studentName)
         Vibration.vibrate()
       }
     }catch (err){
@@ -77,26 +91,28 @@ const ScanQrScreen = ({navigation}) => {
           }
           containerStyle = {{height:90, backgroundColor:theme.colors.primary, borderBottomColor:'transparent'}}
         />
-        <QRCodeScanner
-          onRead = {onSuccess}
-          cameraStyle = {styles.cameraContainer}
-          topViewStyle = {styles.zeroContainer}
-          reactivate = {true}
-          reactivateTimeout = {3000}
-          showMarker = {true}
-          markerStyle = {{borderColor: 'white',bottom:50}}
-          vibrate={false}
-          bottomContent={
-            <View style={{flex:1,justifyContent:'flex-end'}}>
-              <Button  
-                title='Select Behaviour'
-                onPress={onPressed} 
-                buttonStyle = {{backgroundColor:theme.colors.primary}}
-                containerStyle = {{paddingBottom:30}}
-              />
-            </View>
-          }
-        />
+        {viewFocus && (
+          <QRCodeScanner
+            onRead = {onSuccess}
+            cameraStyle = {styles.cameraContainer}
+            topViewStyle = {styles.zeroContainer}
+            reactivate = {true}
+            reactivateTimeout = {2000}
+            showMarker = {true}
+            markerStyle = {{borderColor: 'white',bottom:50}}
+            vibrate={false}
+            bottomContent={
+              <View style={{flex:1,justifyContent:'flex-end'}}>
+                <Button  
+                  title='Select Behaviour'
+                  onPress={onPressed} 
+                  buttonStyle = {{backgroundColor:theme.colors.primary}}
+                  containerStyle = {{paddingBottom:30}}
+                />
+              </View>
+            }
+          />
+        )}
       </View>
           
         

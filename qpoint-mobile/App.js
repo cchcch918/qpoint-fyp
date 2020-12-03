@@ -28,6 +28,7 @@ import LeaderboardTopTap from './src/screens/Leaderboard/LeaderboardTopTab'
 const staffStack = createStackNavigator();
 const parentStack = createStackNavigator();
 
+console.disableYellowBox = true;
 
 const App = () => {
   const dispatch = useDispatch();

@@ -1,7 +1,6 @@
 import React, { memo, useState, useEffect } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, StyleSheet, View } from 'react-native';
 import Background from '../../components/Background';
-import Header from '../../components/Header';
 import TextInput from '../../components/TextInput';
 import { theme } from '../../core/theme';
 import { emailValidator, passwordValidator } from '../../core/utils';
@@ -10,7 +9,7 @@ import qpointApi from '../../api/qpointApi'
 import AsyncStorage from '@react-native-community/async-storage';
 import { useDispatch } from 'react-redux';
 import {signIn} from '../../actions/auth'
-import { Button } from 'react-native-elements';
+import { Button,Text } from 'react-native-elements';
 import messaging from '@react-native-firebase/messaging';
 
 const LoginScreen = ({ navigation }) => {
@@ -72,11 +71,12 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <Background>
-
-      <Header>Welcome Back</Header>
+     <Text h3 style={{fontSize: 26, color: theme.colors.primary, fontWeight: 'bold', paddingVertical: 14,}}>
+       Welcome Back
+     </Text>
 
       <TextInput
-        label="Email"
+        label="Username"
         returnKeyType="next"
         value={email.value}
         onChangeText={text => setEmail({ value: text, error: '' })}
@@ -122,17 +122,6 @@ const LoginScreen = ({ navigation }) => {
       />
       </View>
 
-      {/* <Layout style={styles.dropDownContainer} level='1'>
-        <Select
-          selectedIndex={selectedIndex}
-          placeholder = 'Select login status'
-          value={displayValue}
-          onSelect={index => setStatus(data[index.row].value)}>
-          <SelectItem title = 'Staff'/>
-          <SelectItem title = 'Parent'/>
-        </Select>
-      </Layout> */}
-
       <View style={styles.forgotPassword}>
         <TouchableOpacity
           onPress={() => navigation.navigate('ForgotPassword')}
@@ -141,23 +130,13 @@ const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-
-      
       <Button 
         title = 'LOGIN'  
         type="solid" 
         onPress={() => asyncSignIn(status,email,password)}
         buttonStyle = {styles.buttonStyle}
         titleStyle = {styles.text}
-      />  
-        
-
-      <View style={styles.row}>
-        <Text style={styles.label}>Don’t have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-          <Text style={styles.link}>Sign up</Text>
-        </TouchableOpacity>
-      </View>
+      /> 
     </Background>
   );
 };
@@ -195,3 +174,14 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
+
+{/* <Layout style={styles.dropDownContainer} level='1'>
+        <Select
+          selectedIndex={selectedIndex}
+          placeholder = 'Select login status'
+          value={displayValue}
+          onSelect={index => setStatus(data[index.row].value)}>
+          <SelectItem title = 'Staff'/>
+          <SelectItem title = 'Parent'/>
+        </Select>
+      </Layout> */}

@@ -81,6 +81,7 @@ const NotificationScreen = ({navigation}) => {
                     // console.log(item)
                     return(
                         <ListItem
+                            leftIcon = {{name:'mail'}}
                             title = {item.notificationTitle}
                             subtitle = {item.notificationMessage}
                             containerStyle = {{margin:10,borderRadius:20,shadowColor: "#000", elevation: 2, }}

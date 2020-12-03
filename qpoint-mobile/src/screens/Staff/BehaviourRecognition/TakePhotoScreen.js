@@ -12,8 +12,6 @@ const TakePhotoScreen = ({navigation,route}) => {
         try {
             const options = { quality: 0.5, base64: true };
             const data = await camera.takePictureAsync(options);
-            // CameraRoll.saveToCameraRoll(data.uri)
-            // setImg(data.uri)
             record.imageUri = data.uri
             navigation.navigate('ConfirmBehaviour',{imageUri:record})
             console.log(data.uri, '<<<<<<<<<<<<<<<<<<<<<');
@@ -22,7 +20,7 @@ const TakePhotoScreen = ({navigation,route}) => {
         }
     };
 
-    // const [img,setImg] = useState('')
+    // const [img,setImg] = useState('')    
 
     return(
         <View style={{flex:1}}> 
@@ -32,12 +30,12 @@ const TakePhotoScreen = ({navigation,route}) => {
                     name = 'arrow-left'
                     type = 'material-community'
                     size = {30}
-                    iconStyle = {{color:theme.colors.secondary}}
+                    iconStyle = {{color:'white'}}
                     onPress = {()=> navigation.goBack() }
                 />
                 }
             centerComponent = {
-                <Text style={{fontSize:20,color:theme.colors.secondary}}>Take Photo</Text>
+                <Text style={{fontSize:20,color:'white'}}>Take Photo</Text>
             }
             containerStyle = {{height:90, backgroundColor:theme.colors.primary, borderBottomColor:'transparent'}}
             />
@@ -46,7 +44,7 @@ const TakePhotoScreen = ({navigation,route}) => {
                 ref={ref => (camera = ref)}
                 style={styles.preview}
                 type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.on}
+                flashMode={RNCamera.Constants.FlashMode.off}
                 androidCameraPermissionOptions={{
                     title: 'Permission to use camera',
                     message: 'We need your permission to use your camera',

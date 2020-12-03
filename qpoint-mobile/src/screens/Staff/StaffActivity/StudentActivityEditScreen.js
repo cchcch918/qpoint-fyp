@@ -1,5 +1,5 @@
 import React,{useLayoutEffect,useState, useEffect} from 'react'
-import {View,Text,StyleSheet,Image,TouchableOpacity, Platform, } from 'react-native'
+import {View,Text,StyleSheet,Image,TouchableOpacity,ToastAndroid } from 'react-native'
 import AwesomeAlert from 'react-native-awesome-alerts';
 import qpointApi from '../../../api/qpointApi'
 import { ListItem,Header,Icon,SearchBar, Button, Tooltip } from 'react-native-elements'
@@ -15,10 +15,7 @@ const StudentActivityEditScreen = ({route,navigation}) => {
     const [selectedBehaviour,setSelectedBehaviour] = useState(null)
     const [isModalVisible, setModalVisible] = useState(false);
     const [imageUri,setImageUri] = useState(recordDetails.imageUri)
-    // console.log(imageUri)
-    // console.log(recordDetails.imageUri)
 
-    // console.log(recordDetails)
     useEffect(() => {
       if (route.params?.imageUri) {
         // console.log('true')
@@ -35,6 +32,10 @@ const StudentActivityEditScreen = ({route,navigation}) => {
 
       getBehaviour()
     },[route.params?.imageUri])
+
+    const showToastMessage = () => {
+      ToastAndroid.show("Swipe right to exit image", ToastAndroid.SHORT);
+    };
 
     const updateRecord = async () => {
       const response = await qpointApi.post('/student-behaviour-record/update-student-behaviour-records',{recordId,behaviourId:selectedBehaviour,imageUri})
@@ -65,7 +66,7 @@ const StudentActivityEditScreen = ({route,navigation}) => {
     };
     
     return(
-        <View style={{flex:1,backgroundColor:'white'}}>
+        <View style={{flex:1, backgroundColor:'white'}}>
           <Header
             leftComponent = {
               <Icon
@@ -129,8 +130,11 @@ const StudentActivityEditScreen = ({route,navigation}) => {
           </View>
 
           {imageUri ? 
-          <View style={{flexDirection:'row',alignItems:'center',paddingHorizontal:20,borderRadius:20,elevation:2,marginTop:25,marginHorizontal:10,backgroundColor:''}}>
-            <TouchableOpacity onPress = {()=>toggleModal()} style={{backgroundColor:''}}>
+          <View style={{flexDirection:'row',alignItems:'center',paddingHorizontal:20,borderRadius:20,marginTop:25,marginHorizontal:10,elevation:2, backgroundColor:'white'}}>
+            <TouchableOpacity onPress = {()=>{
+              toggleModal()
+              showToastMessage();
+            } } style={{backgroundColor:''}}>
               <Image
                 source = {{uri:imageUri, isStatic:true}}
                 style = {{width:100,height:100}}
@@ -184,7 +188,7 @@ const StudentActivityEditScreen = ({route,navigation}) => {
           </View>
           
           :
-          <View style={{flexDirection:'row',alignItems:'center',paddingHorizontal:20,borderRadius:20,elevation:2,marginTop:25,marginHorizontal:10,backgroundColor:''}}>
+          <View style={{flexDirection:'row',alignItems:'center',paddingHorizontal:20,borderRadius:20,marginTop:25,marginHorizontal:10, elevation:2, backgroundColor:'white'}}>
             
             <View style={{flex:1,alignItems:'center'}}>
               <View style={{alignItems:'center',padding:15}}>
@@ -205,10 +209,6 @@ const StudentActivityEditScreen = ({route,navigation}) => {
           </View>
           }
 
-        
-            
-          
-          
           <View style={{flex:1,justifyContent:'flex-end'}}>
             <Button
               title = 'Edit'
@@ -247,16 +247,6 @@ const StudentActivityEditScreen = ({route,navigation}) => {
 }
 
 const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 4,
-    color: 'black',
-    paddingRight: 30, // to ensure the text is never behind the icon
-  },
   inputAndroid: {
     fontSize: 16,
     paddingHorizontal: 10,
@@ -276,7 +266,8 @@ const styles = StyleSheet.create({
     marginTop:20,
     margin:10,
     borderRadius:20,
-    elevation: 2,
+    elevation:2,
+    backgroundColor:'white'
   },
   dropdownView:{
     height:80,
@@ -285,15 +276,10 @@ const styles = StyleSheet.create({
     marginTop:15,
     marginHorizontal:10,
     borderRadius:20,
-    // backgroundColor: 'white',
-    elevation: 2,
-    // position:'absolute',
-    // left:0,
-    // top:300,
-    // right:0,
-    // bottom:0,
-    // zIndex:0
+    elevation:2,
+    backgroundColor:'white'
   },
+  
   textStyle: {
     fontSize: 15,
     justifyContent: 'flex-end'

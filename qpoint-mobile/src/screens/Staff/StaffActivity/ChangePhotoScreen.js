@@ -41,7 +41,7 @@ const ChangePhotoScreen = ({navigation,route}) => {
                 ref={ref => (camera = ref)}
                 style={styles.preview}
                 type={RNCamera.Constants.Type.back}
-                flashMode={RNCamera.Constants.FlashMode.on}
+                flashMode={RNCamera.Constants.FlashMode.off}
                 androidCameraPermissionOptions={{
                     title: 'Permission to use camera',
                     message: 'We need your permission to use your camera',

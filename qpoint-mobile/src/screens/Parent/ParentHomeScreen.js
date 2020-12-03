@@ -6,9 +6,6 @@ import qpointApi from '../../api/qpointApi'
 import { useDispatch, useSelector } from 'react-redux';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-
-
-
 const ParentHomeScreen = ({navigation}) => {
   const email = useSelector(state => state.authReducer.email)
   // console.log(email)
