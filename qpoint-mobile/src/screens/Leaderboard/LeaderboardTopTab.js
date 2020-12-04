@@ -8,25 +8,33 @@ const LeaderboardTap = createMaterialTopTabNavigator();
 
 const LeaderboardTopTap = ({route}) => {
     const {classId} = route.params
+    const {studentId} = route.params
     // console.log(classId)
+    // console.log(studentId)
     return(
         <LeaderboardTap.Navigator>
             <LeaderboardTap.Screen 
                 name="Class Leaderboard" 
-                children={()=><ClassLeaderboard classId={classId}/>}
+                children={()=><ClassLeaderboard classId={classId} studentId={studentId}/>}
                 options={() => ({
-                    title: 'Class Leaderboard',
+                    title: 'Class',
                   })} 
             />
 
             <LeaderboardTap.Screen 
                 name="Group Leaderboard" 
-                component={GroupLeaderboard} 
+                children={()=><GroupLeaderboard studentId={studentId}/>}
+                options={() => ({
+                    title: 'Groups',
+                  })} 
             />
 
             <LeaderboardTap.Screen 
                 name="Overall Leaderboard" 
-                component={OverallLeaderboard} 
+                children={()=><OverallLeaderboard studentId={studentId}/>}
+                options={() => ({
+                    title: 'School',
+                  })} 
             />
 
         </LeaderboardTap.Navigator>

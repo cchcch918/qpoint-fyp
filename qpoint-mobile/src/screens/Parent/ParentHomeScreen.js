@@ -117,7 +117,7 @@ const ParentHomeScreen = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style = {styles.square}
-                  onPress = {()=>navigation.navigate('Leaderboard',{classId:childObject[0].class.classId})}
+                  onPress = {()=>navigation.navigate('Leaderboard',{classId:childObject[0].class.classId, studentId:childObject[0].studentId})}
                 >
                   <Icon
                     name = 'medal'

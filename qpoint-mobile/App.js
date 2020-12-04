@@ -95,13 +95,13 @@ const App = () => {
   },[])
 
 
-  if(loadingState){
-    return(
-      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <ActivityIndicator size="large" color="#0000ff"/>
-      </View>
-    );
-  }
+  // if(loadingState){
+  //   return(
+  //     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+  //       <ActivityIndicator size="large" color="#0000ff"/>
+  //     </View>
+  //   );
+  // }
 
 
   if(userToken !== null){

@@ -3,11 +3,11 @@ import {View, FlatList, Text, StyleSheet} from 'react-native'
 import { ListItem,Avatar,Badge, } from 'react-native-elements'
 import {theme} from '../../core/theme'
 import qpointApi from '../../api/qpointApi'
-import { abs } from 'react-native-reanimated'
 import Leaderboard from 'react-native-leaderboard';
 
-const ClassLeaderboard = ({classId}) => {
+const ClassLeaderboard = ({classId, studentId}) => {
     // console.log('class leaderboard',classId)
+    // console.log(studentId)
     const [studentsPoint,setStudentsPoint] = useState(null)
     // console.log(studentsPoint)
     useEffect(()=>{
@@ -24,6 +24,7 @@ const ClassLeaderboard = ({classId}) => {
                 let temp = {}
                 temp.name = item.fullName
                 temp.totalBehaviourPoint = item.totalBehaviourPoint
+                temp.studentId = item.studentId
                 // temp.imageUrl = item.profileImagePath
                 temp.imageUrl = ''
                 studentObj.push(temp)
@@ -35,6 +36,10 @@ const ClassLeaderboard = ({classId}) => {
         }
         getStudentsPoint()
     },[])
+
+    let studentIndex = null;
+    {studentsPoint ? studentIndex = studentsPoint.findIndex(rank => rank.studentId == studentId) : null}
+    // console.log(studentIndex)
 
     return(
         <View style={{flex:1, backgroundColor:'white'}}>
@@ -107,13 +112,39 @@ const ClassLeaderboard = ({classId}) => {
             }
             
             <View style={{flex:1, backgroundColor:'white'}}>
-                <Leaderboard
+            <FlatList
+                    data = {studentsPoint}
+                    keyExtractor = {(item,index)=>index.toString()}
+                    renderItem = {({item,index}) => {
+                        // console.log(item)
+                        return(
+                            <ListItem
+                                leftElement = {() => (
+                                    <Text
+                                        style = {{fontSize:17, fontWeight:'bold',}}
+                                    >
+                                        {parseInt(index) + 1}
+                                    </Text>
+                                )}
+                                // title = {(index+1).toString()}
+                                title = {item.name}
+                                titleStyle = {{fontSize:17,}}
+                                topDivider = {true}
+                                bottomDivider = {true}
+                                rightTitle = {(item.totalBehaviourPoint).toString()}
+                                rightTitleStyle = {{fontSize:20,fontWeight:"bold", color:'black'}}
+                                containerStyle = {{backgroundColor: index == studentIndex ? theme.colors.secondary : index % 2 === 0 ? 'white' : '#f2f5f7'}}
+                            />
+                        )
+                    }}
+                />
+                {/* <Leaderboard
                     data = {studentsPoint}
                     sortBy = 'totalBehaviourPoint'
                     labelBy = 'name'
                     // icon =  "imageUrl"
                     // oddRowColor = {theme.colors.secondary}
-                />
+                /> */}
             </View>
         </View>
         
