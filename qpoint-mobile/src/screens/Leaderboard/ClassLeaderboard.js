@@ -3,7 +3,6 @@ import {View, FlatList, Text, StyleSheet} from 'react-native'
 import { ListItem,Avatar,Badge, } from 'react-native-elements'
 import {theme} from '../../core/theme'
 import qpointApi from '../../api/qpointApi'
-import Leaderboard from 'react-native-leaderboard';
 
 const ClassLeaderboard = ({classId, studentId}) => {
     // console.log('class leaderboard',classId)
