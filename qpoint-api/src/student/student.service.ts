@@ -93,7 +93,7 @@ export class StudentService {
         const {studentList} = payload;
         const students: StudentEntity[] = []
         for (const studentId of studentList) {
-            students.push(await (this.studentRepository.findOne({where: {studentId: studentId},relations:['class']})).then(student => {
+            students.push(await (this.studentRepository.findOne({where: {studentId: studentId},relations:['class', 'groups']})).then(student => {
                 if (!student) throw new HttpException(
                     `Behaviour with ID ${studentId} does not exists`,
                     HttpStatus.BAD_REQUEST,
