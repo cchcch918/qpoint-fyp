@@ -47,6 +47,7 @@
     "react-native-status-bar-height": "^2.5.0",
     "react-native-svg": "^12.1.0",
     "react-native-tab-view": "^2.15.1",
+    "react-native-timeline-flatlist": "^0.7.3",
     "react-native-vector-icons": "^7.0.0",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5"

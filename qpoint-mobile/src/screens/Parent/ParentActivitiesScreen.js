@@ -7,6 +7,7 @@ import Modal from 'react-native-modal';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment'
+import Timeline from 'react-native-timeline-flatlist'
 
 
 const ParentActitiviesScreen = ({navigation,route}) => {
@@ -23,7 +24,16 @@ const ParentActitiviesScreen = ({navigation,route}) => {
     useEffect(()=>{
         const getBehavaviourRecords = async () => {
             const response = await qpointApi.post('/student-behaviour-record/get-student-behaviour-records',{studentId:childObject[0].studentId})
-            setStudentRecords(response.data)
+            let tempRecords = []
+            for(const item of response.data){
+                let temp = {}
+                temp.time = moment(item.dateGiven).format("ddd, MMM DD") + "\n" + moment(item.dateGiven).format("HH:mm a")
+                temp.title = item.behaviour.behaviourName
+                temp.description = (item.behaviour.behaviourPoint).toString()
+                tempRecords.push(temp)
+                // console.log(temp.time)
+            }
+            setStudentRecords(tempRecords)
             // console.log(response.data)
         }
         getBehavaviourRecords()
@@ -42,41 +52,49 @@ const ParentActitiviesScreen = ({navigation,route}) => {
     };
 
     const handleConfirm = (date) => {
-        setSelectedDate(JSON.stringify(date))
+        date = JSON.stringify(date)
+        date = date.substring(0 ,11)
+        // console.log(date)
+        setSelectedDate(date)
         hideDatePicker();
     };
 
+    
+
     const applyFilter = () => {
-        if(selectedPicker){
+        if(selectedPicker && selectedDate){
             if(selectedPicker === 'positive'){
-                let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint > 0)
-                // console.log(filteredData)
+                // let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint > 0 && item.dateGiven.substring(0, 10) === selectedDate.substring(1, 11))
+                let filteredData = studentRecords.filter(item=> parseInt(item.description) > 0 && item.time.substring(0,11) === moment(selectedDate.substring(1,11)).format("ddd, MMM DD"))
                 setFilteredData(filteredData)
-                // updateFIlterState(filteredData)
+                
             }
             if(selectedPicker === 'negative'){
-                let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint < 0)
+                let filteredData = studentRecords.filter(item=> parseInt(item.description) < 0 && item.time.substring(0,11) === moment(selectedDate.substring(1,11)).format("ddd, MMM DD"))
+                // let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint < 0 && item.dateGiven.substring(0, 10) === selectedDate.substring(1, 11))
                 setFilteredData(filteredData)
-                // updateFIlterState(filteredData)
             }
         }
-        if(selectedDate){
-            let filteredData = studentRecords.filter(item => item.dateGiven.substring(0, 10) === selectedDate.substring(1, 11))
-            // console.log(filteredData)
+        else if(selectedPicker){
+            
+            if(selectedPicker === 'positive'){
+                let filteredData = studentRecords.filter(item=> parseInt(item.description) > 0)
+                // let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint > 0)
+                // console.log(filteredData)
+                setFilteredData(filteredData)
+            }
+            if(selectedPicker === 'negative'){
+                // let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint < 0)
+                let filteredData = studentRecords.filter(item=> parseInt(item.description) < 0)
+                // console.log(filteredData)
+                setFilteredData(filteredData)
+            }
+        }   
+        else if(selectedDate){
+            let filteredData = studentRecords.filter(item => item.time.substring(0,11) === moment(selectedDate.substring(1,11)).format("ddd, MMM DD"))
+            
+            // let filteredData = studentRecords.filter(item.dateGiven.substring(0, 10) === selectedDate.substring(1, 11))
             setFilteredData(filteredData)
-        }
-        if(selectedPicker && selectedPicker){
-            if(selectedPicker === 'positive'){
-                let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint > 0 && item.dateGiven.substring(0, 10) === selectedDate.substring(1, 11))
-                // console.log(filteredData)
-                setFilteredData(filteredData)
-                // updateFIlterState(filteredData)
-            }
-            if(selectedPicker === 'negative'){
-                let filteredData = studentRecords.filter(item=> item.behaviour.behaviourPoint < 0 && item.dateGiven.substring(0, 10) === selectedDate.substring(1, 11))
-                setFilteredData(filteredData)
-                // updateFIlterState(filteredData)
-            }
         }
 
     }
@@ -137,7 +155,7 @@ const ParentActitiviesScreen = ({navigation,route}) => {
                             type = 'material-community'
                             onPress={()=>showDatePicker()}
                         />
-                        {selectedDate ? 
+                        {selectedDate!=null ? 
                         ( 
                             <View style={{paddingTop:10,paddingBottom:10}}>
                                 <Text style={{color:'red',marginLeft:15}}>
@@ -208,7 +226,19 @@ const ParentActitiviesScreen = ({navigation,route}) => {
                 
                 containerStyle = {{height:100, backgroundColor:theme.colors.primary}}
             />
-            <FlatList
+            <Timeline
+                data = {FilteredData ? FilteredData : studentRecords}
+                circleSize={20}
+                circleColor='rgb(45,156,219)'
+                lineColor='rgb(45,156,219)'
+                timeStyle={{textAlign: 'center', backgroundColor:'#ff9797', color:'white', padding:5, borderRadius:13}}
+                descriptionStyle={{color:'gray', fontSize: 15}}
+                separator = {true}
+                timeContainerStyle = {{minWidth:100}}
+                style = {{margin:15}}
+            />
+
+            {/* <FlatList   
                 data = {FilteredData ? FilteredData : studentRecords}
                 keyExtractor = {(item => item.recordId.toString())}
                 renderItem = {({item}) => {
@@ -224,7 +254,7 @@ const ParentActitiviesScreen = ({navigation,route}) => {
                         
                     )
                 }}
-            />
+            /> */}
             
 
         </View>
