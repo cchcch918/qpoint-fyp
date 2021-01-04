@@ -1,33 +1,37 @@
-<div class="py-5" nz-row nzJustify="center" nzType="flex">
-  <div nz-col nzLg="14" nzMd="16" nzSm="18" nzXl="10" nzXs="23">
-    <nz-card>
-      <form (ngSubmit)="submitForm()" [formGroup]="loginForm" [nzLayout]="'horizontal'" nz-form>
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Please input your username!">
-            <nz-input-group nzPrefixIcon="user">
-              <input formControlName="username" nz-input placeholder="Username"/>
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Please input your Password!">
-            <nz-input-group nzPrefixIcon="lock">
-              <input formControlName="password" nz-input placeholder="Password" type="password"/>
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-control>
-            <a (click)=forgetPassword() class="login-form-forgot" class="login-form-forgot">Forgot password</a>
-            <button [disabled]="!loginForm.valid" [nzLoading]="loginLoading" nz-button nzType="primary">Log in</button>
-            Or
-            <a (click)="registerStaff()">register now!</a>
-          </nz-form-control>
-        </nz-form-item>
-      </form>
-    </nz-card>
-  </div>
+<div class="p-5">
+  <nz-card [nzCover]="coverTemplate"
+           style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+    <ng-template #coverTemplate>
+      <img alt="Qpoint Logo" src="../../../../assets/qpoint-logo.png"/>
+    </ng-template>
+    <h5 style="color: #687A8F">Admin Login</h5>
+    <form (ngSubmit)="submitForm()" [formGroup]="loginForm" [nzLayout]="'horizontal'" nz-form>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your username!">
+          <nz-input-group nzPrefixIcon="user">
+            <input formControlName="username" nz-input placeholder="Username"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Please input your Password!">
+          <nz-input-group nzPrefixIcon="lock">
+            <input formControlName="password" nz-input placeholder="Password" type="password"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <a (click)=forgetPassword() class="login-form-forgot" class="login-form-forgot">Forgot password</a>
+          <button [disabled]="!loginForm.valid" [nzLoading]="loginLoading" nz-button nzType="primary">Log in</button>
+          Or
+          <a (click)="registerStaff()">register now!</a>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-card>
 </div>
+
 
 
 

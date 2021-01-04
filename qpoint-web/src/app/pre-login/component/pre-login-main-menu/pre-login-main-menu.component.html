@@ -1,8 +1,17 @@
-
-<div class="container">
-  <div nz-row nzJustify="center">
-    <img alt="Qpoint logo" class="logo justify-content-center pt-3" src="../../../../assets/qpoint-logo.png"/>
+<div class="image" nz-row nzAlign="middle">
+  <div class="container">
+    <div nz-row nzAlign="middle" nzJustify="space-around">
+      <div nz-col nzSpan="10">
+        <h1>Welcome to Qpoint </h1>
+        <h4>An automated behavioral point system for students.</h4>
+        <a (click)="downloadApp()" nz-icon nzTheme="outline" nzType="mobile" style="font-size: large"></a>
+        <a class="m-2" href="https://github.com/cchcch918/qpoint-fyp" nz-icon nzTheme="outline" nzType="github"
+           style="font-size: large"></a>
+      </div>
+      <div nz-col nzSpan="10">
+        <app-login-form></app-login-form>
+      </div>
+    </div>
   </div>
-  <app-login-form></app-login-form>
 </div>
 

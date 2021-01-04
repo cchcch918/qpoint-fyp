@@ -6,10 +6,7 @@
   overflow: hidden
 }
 
-.logo {
-  align-content: center;
-
-  height: auto;
-  width: 60%;
+div.image {
+  background-image: url("src/assets/login_background1.png");
+  height: 100vh;
 }
-

@@ -43,7 +43,7 @@
           <li [routerLink]="['/notification/manage-notification']" nz-menu-item nzMatchRouter>Manage Notification</li>
         </ul>
       </li>
-      <li (click)="logout()" nz-menu-item style="color: red;">
+      <li (click)="logout()" nz-menu-item style="color: #F7882F;">
         <i nz-icon nzType="logout"></i>
         <span>Logout</span>
       </li>
@@ -68,6 +68,10 @@
         <ng-content></ng-content>
       </div>
     </nz-content>
-    <nz-footer><i nz-icon nzTheme="outline" nzType="copyright"></i> Qpoint ©2020 Implement By Qpoint Team</nz-footer>
   </nz-layout>
+
 </nz-layout>
+<nz-footer class="font-weight-bold" style="background-color: #F7882F"><i nz-icon nzTheme="outline"
+                                                                         nzType="copyright"></i> Qpoint ©2020 Implement
+  By Qpoint Team
+</nz-footer>
