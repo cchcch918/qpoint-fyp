@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {NzMessageService} from "ng-zorro-antd";
 
 @Component({
   selector: 'app-pre-login-main-menu',
@@ -6,13 +7,14 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./pre-login-main-menu.component.css']
 })
 export class PreLoginMainMenuComponent implements OnInit {
-  imageSrcArray: string[] = [];
 
-  constructor() {
+  constructor(private msg: NzMessageService) {
   }
 
   ngOnInit(): void {
-    this.imageSrcArray.push("../../../../assets/qpoint-logo.png")
   }
 
+  downloadApp() {
+    this.msg.info(`Download our latest Mobile App from Google Playstore`);
+  }
 }
