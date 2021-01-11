@@ -1,7 +1,8 @@
 <app-side-navigation-bar>
-  <div class="py-5" class="container">
-    <app-create-student-form (updateTableEvent)="update = !update"></app-create-student-form>
-
+  <div class="container">
+    <div class="p-4" style="background-color: #f7f8f9;">
+      <app-create-student-form (updateTableEvent)="update = !update"></app-create-student-form>
+    </div>
     <app-student-list-table [update]="update"></app-student-list-table>
   </div>
 </app-side-navigation-bar>

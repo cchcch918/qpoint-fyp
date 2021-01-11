@@ -20,7 +20,7 @@ export class SharedBehaviourPieChartComponent implements OnInit, OnChanges {
   timeline = true;
 
   colorScheme = {
-    domain: ['#87CEFA', '#FA8072', '#FF7F50', '#90EE90', '#9370DB', '#9370DB']
+    domain: ['hsl(120,60%,70%)', 'hsl(0, 100%, 70%)']
   };
 
   @Input() behaviourRecords: StudentBehaviourRecordVoModel[];
@@ -53,6 +53,7 @@ export class SharedBehaviourPieChartComponent implements OnInit, OnChanges {
             "name": "Total Positive Behaviour Points",
             "value": this.positiveBehavioralPoints
           },
+
           {
             "name": "Total Negative Behaviour Points",
             "value": Math.abs(this.negativeBehavioralPoints)

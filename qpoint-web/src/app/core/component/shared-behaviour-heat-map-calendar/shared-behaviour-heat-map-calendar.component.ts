@@ -39,7 +39,7 @@ export class SharedBehaviourHeatMapCalendarComponent implements OnInit, OnChange
 
   @Input() behaviourRecords: StudentBehaviourRecordVoModel[];
   colorScheme = {
-    domain: ['#FA8072', '#87CEFA']
+    domain: ['hsl(0, 100%, 70%)', 'hsl(120,60%,70%)']
   };
 
   calendarData: any[]

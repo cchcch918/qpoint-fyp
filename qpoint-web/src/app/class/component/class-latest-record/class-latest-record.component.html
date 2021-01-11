@@ -18,7 +18,8 @@
     <td>{{ data.student.fullName }}</td>
     <td>{{ data.dateGiven  | date:'medium'}}</td>
     <td>{{ data.behaviour.behaviourName }}</td>
-    <td>{{ data.behaviour.behaviourPoint }}</td>
+    <td [style.color]="data.behaviour.behaviourPoint >=0 ? 'hsl(120,60%,70%)' :  'hsl(0, 100%, 70%)'"
+        class="font-weight-bolder">{{ data.behaviour.behaviourPoint }}</td>
   </tr>
   </tbody>
 </nz-table>
