@@ -13,6 +13,12 @@ export const passwordValidator = password => {
   return '';
 };
 
+export const comparePasswordValidator = (newPassword, confirmPassword) => {
+  if (newPassword != confirmPassword) return 'Password does not match.';
+
+  return '';
+};
+
 export const nameValidator = name => {
   if (!name || name.length <= 0) return 'Name cannot be empty.';
 

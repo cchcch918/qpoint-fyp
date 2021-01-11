@@ -1,10 +1,11 @@
 import React, { memo, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ToastAndroid } from 'react-native';
 import Background from '../../components/Background';
 import TextInput from '../../components/TextInput';
 import { theme } from '../../core/theme';
 import {
   passwordValidator,
+  comparePasswordValidator
 } from '../../core/utils';
 import {useSelector} from 'react-redux'
 import qpointApi from '../../api/qpointApi'
@@ -15,18 +16,61 @@ const StaffChangePassword = ({navigation}) => {
   const [oldPassword, setOldPassword] = useState({ value: '', error: '' });
   const [newPassword, setNewPassword] = useState({ value: '', error: '' });
   const [confirmPassword, setConfirmPassword] = useState({ value: '', error: '' });
+  const [errorMessage, setErrorMessage] = useState(null);
   const username = useSelector(state => state.authReducer.username)
-  
-  const _onButtonPressed = async (password) => {
-    const passwordError = passwordValidator(oldPassword.value);
-    if (passwordError) {
-      setOldPassword({ ...oldPassword, error: passwordError });
+  const parentEmail = useSelector(state => state.authReducer.email)
+
+  const _onButtonPressed = async (oldpassword, newpassword) => {
+    const oldPasswordError = passwordValidator(oldPassword.value);
+    if (oldPasswordError) {
+      setOldPassword({ ...oldPassword, error: oldPasswordError });
       return;
     }
+    const newPasswordError = passwordValidator(newPassword.value);
+    if (newPasswordError) {
+      setNewPassword({ ...newPassword, error: newPasswordError });
+      return;
+    }
+    const confirmPasswordError = passwordValidator(confirmPassword.value);
+    if (confirmPasswordError) {
+      setConfirmPassword({ ...confirmPassword, error: confirmPasswordError });
+      return;
+    }
+
+    const comparePasswordError = comparePasswordValidator(newPassword.value, confirmPassword.value);
+    if (comparePasswordError) {
+      setConfirmPassword({ ...confirmPassword, error: comparePasswordError });
+      return;
+    }
+
     const status = await AsyncStorage.getItem('status')
-    const response = await qpointApi.post(`/${status}/auth/change-password`,{username, password:password.value});
-    console.log(response.data)
-    navigation.goBack()
+    if(status == 'staff'){
+      // console.log(password.value)
+      const response = await qpointApi.post(`/${status}/auth/change-password`,{username, password:newpassword.value});
+      if(response.data.result == "SUCCESS"){
+        showAddedToast()
+        navigation.goBack()
+      } else
+          return
+      
+    }
+    else {
+      const response = await qpointApi.post(`/${status}/change-parent-password`,{parentEmail, oldPassword: oldpassword.value, newPassword: newpassword.value})
+      .catch(err => {
+        setOldPassword({ ...oldPassword, error: err.response.data.errorMessage })
+        return;
+      })
+      if(response.data.result == "SUCCESS"){
+        showAddedToast()
+        navigation.goBack()
+      } else
+          return
+    }
+    
+  };
+
+  const showAddedToast = () => {
+    ToastAndroid.show("Password Changed Successfully", ToastAndroid.LONG);
   };
 
   return (
@@ -85,7 +129,7 @@ const StaffChangePassword = ({navigation}) => {
 
         <Button  
           title='Submit'
-          onPress={()=>_onButtonPressed(confirmPassword)} 
+          onPress={()=>_onButtonPressed(oldPassword, confirmPassword)} 
           buttonStyle = {{backgroundColor:theme.colors.primary}}
           containerStyle = {{marginTop:24, width:150}}
         />

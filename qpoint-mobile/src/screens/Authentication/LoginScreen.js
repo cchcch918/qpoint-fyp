@@ -15,7 +15,8 @@ import messaging from '@react-native-firebase/messaging';
 const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [deviceId,setDeviceId] = useState(null)
-  
+  const [errorMessage, setErrorMessage] = useState(null)
+
   useEffect(()=>{
     const getToken = async () => {
       const token = await messaging().getToken();
@@ -26,19 +27,26 @@ const LoginScreen = ({ navigation }) => {
   },[])
 
   const asyncSignIn = async (status,email,password) => {
-    if(status === 'staff'){
-      const response = await qpointApi.post(`/${status}/auth/login`,{username:email.value, password:password.value});
-      // console.log(response.data)
-      await AsyncStorage.setItem('userToken',response.data.token)
-      await AsyncStorage.setItem('status',status)
-      dispatch(signIn(response.data,status));
+    if(status == null){
+      setErrorMessage("Select login status")
     }
-    if(status === 'parent'){
-      const response = await qpointApi.post(`/${status}/parent-login`,{parentEmail:email.value, password:password.value,deviceId,devicePlatform:"ANDROID"});
-      // console.log(response.data)
+    
+    if(status === 'staff'){
+      const response = await qpointApi.post(`/${status}/auth/login`,{username:email.value, password:password.value})
+      .catch(err => setErrorMessage(err.response.data.errorMessage));
       await AsyncStorage.setItem('userToken',response.data.token)
       await AsyncStorage.setItem('status',status)
-      dispatch(signIn(response.data,status));
+      dispatch(signIn(response.data,status));  
+      
+    }
+
+    if(status === 'parent'){
+      const response = await qpointApi.post(`/${status}/parent-login`,{parentEmail:email.value, password:password.value,deviceId,devicePlatform:"ANDROID"})
+      .catch(err => setErrorMessage(err.response.data.errorMessage));
+      await AsyncStorage.setItem('userToken',response.data.token)
+      await AsyncStorage.setItem('status',status)
+      dispatch(signIn(response.data,status));  
+      
     }
   }
 
@@ -46,22 +54,6 @@ const LoginScreen = ({ navigation }) => {
   
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
-  
-
-  // const _onLoginPressed = async (status,email,password) => {
-  //   // const emailError = emailValidator(email.value);
-  //   // const passwordError = passwordValidator(password.value);
-
-  //   // if (emailError || passwordError) {
-  //   //   setEmail({ ...email, error: emailError });
-  //   //   setPassword({ ...password, error: passwordError });
-  //   //   return;
-  //   // }
-
-  //   const response = await qpointApi.post(`/${status}/auth/login`,{username:email.value, password:password.value});
-  //   const userToken = await AsyncStorage.setItem('userToken',response.data.token)
-    
-  // };
 
   const [status, setStatus] = useState(null);
   const data = [
@@ -137,6 +129,10 @@ const LoginScreen = ({ navigation }) => {
         buttonStyle = {styles.buttonStyle}
         titleStyle = {styles.text}
       /> 
+
+      {errorMessage == null ? null : <Text style={{color: "red"}}>{errorMessage}</Text>}
+      
+
     </Background>
   );
 };
@@ -175,13 +171,3 @@ const styles = StyleSheet.create({
 
 export default LoginScreen;
 
-{/* <Layout style={styles.dropDownContainer} level='1'>
-        <Select
-          selectedIndex={selectedIndex}
-          placeholder = 'Select login status'
-          value={displayValue}
-          onSelect={index => setStatus(data[index.row].value)}>
-          <SelectItem title = 'Staff'/>
-          <SelectItem title = 'Parent'/>
-        </Select>
-      </Layout> */}

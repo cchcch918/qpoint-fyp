@@ -21,9 +21,15 @@ export class ParentService {
     async parentLogin(payload: ParentLoginDto) {
         const {parentEmail, password, deviceId, devicePlatform} = payload;
         const parent = await this.parentRepository.findOne({where: {email: parentEmail}, relations: ['children']});
-        if (!parent || !(await parent.comparePassword(password))) {
+        if (!parent) {
             throw new HttpException(
-                'Invalid username/password',
+                'Invalid username',
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        if (!(await parent.comparePassword(password))) {
+            throw new HttpException(
+                'Invalid password',
                 HttpStatus.BAD_REQUEST,
             );
         }

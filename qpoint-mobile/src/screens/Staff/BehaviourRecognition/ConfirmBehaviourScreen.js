@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react'
-import {View,FlatList,Image} from 'react-native'
+import {View,FlatList,Image, ToastAndroid} from 'react-native'
 import { Card, ListItem, Button, Icon, Header,Text,SearchBar } from 'react-native-elements'
 import {theme} from '../../../core/theme'
 import qpointApi from '../../../api/qpointApi'
@@ -56,17 +56,23 @@ const ConfirmBehaviourScreen = ({navigation,route}) => {
 
     const addBehaviour = async (item) => {
         const response = await qpointApi.post('/student-behaviour-record/add-behaviours-to-students',item)
-        console.log(response.data)
+        // console.log(response.data)
     }
     
     const onButtonPressed = () => {
         for(const record of behaviourRecord){
            addBehaviour(record)
         }
+        showAddedToast()
         navigation.navigate('StaffHome')
 
     }
-    console.log('behaviourerecord ',behaviourRecord)
+
+    const showAddedToast = () => {
+        ToastAndroid.show("New behaviour rerord(s) added", ToastAndroid.LONG);
+    };
+
+    // console.log('behaviourerecord ',behaviourRecord)
 
     return(
         <View style={{flex:1}}>
@@ -158,14 +164,6 @@ const ConfirmBehaviourScreen = ({navigation,route}) => {
                     onPress = {()=>onButtonPressed()}
                 />
            </View>
-            {/* <View style = {{flexDirection:'row',backgroundColor:'white',height:60}}>
-                <Button
-                    title = 'Proceed'
-                    containerStyle = {{backgroundColor:'red',position:'absolute', left:310,top:10}}
-                    buttonStyle = {{backgroundColor:theme.colors.primary}}
-                    onPress = {()=>onButtonPressed()}
-                />
-            </View >*/}
         </View>
     )
 }
