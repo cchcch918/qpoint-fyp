@@ -6,7 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AuthStackScreen from './src/screens/Authentication/AuthStackScreen'
 import StaffBottomTab from './src/screens/Staff/StaffBottomTab'
 import AsyncStorage from '@react-native-community/async-storage';
-import { restoreToken,restoreInfo } from './src/actions/auth';
+import { restoreToken, restoreInfo, setLoading } from './src/actions/auth';
 import {useSelector} from 'react-redux'
 import { useDispatch } from 'react-redux';
 import qpointApi from './src/api/qpointApi'
@@ -68,6 +68,9 @@ const App = () => {
       status = await AsyncStorage.getItem('status')
       // console.log('status ',status)
       // console.log('token', token)
+      if(status == null && token == null) {
+        dispatch(setLoading())
+      }
       if(status === 'staff'){
         if(token!=null){
           const response = await qpointApi.post(`/${status}/get-admin-account-details`,{token: `Bearer ${token}`});
@@ -95,13 +98,13 @@ const App = () => {
   },[])
 
 
-  // if(loadingState){
-  //   return(
-  //     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-  //       <ActivityIndicator size="large" color="#0000ff"/>
-  //     </View>
-  //   );
-  // }
+  if(loadingState){
+    return(
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+        <ActivityIndicator size="large" color="#0000ff"/>
+      </View>
+    );
+  }
 
 
   if(userToken !== null){

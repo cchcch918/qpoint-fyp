@@ -260,7 +260,7 @@ const SelectBehaviourScreen = ({route,navigation}) => {
                 renderItem = {({item}) => {
                     return(
                         <TouchableOpacity 
-                            style = {Styles.behaviour} 
+                            style = {[Styles.behaviour, {backgroundColor: item.behaviourPoint > 0 ? '#8bb684' : '#ff3961'}]} 
                             onPress = {()=>{checkBehaviourList({behaviour:item.behaviourName,point:item.behaviourPoint,id:item.behaviourId})}}
                         >
                             <Text>{item.behaviourName}</Text> 
@@ -288,7 +288,7 @@ const SelectBehaviourScreen = ({route,navigation}) => {
 
 const Styles = StyleSheet.create({
     behaviour: {
-        height:200,
+        height:150,
         flex:1,
         maxWidth: Dimensions.get('window').width / 2 - 10, 
         justifyContent: 'center',
@@ -296,7 +296,9 @@ const Styles = StyleSheet.create({
         marginHorizontal:15,
         marginTop:20,
         backgroundColor: theme.colors.secondary,
-        borderRadius:12
+        borderRadius:12,
+        elevation: 3,
+        
       },
     list: {
         flexDirection:'row',

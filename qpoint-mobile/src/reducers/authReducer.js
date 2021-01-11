@@ -1,4 +1,4 @@
-import {SIGN_IN,SIGN_OUT, RESTORE_TOKEN, RESTORE_INFO} from '../actions/types'
+import {SIGN_IN,SIGN_OUT, RESTORE_TOKEN, RESTORE_INFO, SET_LOADING} from '../actions/types'
 
 const initialState = {
     userToken: null,
@@ -11,6 +11,11 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
     switch(action.type){
+        case SET_LOADING:
+            return{
+                ...state,
+                isLoading: false
+            }
         case RESTORE_TOKEN:
             if(action.payload.status === 'staff'){
                 return{
