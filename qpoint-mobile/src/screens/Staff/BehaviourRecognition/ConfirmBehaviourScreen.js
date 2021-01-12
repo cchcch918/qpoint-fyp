@@ -69,7 +69,7 @@ const ConfirmBehaviourScreen = ({navigation,route}) => {
     }
 
     const showAddedToast = () => {
-        ToastAndroid.show("New behaviour rerord(s) added", ToastAndroid.LONG);
+        ToastAndroid.show("New behaviour record(s) added", ToastAndroid.LONG);
     };
 
     // console.log('behaviourerecord ',behaviourRecord)
