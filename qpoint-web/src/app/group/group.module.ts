@@ -11,10 +11,9 @@ import {StaffService} from "../staff/service/staff.service";
 import {GroupDashboardPageComponent} from './component/group-dashboard-page/group-dashboard-page.component';
 import {GroupLeaderboardComponent} from './component/group-leaderboard/group-leaderboard.component';
 import {GroupLatestRecordComponent} from './component/group-latest-record/group-latest-record.component';
-import {GroupHeatMapComponent} from './component/group-heat-map/group-heat-map.component';
 
 @NgModule({
-  declarations: [CreateGroupFormComponent, ManageGroupPageComponent, GroupListTableComponent, GroupDashboardPageComponent, GroupLeaderboardComponent, GroupLatestRecordComponent, GroupHeatMapComponent],
+  declarations: [CreateGroupFormComponent, ManageGroupPageComponent, GroupListTableComponent, GroupDashboardPageComponent, GroupLeaderboardComponent, GroupLatestRecordComponent],
   imports: [
     CoreModule,
     GroupRoutingModule,

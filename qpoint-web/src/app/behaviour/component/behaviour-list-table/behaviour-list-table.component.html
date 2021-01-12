@@ -29,7 +29,8 @@
       <td>{{ data.behaviourName }}</td>
       <td>{{ data.dateCreated | date:'medium'}}</td>
       <td>{{ data.createdByAdmin.username }}</td>
-      <td [style.color]="data.behaviourPoint>=0 ? 'green' :  'red' ">{{ data.behaviourPoint }}</td>
+      <td [style.color]="data.behaviourPoint>=0 ? 'hsl(120,60%,70%)' :  'hsl(0, 100%, 70%)' "
+          class="font-weight-bolder">{{ data.behaviourPoint }}</td>
       <td>
         <nz-row nzAlign="middle" nzJustify="center">
           <a (click)="startEdit(data)" class="mr-2" nz-icon nzTheme="outline" nzType="edit"></a>
@@ -37,7 +38,7 @@
              nzPopconfirmTitle="Are you sure delete this {{data.behaviourName}} behaviour?" nzTheme="outline"
              nzType="delete"></a>
           <ng-template #deleteIconTpl>
-            <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+            <i nz-icon nzType="question-circle-o" style="color: hsl(0, 100%, 70%);"></i>
           </ng-template>
         </nz-row>
       </td>
@@ -56,7 +57,7 @@
              nzPopconfirmTitle="Are you sure edit this {{editingBehaviour.behaviourName}} behaviour?" nzTheme="outline"
              nzType="check"></a>
           <ng-template #editIconTpl>
-            <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+            <i nz-icon nzType="question-circle-o" style="color: hsl(0, 100%, 70%);"></i>
           </ng-template>
           <a (click)="cancelEditAction()" nz-icon nzTheme="outline" nzType="close"></a>
         </nz-row>

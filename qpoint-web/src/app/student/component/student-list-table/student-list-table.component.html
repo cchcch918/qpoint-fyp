@@ -27,9 +27,11 @@
     <td>{{ data.fullName }}</td>
     <td>{{ data.dateCreated | date:'medium'}}</td>
     <td>{{ data.parent.email}}</td>
-    <td [style.color]="data.totalBehaviourPoint>=0 ? 'green' :  'red'">{{data.totalBehaviourPoint}}</td>
+    <td [style.color]="data.totalBehaviourPoint>=0 ? 'hsl(120,60%,70%)' :  'hsl(0, 100%, 70%)'"
+        class="font-weight-bolder">{{data.totalBehaviourPoint}}</td>
     <td>
-      <nz-tag *ngIf="data.class != null" class="my-1"> {{data.class?.className}}</nz-tag>
+      <nz-tag
+        *ngIf="data.class != null" class="my-1"> {{data.class?.className}}</nz-tag>
       <div *ngIf="data.class == null">-</div>
     </td>
     <td>
@@ -51,7 +53,7 @@
           <ng-template #iconTemplate>
             <i class="ant-scroll-number-custom-component" nz-icon nz-tooltip
                nzTooltipTitle="This student dont have a profile image. Please upload now" nzType="exclamation-circle"
-               style="color: #f5222d"></i>
+               style="color: hsl(0, 100%, 70%)"></i>
           </ng-template>
         </ng-template>
 
@@ -60,7 +62,7 @@
              nzPopconfirmTitle="Are you sure delete student {{data.fullName}} ?" nzTheme="outline"
              nzType="delete"></a>
           <ng-template #deleteIconTpl>
-            <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+            <i nz-icon nzType="question-circle-o" style="color: hsl(0, 100%, 70%);"></i>
           </ng-template>
         </div>
       </nz-row>

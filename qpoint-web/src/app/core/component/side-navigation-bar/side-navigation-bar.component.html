@@ -2,7 +2,7 @@
   <nz-sider [(nzCollapsed)]="isCollapsed" [nzCollapsedWidth]="this.menuWidth" [nzTrigger]="null" nzBreakpoint="xl"
             nzCollapsible>
     <div class="p-2"><img alt="Qpoint logo" class="logo" src="../../../../assets/qpoint-logo.png"></div>
-    <ul nz-menu nzMode="inline" nzTheme="light">
+    <ul class="font-weight-bolder" nz-menu nzMode="inline" nzTheme="light">
       <li nz-menu-item nzMatchRouter>
         <div [routerLink]="['/', 'dashboard', 'main-dashboard-page']">
           <i nz-icon nzType="bar-chart"></i>
@@ -43,7 +43,7 @@
           <li [routerLink]="['/notification/manage-notification']" nz-menu-item nzMatchRouter>Manage Notification</li>
         </ul>
       </li>
-      <li (click)="logout()" nz-menu-item style="color: #F7882F;">
+      <li (click)="logout()" nz-menu-item style="color: hsl(0, 100%, 70%);">
         <i nz-icon nzType="logout"></i>
         <span>Logout</span>
       </li>
@@ -55,7 +55,7 @@
         <div nz-col nzSpan="4">
           <i (click)="menuCollapsed()" [nzType]="foldIcon" class="trigger" nz-icon></i>
         </div>
-        <div class="text-right px-4" nz-col nzSpan="10"><span
+        <div class="text-right px-4" nz-col nzSpan="20"><span
           class="font-weight-bold">{{loginAdmin?.username}}</span><span> - {{loginAdmin?.email}}</span></div>
       </div>
     </nz-header>
@@ -71,7 +71,6 @@
   </nz-layout>
 
 </nz-layout>
-<nz-footer class="font-weight-bold" style="background-color: #F7882F"><i nz-icon nzTheme="outline"
-                                                                         nzType="copyright"></i> Qpoint ©2020 Implement
-  By Qpoint Team
+<nz-footer class="font-weight-bold" style="background-color: #F7882F">
+  <i nz-icon nzTheme="outline" nzType="copyright"></i> Qpoint ©2020 Implement By Qpoint Team
 </nz-footer>

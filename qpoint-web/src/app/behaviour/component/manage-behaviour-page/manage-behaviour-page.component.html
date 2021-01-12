@@ -1,6 +1,8 @@
 <app-side-navigation-bar>
   <div class="container">
-    <app-create-behaviour-form (updateTableEvent)="update = !update" [adminId]="adminId"></app-create-behaviour-form>
+    <div class="p-4" style="background-color: #f7f8f9;">
+      <app-create-behaviour-form (updateTableEvent)="update = !update" [adminId]="adminId"></app-create-behaviour-form>
+    </div>
     <app-behaviour-list-table [update]="update"></app-behaviour-list-table>
   </div>
 </app-side-navigation-bar>

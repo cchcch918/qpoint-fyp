@@ -1,9 +1,9 @@
 <div class="bg-light p-4">
-  <h3>Today Records</h3>
+  <h3 class="font-weight-bold" style="color: #687A8F">Today Records</h3>
   <div [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32 }" nz-row nzAlign="middle">
     <div [nzSpan]="6" class="gutter-row" nz-col>
       <app-shared-small-card
-        [colorCode]="'#DCC7AA'"
+        [colorCode]="'#dcc7aa'"
         [iconName]="'book'"
         [stats]="todayRecordsCount ? todayRecordsCount?.toLocaleString(): '0'"
         [title]="'Total Records'">

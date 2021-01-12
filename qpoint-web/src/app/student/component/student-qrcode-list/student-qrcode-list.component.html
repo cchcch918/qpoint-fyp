@@ -27,11 +27,12 @@
         <div *ngFor="let studentQr of studentQrList | filter: searchInput ; let i = index"
              nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
 
-          <nz-card (click)="createCopySuccessMessage(studentQr.student.fullName)" id="{{ 'downloadContent' + i }}"
-                   [cdkCopyToClipboard]="studentQr.qrCode"
-                   [nzCover]="coverTemplate"
-                   [nzHoverable]="true"
-                   class="m-2">
+          <nz-card
+            (click)="createCopySuccessMessage(studentQr.student.fullName)" class="m-2 box"
+            [cdkCopyToClipboard]="studentQr.qrCode"
+            [nzCover]="coverTemplate"
+            [nzHoverable]="true"
+            id="{{ 'downloadContent' + i }}">
             <nz-card-meta [nzAvatar]="avatarTemplate" [nzDescription]="cardDescription" class="studentName"
                           nzTitle="{{studentQr.student.fullName}}"></nz-card-meta>
             <ng-template #coverTemplate>

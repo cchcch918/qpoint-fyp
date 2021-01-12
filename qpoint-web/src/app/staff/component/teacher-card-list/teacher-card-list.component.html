@@ -28,7 +28,7 @@
     <div *ngFor="let teacherActivity of teacherActivityList"
          nz-col nzLg="8" nzMd="10" nzSm="14" nzXl="6" nzXs="18">
 
-      <nz-card (click)="showActivityDetails(teacherActivity.staffId)" [nzHoverable]="true" class="m-2">
+      <nz-card (click)="showActivityDetails(teacherActivity.staffId)" [nzHoverable]="true" class="m-2 box">
         <nz-card-meta [nzDescription]="cardDescription"
                       [nzTitle]="cardTitle">
         </nz-card-meta>

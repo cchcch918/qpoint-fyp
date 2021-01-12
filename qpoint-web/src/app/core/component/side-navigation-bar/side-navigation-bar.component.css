@@ -7,7 +7,7 @@
 }
 
 .trigger:hover {
-  color: #1890ff;
+  color: #F7882F;
 }
 
 .logo {
@@ -45,9 +45,18 @@ nz-footer {
 }
 
 nz-submenu {
-  width: 100%
+  width: 100%;
 }
 
+/*.ant-menu-submenu-title:hover{*/
+/*  color: #F7882F;*/
+/*}*/
 
-.innerImage {
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: #F7882F;
+  color: white;
 }
+
+/*.ant-menu-submenu ant-menu-submenu-inline.ant-menu-submenu-active{*/
+/*  color: #F7882F;*/
+/*}*/
