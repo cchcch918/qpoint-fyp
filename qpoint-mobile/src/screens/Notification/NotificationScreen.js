@@ -83,7 +83,7 @@ const NotificationScreen = ({navigation}) => {
                         <ListItem
                             leftIcon = {{name:'mail'}}
                             title = {item.notificationTitle}
-                            subtitle = {item.notificationMessage}
+                            // subtitle = {(item.notificationMessage).substr(0,10) + '...'}
                             containerStyle = {{margin:10,borderRadius:20,shadowColor: "#000", elevation: 2, }}
                             onPress = {()=>navigation.navigate('NotificationDetails',{notification:item})}
                         />
